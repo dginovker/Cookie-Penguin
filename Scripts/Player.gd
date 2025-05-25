@@ -2,8 +2,10 @@ extends CharacterBody2D
 
 @export var speed := 200
 var input_vector := Vector2.ZERO
-var peer_id := 0  # The owning peer
 var aim_direction := Vector2.ZERO
+var shooting := false
+var fire_cooldown := 0.0
+var peer_id := 0
 
 func _physics_process(delta):
 	if multiplayer.is_server():
@@ -25,7 +27,8 @@ func _process(delta):
 	var aim_dir = (get_global_mouse_position() - global_position).normalized()
 	var shoot = Input.is_action_pressed("shoot")
 
-	rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
+	var game = get_tree().root.get_node("Game")
+	game.rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
 
 @rpc("unreliable")
 func sync_state(pos: Vector2, aim: Vector2):
