@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvgvht0bkgstv"]
+[gd_scene load_steps=5 format=3 uid="uid://bvgvht0bkgstv"]
 
 [ext_resource type="Texture2D" uid="uid://bohqpwwdx8gnv" path="res://Scenes/characters/mobs/spikeysquare/SpikeySquare.png" id="1_6rynf"]
+[ext_resource type="Script" uid="uid://byjalaegs6sto" path="res://Scenes/characters/mobs/spikeysquare/spikey_square.gd" id="1_ix0of"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ix0of"]
 size = Vector2(32, 32)
@@ -9,6 +10,8 @@ size = Vector2(32, 32)
 size = Vector2(308, 199.5)
 
 [node name="SpikeySquare" type="CharacterBody2D" groups=["mobs"]]
+collision_layer = 2
+script = ExtResource("1_ix0of")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6rynf")
@@ -16,11 +19,10 @@ texture = ExtResource("1_6rynf")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ix0of")
 
-[node name="DetectionArea" type="Area2D" parent="."]
+[node name="AggressionArea" type="Area2D" parent="."]
+collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AggressionArea"]
 shape = SubResource("RectangleShape2D_6rynf")
-
-[node name="ShootTimer" type="Timer" parent="."]
 
 [node name="HealthComponent" type="Node" parent="."]

@@ -5,57 +5,54 @@ extends Node2D
 @onready var spawn_timer = $SpawnTimer
 
 var spawnable_tiles := []
-var PenguinScene := preload("res://Scenes/characters/mobs/spikeysquare/SpikeySquare.tscn")
+var SpikeySquareScene := preload("res://Scenes/characters/mobs/spikeysquare/SpikeySquare.tscn")
 
 func _ready():
-	# Collect valid spawn tiles (already calculated in your earlier logic)
 	var terrain_tiles = terrain_map.get_used_cells()
 	var obstacle_tiles = obstacles_map.get_used_cells()
+	
 	var tile_dict = {}
 	for tile in terrain_tiles:
 		tile_dict[tile] = true
 	for tile in obstacle_tiles:
 		tile_dict.erase(tile)
+	
 	spawnable_tiles = tile_dict.keys()
-
 	spawn_timer.timeout.connect(_on_SpawnTimer_timeout)
 
 func _on_SpawnTimer_timeout():
-	print("on_spawnertimer_timeout")
 	if spawnable_tiles.is_empty():
 		return
 	
 	var tile = spawnable_tiles.pick_random()
-	var tile_size = terrain_map.tile_set.tile_size  # Vector2i
-	var tile_pos_vec2 = Vector2(tile.x, tile.y)    # convert tile Vector2i to Vector2
-	var tile_size_vec2 = Vector2(tile_size.x, tile_size.y)  # convert tile_size Vector2i to Vector2
-
-	var world_pos = tile_pos_vec2 * tile_size_vec2 + tile_size_vec2 / 2
+	var world_pos = _tile_to_world_pos(tile)
 	
-	if not _is_spawn_area_clear(world_pos):
-		return
+	if _is_spawn_area_clear(world_pos):
+		var mob = SpikeySquareScene.instantiate()
+		mob.global_position = world_pos
+		get_tree().get_root().add_child(mob)
 
-	var mob = PenguinScene.instantiate()
-	mob.global_position = world_pos
-	get_tree().get_root().add_child(mob)
+func _tile_to_world_pos(tile: Vector2i) -> Vector2:
+	var tile_size = terrain_map.tile_set.tile_size
+	return Vector2(tile) * Vector2(tile_size) + Vector2(tile_size) / 2
+
+func _world_to_tile_pos(pos: Vector2) -> Vector2i:
+	var tile_size = terrain_map.tile_set.tile_size
+	return Vector2i((pos - Vector2(tile_size) / 2) / Vector2(tile_size))
 
 func _is_spawn_area_clear(pos: Vector2) -> bool:
-	var space_state = get_world_2d().direct_space_state
+	var tile_size = terrain_map.tile_set.tile_size.x  # Assuming square tiles
+	var min_distance = tile_size * 8
 	
-	var shape := CircleShape2D.new()
-	shape.radius = 64  # adjust as needed
-
-	var query := PhysicsShapeQueryParameters2D.new()
-	query.shape = shape
-	query.transform = Transform2D(0, pos)
-	query.collide_with_areas = true
-	query.collide_with_bodies = true
-
-	var results = space_state.intersect_shape(query)
-
-	for result in results:
-		var collider = result.get("collider")
-		if collider.is_in_group("player") or collider.is_in_group("mobs"):
+	# Check players
+	for player in get_tree().get_nodes_in_group("players"):
+		if pos.distance_to(player.global_position) < min_distance:
 			return false
-
+	
+	# Check mobs
+	for mob in get_tree().get_nodes_in_group("mobs"):
+		if pos.distance_to(mob.global_position) < min_distance:
+			#print("Was gonna spawn at ", _world_to_tile_pos(pos), " but it's too close to ", _world_to_tile_pos(mob.global_position))
+			return false
+	
 	return true
