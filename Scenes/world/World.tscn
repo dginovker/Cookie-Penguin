@@ -1,26 +1,26 @@
 [gd_scene load_steps=5 format=3 uid="uid://cgk2sqpo6aegq"]
 
-[ext_resource type="Texture2D" uid="uid://docxc6jujuwco" path="res://ground.png" id="1_gl6un"]
-[ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scripts/game.gd" id="1_j5yw3"]
-[ext_resource type="Script" uid="uid://4e10nq7pxeaa" path="res://Scenes/random_brown_log.gd" id="2_j5yw3"]
+[ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/multiplayerlogic.gd" id="1_nra32"]
+[ext_resource type="Script" uid="uid://4e10nq7pxeaa" path="res://Scenes/world/map/random_brown_log.gd" id="2_s8fwa"]
+[ext_resource type="Texture2D" uid="uid://docxc6jujuwco" path="res://Scenes/world/map/ground.png" id="3_wmi8j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c7s6e"]
 size = Vector2(511.556, 128)
 
 [node name="Game" type="Node2D"]
-script = ExtResource("1_j5yw3")
+script = ExtResource("1_nra32")
 
 [node name="players" type="Node2D" parent="."]
 
 [node name="MapNode2D" type="Node2D" parent="."]
 
 [node name="RandomBrownLog" type="StaticBody2D" parent="MapNode2D"]
-script = ExtResource("2_j5yw3")
+script = ExtResource("2_s8fwa")
 
 [node name="GroundSprite2d" type="Sprite2D" parent="MapNode2D/RandomBrownLog"]
 position = Vector2(576, 588)
 scale = Vector2(2.25, 1)
-texture = ExtResource("1_gl6un")
+texture = ExtResource("3_wmi8j")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MapNode2D/RandomBrownLog"]
 position = Vector2(574.5, 587)

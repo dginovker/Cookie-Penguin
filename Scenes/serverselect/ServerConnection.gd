@@ -26,7 +26,7 @@ func host_game():
 	multiplayer.connection_failed.connect(_on_connection_failed)
 
 	# Load the game scene after starting the server
-	call_deferred("load_game_scene")
+	call_deferred("load_world_scene")
 
 func join_game():
 	print("Joining game...")
@@ -34,11 +34,11 @@ func join_game():
 	peer.create_client("127.0.0.1", PORT)  # Replace IP as needed
 	multiplayer.multiplayer_peer = peer
 
-	multiplayer.connected_to_server.connect(load_game_scene)
+	multiplayer.connected_to_server.connect(load_world_scene)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 
-func load_game_scene():
-	var game_scene = load("res://Scenes/Game.tscn").instantiate()
+func load_world_scene():
+	var game_scene = load("res://Scenes/world/World.tscn").instantiate()
 	get_tree().root.add_child(game_scene)
 	queue_free()  # remove the main menu
 	

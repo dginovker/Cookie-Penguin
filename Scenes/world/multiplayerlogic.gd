@@ -1,7 +1,7 @@
 extends Node2D
 
-const PlayerScene := preload("res://Scenes/Player.tscn")
-const BulletScene = preload("res://Scenes/Bullet.tscn")
+const PlayerScene := preload("res://Scenes/characters/Player.tscn")
+const BulletScene = preload("res://Scenes/bullet/Bullet.tscn")
 @onready var player_root := $players
 
 var players := {}

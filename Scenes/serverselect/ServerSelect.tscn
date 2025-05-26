@@ -1,11 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://wibj8e7f6avp"]
 
-[ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scripts/main.gd" id="1_r150o"]
+[ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/serverselect/ServerConnection.gd" id="1_ufl2m"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 offset_right = 44.0
 offset_bottom = 66.0
-script = ExtResource("1_r150o")
+script = ExtResource("1_ufl2m")
 
 [node name="HostButton" type="Button" parent="."]
 layout_mode = 2
