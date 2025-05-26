@@ -6,6 +6,11 @@ const MAX_PLAYERS := 16
 func _ready():
 	$HostButton.pressed.connect(host_game)
 	$JoinButton.pressed.connect(join_game)
+	
+	var args = OS.get_cmdline_args()
+	if "--host" in args:
+		print("Auto-hosting via command-line")
+		host_game()
 
 func host_game():
 	print("Hosting game...")
@@ -21,7 +26,7 @@ func host_game():
 	multiplayer.connection_failed.connect(_on_connection_failed)
 
 	# Load the game scene after starting the server
-	load_game_scene()
+	call_deferred("load_game_scene")
 
 func join_game():
 	print("Joining game...")

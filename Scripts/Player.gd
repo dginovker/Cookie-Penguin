@@ -31,6 +31,10 @@ func _process(_delta):
 	var game = get_tree().root.get_node("Game")
 	game.rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
 
+func _ready():
+	if multiplayer.get_unique_id() == peer_id:
+		$Camera2D.make_current()
+
 @rpc("reliable")
 func sync_state(pos: Vector2, aim: Vector2):
 	global_position = global_position.lerp(pos, 0.2)
