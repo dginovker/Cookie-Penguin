@@ -1,8 +1,12 @@
 extends Node2D
 
+# Todo - Move all the individual player logic to the Player.gd script
+# i.e. movement should happen in Player.gd, and 
+# then the server should use RPCs in Player.gd to send
+# updated locations to the clients 
+
 const PlayerScene := preload("res://Scenes/characters/players/Player.tscn")
 const BulletScene = preload("res://Scenes/bullet/Bullet.tscn")
-@onready var player_root := $players
 
 var players := {}
 
@@ -74,7 +78,7 @@ func rpc_spawn_all_players(players_data: Array):
 		p.name = "Player_%d" % player_data["peer_id"]
 		p.position = player_data["position"]
 		p.peer_id = player_data["peer_id"]
-		player_root.add_child(p)
+		add_child(p)
 
 # Only called on the server
 func _on_peer_disconnected(id):
@@ -90,7 +94,7 @@ func _spawn_player(peer_id: int):
 	p.name = "Player_%d" % peer_id
 	p.peer_id = peer_id
 	p.position = Vector2.ZERO
-	player_root.add_child(p)
+	add_child(p)
 
 	# This line makes ownership clear — server owns the node, but gives control to client
 	p.set_multiplayer_authority(peer_id)
@@ -110,7 +114,7 @@ func rpc_spawn_player(peer_id: int, pos: Vector2):
 	p.name = "Player_%d" % peer_id
 	p.position = pos
 	p.peer_id = peer_id
-	player_root.add_child(p)
+	add_child(p)
 	
 @rpc("any_peer")
 func receive_input(peer_id: int, move: Vector2, aim: Vector2, shoot: bool):

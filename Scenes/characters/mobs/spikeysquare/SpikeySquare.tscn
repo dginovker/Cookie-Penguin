@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvgvht0bkgstv"]
+[gd_scene load_steps=6 format=3 uid="uid://bvgvht0bkgstv"]
 
 [ext_resource type="Texture2D" uid="uid://bohqpwwdx8gnv" path="res://Scenes/characters/mobs/spikeysquare/SpikeySquare.png" id="1_6rynf"]
 [ext_resource type="Script" uid="uid://byjalaegs6sto" path="res://Scenes/characters/mobs/spikeysquare/spikey_square.gd" id="1_ix0of"]
@@ -8,6 +8,14 @@ size = Vector2(32, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6rynf"]
 size = Vector2(308, 199.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ix0of"]
+properties/0/path = NodePath(".:global_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:velocity")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [node name="SpikeySquare" type="CharacterBody2D" groups=["mobs"]]
 collision_layer = 2
@@ -26,3 +34,6 @@ collision_mask = 2
 shape = SubResource("RectangleShape2D_6rynf")
 
 [node name="HealthComponent" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ix0of")

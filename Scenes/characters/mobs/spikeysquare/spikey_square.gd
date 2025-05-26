@@ -14,12 +14,23 @@ var is_paused = false
 var pause_timer = 0.0
 
 func _ready():
+	# Server has authority over all mobs
+	set_multiplayer_authority(1)  # 1 = server ID
+	
+	# Only server runs mob logic
+	if not is_multiplayer_authority():
+		return
+		
 	wander_center = global_position
 	_new_wander_direction()
 	$AggressionArea.body_entered.connect(_on_player_entered)
 	$AggressionArea.body_exited.connect(_on_player_exited)
 
 func _physics_process(delta):
+	# Only server processes mob AI and movement
+	if not is_multiplayer_authority():
+		return
+		
 	shoot_timer -= delta
 	pause_timer -= delta
 	
@@ -33,7 +44,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _draw():
-	if not debug:
+	# Only show debug on server
+	if not debug or not is_multiplayer_authority():
 		return
 
 	# Draw aggression range
@@ -78,7 +90,7 @@ func _wander(delta):
 
 func _new_wander_direction():
 	# Chance to pause instead of moving
-	if randf() < 0.3:
+	if randf() < 0.7:
 		is_paused = true
 		pause_timer = randf_range(1.0, 2.5)
 		return
