@@ -1,21 +1,8 @@
-[gd_scene load_steps=9 format=4 uid="uid://cgk2sqpo6aegq"]
+[gd_scene load_steps=6 format=4 uid="uid://cgk2sqpo6aegq"]
 
 [ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/multiplayerlogic.gd" id="1_nra32"]
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]
 [ext_resource type="Texture2D" uid="uid://cvojle3tygwie" path="res://Scenes/world/map/tiles/obstacletiles.png" id="5_wmi8j"]
-
-[sub_resource type="GDScript" id="GDScript_nra32"]
-script/source = "extends StaticBody2D
-
-func _ready():
-	add_to_group(\"walls\")
-"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_s8fwa"]
-load_path = "res://.godot/imported/ground.png-d27f9063ce2941e1fc5462bfa98484e7.ctex"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_c7s6e"]
-size = Vector2(511.556, 128)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j1b4x"]
 texture = ExtResource("5_wmi8j")
@@ -37,19 +24,6 @@ script = ExtResource("1_nra32")
 [node name="players" type="Node2D" parent="."]
 
 [node name="MapNode2D" type="Node2D" parent="."]
-
-[node name="RandomBrownLog" type="StaticBody2D" parent="MapNode2D"]
-script = SubResource("GDScript_nra32")
-
-[node name="GroundSprite2d" type="Sprite2D" parent="MapNode2D/RandomBrownLog"]
-position = Vector2(576, 588)
-scale = Vector2(2.25, 1)
-texture = SubResource("CompressedTexture2D_s8fwa")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MapNode2D/RandomBrownLog"]
-position = Vector2(574.5, 587)
-scale = Vector2(2.25, 1)
-shape = SubResource("RectangleShape2D_c7s6e")
 
 [node name="TerrainTileMapLayer" type="TileMapLayer" parent="MapNode2D"]
 z_index = -4096

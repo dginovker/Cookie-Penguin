@@ -10,11 +10,11 @@ func _ready():
 	if multiplayer.is_server():
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-
+		
 		# Spawn any already-connected peers (e.g., if latejoin)
 		for id in multiplayer.get_peers():
+			print("Spawning existing peer ", id)
 			_spawn_player(id)
-
 
 func _physics_process(delta):
 	if not multiplayer.is_server():
@@ -47,10 +47,36 @@ func rpc_spawn_bullet(pos: Vector2, direction: Vector2):
 	bullet.direction = direction.normalized()
 	add_child(bullet)
 
+# Only called on the server
 func _on_peer_connected(id):
 	print("Peer connected:", id)
+	# First spawn the new player for everyone
 	_spawn_player(id)
 
+	# Then send all existing players to the new client
+	var existing_players = []
+	for peer_id in players:
+		if peer_id != id:  # Don't send the new player back to themselves
+			existing_players.append({
+				"peer_id": peer_id,
+				"position": players[peer_id].position
+			})	
+	rpc_id(id, "rpc_spawn_all_players", existing_players)
+
+@rpc("authority", "call_local", "reliable")
+func rpc_spawn_all_players(players_data: Array):
+	if multiplayer.is_server():
+		return
+	
+	# Spawn all received players
+	for player_data in players_data:
+		var p = PlayerScene.instantiate()
+		p.name = "Player_%d" % player_data["peer_id"]
+		p.position = player_data["position"]
+		p.peer_id = player_data["peer_id"]
+		player_root.add_child(p)
+
+# Only called on the server
 func _on_peer_disconnected(id):
 	print("Peer disconnected:", id)
 	var p = players.get(id)
