@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2l6rs210oo4a"
-path="res://.godot/imported/chracter.jpg-a0191fa4ec44178d3f5ad7341e7f62ca.ctex"
+uid="uid://dk277rsgn5vg3"
+path="res://.godot/imported/groundtiles.png-847d8333ac4f1567fbf755423c8be5f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/characters/chracter.jpg"
-dest_files=["res://.godot/imported/chracter.jpg-a0191fa4ec44178d3f5ad7341e7f62ca.ctex"]
+source_file="res://Scenes/world/map/tiles/groundtiles.png"
+dest_files=["res://.godot/imported/groundtiles.png-847d8333ac4f1567fbf755423c8be5f7.ctex"]
 
 [params]
 

@@ -18,7 +18,7 @@ func _on_body_entered(body):
 		return  # Don’t collide with players
 
 	if body.is_in_group("walls"):
-		queue_free()  # Todo - come up with something that plays nice with tilemap
+		queue_free()
 
 	if body.is_in_group("monsters"):
 		# TODO: damage logic here
