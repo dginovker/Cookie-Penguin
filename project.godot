@@ -22,6 +22,8 @@ enabled=PackedStringArray("res://addons/gamedev_assistant/plugin.cfg")
 [global_group]
 
 walls=""
+mobs="Group for enemy NPCs"
+players="Group for players (controlled by clients)"
 
 [input]
 
