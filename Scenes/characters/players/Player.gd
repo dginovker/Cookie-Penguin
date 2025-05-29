@@ -43,7 +43,12 @@ func _process(_delta):
 	if input_vector == Vector2.ZERO:
 		animated_sprite.stop()
 	else:
-		animated_sprite.play("walk")
 		animated_sprite.set_flip_h(Input.get_action_strength("left") > 0)
+		if input_vector.x == -1 or input_vector.x == 1:
+			animated_sprite.play("horizontal_walk")
+		if input_vector.y == -1:
+			animated_sprite.play("upwards_walk")
+		if input_vector.y == 1:
+			animated_sprite.play("downwards_walk")
 	
 	get_parent().rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
