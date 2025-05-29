@@ -3,7 +3,7 @@ extends Node2D
 @onready var terrain_map = $"../Tiles/TerrainTileMapLayer"
 @onready var obstacles_map = $"../Tiles/ObstaclesTileMapLayer"
 @onready var spawn_timer = $SpawnTimer
-@onready var multiplayer_spawner = $MultiplayerSpawner  # Reference to child MultiplayerSpawner
+@onready var multiplayer_spawner = $MobMultiplayerSpawner  # Reference to child MultiplayerSpawner
 
 var spawnable_tiles := []
 var SpikeySquareScene := preload("res://Scenes/characters/mobs/spikeysquare/SpikeySquare.tscn")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=4 uid="uid://cgk2sqpo6aegq"]
 
-[ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/MultplayerPlayerManager.gd" id="1_nra32"]
+[ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/PlayerManager.gd" id="1_nra32"]
 [ext_resource type="Script" uid="uid://b1i312xbh6dk2" path="res://Scenes/world/mobs/MobSpawner.gd" id="2_s8fwa"]
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]
 [ext_resource type="Texture2D" uid="uid://cvojle3tygwie" path="res://Scenes/world/map/tiles/obstacletiles.png" id="5_wmi8j"]
@@ -24,8 +24,12 @@ tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [0, Vecto
 [node name="players" type="Node2D" parent="."]
 script = ExtResource("1_nra32")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="players"]
+[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="players"]
 _spawnable_scenes = PackedStringArray("uid://ce4yp8qoqkg71")
+spawn_path = NodePath("..")
+
+[node name="BulletMultiplayerSpawner" type="MultiplayerSpawner" parent="players"]
+_spawnable_scenes = PackedStringArray("uid://d1fyl2ql5eq0u")
 spawn_path = NodePath("..")
 
 [node name="MapNode" type="Node" parent="."]
@@ -47,6 +51,6 @@ script = ExtResource("2_s8fwa")
 [node name="SpawnTimer" type="Timer" parent="MapNode/Mobs"]
 autostart = true
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="MapNode/Mobs"]
+[node name="MobMultiplayerSpawner" type="MultiplayerSpawner" parent="MapNode/Mobs"]
 _spawnable_scenes = PackedStringArray("uid://bvgvht0bkgstv")
 spawn_path = NodePath("..")

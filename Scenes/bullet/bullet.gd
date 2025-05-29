@@ -20,6 +20,6 @@ func _on_body_entered(body):
 	if body.is_in_group("walls"):
 		queue_free()
 
-	if body.is_in_group("monsters"):
-		# TODO: damage logic here
+	if body.is_in_group("mobs"):
+		print("hit!")
 		queue_free()

@@ -7,9 +7,8 @@ const BulletScene = preload("res://Scenes/bullet/Bullet.tscn")
 var players := {}
 
 func _ready():
-	# Configure the MultiplayerSpawner
-	$MultiplayerSpawner.spawn_path = get_path()
-	$MultiplayerSpawner.spawn_function = _spawn_player_custom
+	$PlayerMultiplayerSpawner.spawn_function = _spawn_player_custom
+	$BulletMultiplayerSpawner.spawn_function = _spawn_bullet_custom
 	
 	if multiplayer.is_server():
 		multiplayer.peer_connected.connect(_on_peer_connected)
@@ -24,15 +23,19 @@ func _spawn_player_custom(data: Variant) -> Node:
 	p.peer_id = peer_id
 	p.position = Vector2.ZERO
 	
-	# Set authority BEFORE adding to tree
-	p.set_multiplayer_authority(peer_id)
-	
-	# Make sure the MultiplayerSynchronizer has server authority
-	if p.has_node("MultiplayerSynchronizer"):
-		p.get_node("MultiplayerSynchronizer").set_multiplayer_authority(1)
+	# They control the player, we control the syncronizer
+	p.set_multiplayer_authority(peer_id)	
+	p.get_node("MultiplayerSynchronizer").set_multiplayer_authority(1)
 	
 	players[peer_id] = p
 	return p
+
+func _spawn_bullet_custom(data: Variant) -> Node:
+	var bullet_data = data as Dictionary
+	var bullet = BulletScene.instantiate()
+	bullet.position = bullet_data["position"]
+	bullet.direction = bullet_data["direction"]
+	return bullet
 
 func _physics_process(delta):
 	if not multiplayer.is_server():
@@ -45,7 +48,11 @@ func _physics_process(delta):
 			continue
 		p.fire_cooldown -= delta
 		if p.shooting and p.fire_cooldown <= 0:
-			rpc("_spawn_bullet", p.global_position, p.aim_direction)
+			var bullet_data = {
+				"position": p.global_position,
+				"direction": p.aim_direction
+			}
+			$BulletMultiplayerSpawner.spawn(bullet_data)
 			p.fire_cooldown = 0.25
 
 @rpc("authority", "call_local", "reliable")
@@ -57,7 +64,7 @@ func _spawn_bullet(origin: Vector2, direction: Vector2):
 
 func _on_peer_connected(id):
 	print("Peer connected:", id)
-	_spawn_player(id)
+	$PlayerMultiplayerSpawner.spawn(id)
 
 func _on_peer_disconnected(id):
 	print("Peer disconnected:", id)
@@ -65,11 +72,6 @@ func _on_peer_disconnected(id):
 	if p:
 		p.queue_free()
 		players.erase(id)
-
-func _spawn_player(peer_id: int):
-	print("Spawning player:", peer_id)
-	# Use MultiplayerSpawner.spawn() instead of direct instantiation
-	$MultiplayerSpawner.spawn(peer_id)
 
 @rpc("any_peer", "call_local", "reliable")
 func receive_input(peer_id: int, move: Vector2, aim: Vector2, shoot: bool):

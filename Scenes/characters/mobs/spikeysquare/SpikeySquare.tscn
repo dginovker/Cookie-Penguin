@@ -18,7 +18,7 @@ properties/1/spawn = true
 properties/1/replication_mode = 1
 
 [node name="SpikeySquare" type="CharacterBody2D" groups=["mobs"]]
-collision_layer = 2
+collision_layer = 4
 script = ExtResource("1_ix0of")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
