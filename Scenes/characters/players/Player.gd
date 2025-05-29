@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+@onready var animated_sprite = $AnimatedSprite2D
 @export var speed := 200
 var input_vector := Vector2.ZERO
 var aim_direction := Vector2.ZERO
@@ -38,5 +39,11 @@ func _process(_delta):
 
 	var aim_dir = (get_global_mouse_position() - global_position).normalized()
 	var shoot = Input.is_action_pressed("shoot")
-
+	
+	if input_vector == Vector2.ZERO:
+		animated_sprite.stop()
+	else:
+		animated_sprite.play("walk")
+		animated_sprite.set_flip_h(Input.get_action_strength("left") > 0)
+	
 	get_parent().rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
