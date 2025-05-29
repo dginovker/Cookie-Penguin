@@ -1,9 +1,5 @@
+# players node in the World scene
 extends Node2D
-
-# Todo - Move all the individual player logic to the Player.gd script
-# i.e. movement should happen in Player.gd, and 
-# then the server should use RPCs in Player.gd to send
-# updated locations to the clients 
 
 const PlayerScene := preload("res://Scenes/characters/players/Player.tscn")
 const BulletScene = preload("res://Scenes/bullet/Bullet.tscn")
@@ -11,76 +7,58 @@ const BulletScene = preload("res://Scenes/bullet/Bullet.tscn")
 var players := {}
 
 func _ready():
+	# Configure the MultiplayerSpawner
+	$MultiplayerSpawner.spawn_path = get_path()
+	$MultiplayerSpawner.spawn_function = _spawn_player_custom
+	
 	if multiplayer.is_server():
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-		
-		# Spawn any already-connected peers (e.g., if latejoin)
-		for id in multiplayer.get_peers():
-			print("Spawning existing peer ", id)
-			_spawn_player(id)
+
+func _spawn_player_custom(data: Variant) -> Node:
+	var peer_id = data as int
+	print("Custom spawning player:", peer_id)
+	
+	var p = PlayerScene.instantiate()
+	p.name = "Player_%d" % peer_id
+	p.peer_id = peer_id
+	p.position = Vector2.ZERO
+	
+	# Set authority BEFORE adding to tree
+	p.set_multiplayer_authority(peer_id)
+	
+	# Make sure the MultiplayerSynchronizer has server authority
+	if p.has_node("MultiplayerSynchronizer"):
+		p.get_node("MultiplayerSynchronizer").set_multiplayer_authority(1)
+	
+	players[peer_id] = p
+	return p
 
 func _physics_process(delta):
 	if not multiplayer.is_server():
 		return
+		
+	# Handle shooting for all players
 	for peer_id in players.keys():
 		var p = players[peer_id]
-		p.fire_cooldown -= delta
-		if not p.shooting:
+		if not is_instance_valid(p):
 			continue
-		if p.fire_cooldown <= 0:
-			_spawn_bullet(p.global_position, p.aim_direction)
-			p.fire_cooldown = 0.25  # 4 bullets/sec
+		p.fire_cooldown -= delta
+		if p.shooting and p.fire_cooldown <= 0:
+			rpc("_spawn_bullet", p.global_position, p.aim_direction)
+			p.fire_cooldown = 0.25
 
+@rpc("authority", "call_local", "reliable")
 func _spawn_bullet(origin: Vector2, direction: Vector2):
 	var bullet = BulletScene.instantiate()
 	bullet.position = origin
 	bullet.direction = direction.normalized()
 	add_child(bullet)
 
-	# Tell clients to show it
-	rpc("rpc_spawn_bullet", origin, bullet.direction)
-	
-@rpc("any_peer", "call_local")
-func rpc_spawn_bullet(pos: Vector2, direction: Vector2):
-	if multiplayer.is_server():
-		return  # server already has the bullet
-
-	var bullet = BulletScene.instantiate()
-	bullet.position = pos
-	bullet.direction = direction.normalized()
-	add_child(bullet)
-
-# Only called on the server
 func _on_peer_connected(id):
 	print("Peer connected:", id)
-	# First spawn the new player for everyone
 	_spawn_player(id)
 
-	# Then send all existing players to the new client
-	var existing_players = []
-	for peer_id in players:
-		if peer_id != id:  # Don't send the new player back to themselves
-			existing_players.append({
-				"peer_id": peer_id,
-				"position": players[peer_id].position
-			})	
-	rpc_id(id, "rpc_spawn_all_players", existing_players)
-
-@rpc("authority", "call_local", "reliable")
-func rpc_spawn_all_players(players_data: Array):
-	if multiplayer.is_server():
-		return
-	
-	# Spawn all received players
-	for player_data in players_data:
-		var p = PlayerScene.instantiate()
-		p.name = "Player_%d" % player_data["peer_id"]
-		p.position = player_data["position"]
-		p.peer_id = player_data["peer_id"]
-		add_child(p)
-
-# Only called on the server
 func _on_peer_disconnected(id):
 	print("Peer disconnected:", id)
 	var p = players.get(id)
@@ -90,33 +68,10 @@ func _on_peer_disconnected(id):
 
 func _spawn_player(peer_id: int):
 	print("Spawning player:", peer_id)
-	var p = PlayerScene.instantiate()
-	p.name = "Player_%d" % peer_id
-	p.peer_id = peer_id
-	p.position = Vector2.ZERO
-	add_child(p)
+	# Use MultiplayerSpawner.spawn() instead of direct instantiation
+	$MultiplayerSpawner.spawn(peer_id)
 
-	# This line makes ownership clear — server owns the node, but gives control to client
-	p.set_multiplayer_authority(peer_id)
-
-	players[peer_id] = p
-
-	# Notify that the player was spawned
-	rpc("rpc_spawn_player", peer_id, p.position)
-	print("Called rpc_spawn_player:", peer_id)
-
-@rpc("any_peer", "call_local")
-func rpc_spawn_player(peer_id: int, pos: Vector2):
-	print("rpc_spawn_player called for peer_id ", peer_id)
-	if multiplayer.is_server():
-		return  # server already did this locally
-	var p = PlayerScene.instantiate()
-	p.name = "Player_%d" % peer_id
-	p.position = pos
-	p.peer_id = peer_id
-	add_child(p)
-	
-@rpc("any_peer")
+@rpc("any_peer", "call_local", "reliable")
 func receive_input(peer_id: int, move: Vector2, aim: Vector2, shoot: bool):
 	if not multiplayer.is_server():
 		return

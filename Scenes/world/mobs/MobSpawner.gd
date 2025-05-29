@@ -1,4 +1,4 @@
-extends Node2D  # Change this back to Node2D
+extends Node2D
 
 @onready var terrain_map = $"../Tiles/TerrainTileMapLayer"
 @onready var obstacles_map = $"../Tiles/ObstaclesTileMapLayer"
