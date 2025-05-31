@@ -29,7 +29,6 @@ _spawnable_scenes = PackedStringArray("uid://ce4yp8qoqkg71")
 spawn_path = NodePath("..")
 
 [node name="BulletMultiplayerSpawner" type="MultiplayerSpawner" parent="players"]
-_spawnable_scenes = PackedStringArray("uid://d1fyl2ql5eq0u")
 spawn_path = NodePath("..")
 
 [node name="MapNode" type="Node" parent="."]
