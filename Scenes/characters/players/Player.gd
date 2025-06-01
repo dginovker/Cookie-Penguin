@@ -8,29 +8,36 @@ var aim_direction := Vector2.ZERO
 var shooting := false
 var fire_cooldown := 0.0
 var peer_id := 0
+var is_submerged := false
 
 func _ready():
     water_detector.setup(animated_sprite)
+    water_detector.water_status_changed.connect(_on_water_status_changed)
 
 func _enter_tree():
-    # Authority is already set by the custom spawn function
-    # Just make camera current if this is our player
     if is_multiplayer_authority():
-        # Defer to ensure camera exists
         call_deferred("_setup_camera")
         self.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 
 func _setup_camera():
     $Camera2D.make_current()
 
-func _physics_process(_delta):
+func _physics_process(delta):
     water_detector.check_water_status(global_position)
-    # Only the server processes movement
+    
+    # Only server processes movement and shooting
     if not multiplayer.is_server():
         return
-
+    
+    # Handle movement
     velocity = input_vector * speed
     move_and_slide()
+    
+    # Handle shooting
+    fire_cooldown -= delta
+    if shooting and fire_cooldown <= 0:
+        spawn_bullet()
+        fire_cooldown = 0.25
 
 func _process(_delta):
     # Only the owning client handles input
@@ -45,6 +52,7 @@ func _process(_delta):
     var aim_dir = (get_global_mouse_position() - global_position).normalized()
     var shoot = Input.is_action_pressed("shoot")
 
+    # Handle animations
     if input_vector == Vector2.ZERO:
         animated_sprite.stop()
     else:
@@ -56,4 +64,46 @@ func _process(_delta):
         if input_vector.y == 1:
             animated_sprite.play("downwards_walk")
 
-    get_parent().rpc_id(1, "receive_input", peer_id, input_vector, aim_dir, shoot)
+    # Send input to server
+    receive_input.rpc_id(1, input_vector, aim_dir, shoot)
+
+@rpc("any_peer", "call_local", "unreliable")
+func receive_input(move: Vector2, aim: Vector2, shoot: bool):
+    # Only server processes input
+    if not multiplayer.is_server():
+        return
+    
+    input_vector = move
+    aim_direction = aim
+    shooting = shoot
+
+func spawn_bullet():
+    var bullet_data = {
+        "position": global_position,
+        "direction": aim_direction
+    }
+    # Access the bullet spawner through the player manager
+    get_parent().get_node("BulletMultiplayerSpawner").spawn(bullet_data)
+
+func _on_water_status_changed(in_water: bool):
+    if not multiplayer.is_server():
+        return
+    
+    # Prevent multiple applications
+    if in_water == is_submerged:
+        return
+        
+    is_submerged = in_water
+    
+    if in_water:
+        global_position.y += 8
+    else:
+        global_position.y -= 8
+    
+    # Apply visual effect to all clients
+    sync_water_state.rpc(in_water)
+
+@rpc("any_peer", "call_local", "reliable")
+func sync_water_state(in_water: bool):
+    if water_detector and water_detector.shader_material:
+        water_detector.shader_material.set_shader_parameter("in_water", in_water)
