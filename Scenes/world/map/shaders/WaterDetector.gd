@@ -30,7 +30,15 @@ func get_tilemap_layer():
     return tilemap_layer
 
 func check_water_status(global_pos: Vector2):
-    var current_tile_pos = get_tilemap_layer().local_to_map(global_pos)
+    # Use different positions for checking based on current water status
+    var check_pos = global_pos
+    
+    # If we're currently in water, check slightly upward to prevent oscillation
+    # when exiting water from below
+    if is_in_water:
+        check_pos.y -= 8  # Half the teleport distance
+    
+    var current_tile_pos = get_tilemap_layer().local_to_map(check_pos)
 
     # Only check if we've moved to a different tile
     if current_tile_pos != last_tile_pos:

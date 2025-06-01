@@ -6,6 +6,9 @@ extends CharacterBody2D
 @export var debug = true
 @export var health = 100
 
+@onready var hit_particles = $HitGPUParticles2D
+@onready var death_particles = $DeathGPUParticles2D
+
 var players_in_range = []
 var wander_direction = Vector2.ZERO
 var wander_timer = 0.0
@@ -137,11 +140,31 @@ func take_damage(amount):
     if health < 0:
         return
 
-    # TODO - Set off a visual damage 
+    # Trigger damage particles on all clients
+    show_damage_effect.rpc()
+    
     if not multiplayer.is_server():
         return
     
     health -= amount
     if health < 0:
-        # TODO - Set off an pop effect
+        handle_death.rpc()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func show_damage_effect():
+    hit_particles.restart()  # Triggers the particles
+
+@rpc("any_peer", "call_local", "reliable") 
+func handle_death():
+    # Disable the mob immediately
+    set_physics_process(false)
+    set_process(false)
+    $CollisionShape2D.set_deferred("disabled", true)
+    $Sprite2D.visible = false  # Hide the sprite but keep the node
+    
+    death_particles.restart()
+    
+    if multiplayer.is_server():
+        await get_tree().create_timer(death_particles.lifetime).timeout
         queue_free()
