@@ -30,7 +30,10 @@ func _physics_process(delta):
         return
     
     # Handle movement
-    velocity = input_vector * speed
+    var speed_multiplier = 1
+    if is_submerged:
+        speed_multiplier *= 0.8
+    velocity = input_vector * speed * speed_multiplier
     move_and_slide()
     
     # Handle shooting

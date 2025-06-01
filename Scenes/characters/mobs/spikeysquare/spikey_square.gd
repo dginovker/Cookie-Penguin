@@ -4,6 +4,7 @@ extends CharacterBody2D
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var debug = true
+@export var health = 100
 
 var players_in_range = []
 var wander_direction = Vector2.ZERO
@@ -131,3 +132,16 @@ func _on_player_entered(body):
 func _on_player_exited(body):
     if body.is_in_group("players"):
         players_in_range.erase(body)
+
+func take_damage(amount):
+    if health < 0:
+        return
+
+    # TODO - Set off a visual damage 
+    if not multiplayer.is_server():
+        return
+    
+    health -= amount
+    if health < 0:
+        # TODO - Set off an pop effect
+        queue_free()
