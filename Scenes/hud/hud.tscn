@@ -1,0 +1,65 @@
+[gd_scene load_steps=3 format=3 uid="uid://gmxtnjlkyc3c"]
+
+[ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6yks"]
+bg_color = Color(0.301961, 0.301961, 0.301961, 1)
+
+[node name="HUD_control" type="Control" groups=["hud"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4welq")
+
+[node name="right_Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6yks")
+
+[node name="hp_ProgressBar" type="ProgressBar" parent="right_Panel"]
+layout_mode = 2
+offset_right = 200.0
+offset_bottom = 27.0
+
+[node name="inven_GridContainer" type="GridContainer" parent="right_Panel"]
+layout_mode = 2
+offset_top = 31.0
+offset_right = 200.0
+offset_bottom = 31.0
+columns = 4
+
+[node name="minimap_Control" type="Control" parent="right_Panel"]
+layout_mode = 2
+anchors_preset = 0
+offset_top = 35.0
+offset_right = 200.0
+offset_bottom = 35.0
+
+[node name="chat_VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+offset_right = -200.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
+
+[node name="chatdisplay_RichTextLabel" type="RichTextLabel" parent="chat_VBoxContainer"]
+layout_mode = 2
+fit_content = true
+scroll_following = true
+
+[node name="chatinput_LineEdit" type="LineEdit" parent="chat_VBoxContainer"]
+layout_mode = 2

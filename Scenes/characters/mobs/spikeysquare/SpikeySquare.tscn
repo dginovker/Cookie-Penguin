@@ -65,13 +65,13 @@ replication_config = SubResource("SceneReplicationConfig_ix0of")
 [node name="HitGPUParticles2D" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 2
-lifetime = 0.51
+lifetime = 0.1
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_ix0of")
 
 [node name="DeathGPUParticles2D" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 5
-lifetime = 1.04
+lifetime = 0.2
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_u64nv")

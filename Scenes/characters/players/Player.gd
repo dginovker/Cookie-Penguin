@@ -3,6 +3,8 @@ extends CharacterBody2D
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var water_detector = $WaterDetector
 @export var speed := 200
+@export var max_health = 100
+var current_health = 100
 var input_vector := Vector2.ZERO
 var aim_direction := Vector2.ZERO
 var shooting := false
@@ -10,15 +12,28 @@ var fire_cooldown := 0.0
 var peer_id := 0
 var is_submerged := false
 
+var hud_scene = preload("res://Scenes/hud/hud.tscn")
+var hud_instance
+
 func _ready():
     water_detector.setup(animated_sprite)
     water_detector.water_status_changed.connect(_on_water_status_changed)
-
-func _enter_tree():
     if is_multiplayer_authority():
-        call_deferred("_setup_camera")
+        _setup_camera()
         self.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
-
+        
+        # Create or find a UI layer
+        var ui_layer = get_viewport().get_node_or_null("UILayer")
+        if not ui_layer:
+            ui_layer = CanvasLayer.new()
+            ui_layer.name = "UILayer"
+            ui_layer.layer = 10  # High layer to render on top
+            get_viewport().add_child(ui_layer)
+        
+        hud_instance = hud_scene.instantiate()
+        ui_layer.add_child(hud_instance)
+        hud_instance.update_health(current_health, max_health)
+        
 func _setup_camera():
     $Camera2D.make_current()
 
@@ -110,3 +125,7 @@ func _on_water_status_changed(in_water: bool):
 func sync_water_state(in_water: bool):
     if water_detector and water_detector.shader_material:
         water_detector.shader_material.set_shader_parameter("in_water", in_water)
+
+func take_damage(damage: int):
+    current_health -= damage
+    hud_instance.update_health(current_health, max_health)

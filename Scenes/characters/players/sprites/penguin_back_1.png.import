@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cn14nomim8v1t"
-path="res://.godot/imported/penguin_back_1.png-5397dc87d7ac2c6db40b38e5b8165121.ctex"
+path="res://.godot/imported/penguin_back_1.png-0bcbb5fe0ca1714e007c08ec75c2ae7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/characters/players/penguin_back_1.png"
-dest_files=["res://.godot/imported/penguin_back_1.png-5397dc87d7ac2c6db40b38e5b8165121.ctex"]
+source_file="res://Scenes/characters/players/sprites/penguin_back_1.png"
+dest_files=["res://.godot/imported/penguin_back_1.png-0bcbb5fe0ca1714e007c08ec75c2ae7f.ctex"]
 
 [params]
 

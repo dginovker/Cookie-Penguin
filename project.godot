@@ -24,6 +24,8 @@ enabled=PackedStringArray("res://addons/gamedev_assistant/plugin.cfg")
 walls=""
 mobs="Group for enemy NPCs"
 players="Group for players (controlled by clients)"
+chat_manager=""
+hud=""
 
 [input]
 
