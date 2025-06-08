@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://cgk2sqpo6aegq"]
+[gd_scene load_steps=11 format=4 uid="uid://cgk2sqpo6aegq"]
 
 [ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/PlayerManager.gd" id="1_nra32"]
 [ext_resource type="Script" uid="uid://b1i312xbh6dk2" path="res://Scenes/world/mobs/MobSpawner.gd" id="2_s8fwa"]
@@ -7,6 +7,7 @@
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]
 [ext_resource type="Script" uid="uid://ys0qx8efmu08" path="res://Scenes/world/ChatManager.gd" id="5_j1b4x"]
 [ext_resource type="Texture2D" uid="uid://cvojle3tygwie" path="res://Scenes/world/map/tiles/obstacletiles.png" id="5_wmi8j"]
+[ext_resource type="Script" uid="uid://c3thpx1cbf5j4" path="res://Scenes/world/LootManager.gd" id="8_jyvkd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j1b4x"]
 texture = ExtResource("5_wmi8j")
@@ -64,3 +65,6 @@ spawn_path = NodePath("..")
 
 [node name="chat_manager" type="Node" parent="." groups=["chat_manager"]]
 script = ExtResource("5_j1b4x")
+
+[node name="loot_mananger" type="Node" parent="." groups=["loot_manager"]]
+script = ExtResource("8_jyvkd")

@@ -13,7 +13,7 @@ properties/1/path = NodePath(".:items")
 properties/1/spawn = true
 properties/1/replication_mode = 2
 
-[node name="LootBag" type="Area2D"]
+[node name="LootBag" type="Area2D" groups=["loot_bags"]]
 collision_mask = 2
 script = ExtResource("1_24her")
 

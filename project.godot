@@ -28,6 +28,8 @@ chat_manager=""
 hud=""
 bullet_spawner=""
 loot_spawners=""
+loot_bags=""
+loot_manager=""
 
 [input]
 

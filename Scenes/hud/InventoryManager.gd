@@ -32,6 +32,7 @@ func show_loot_bag(loot_items: Array):
         button.custom_minimum_size = Vector2(40, 40)
         button.texture_normal = health_potion_texture if item.item_name == "health_potion" else null
         button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+        button.set_meta("item_id", item.id)  # Store ID instead of name
         button.set_meta("item_name", item.item_name)
         button.gui_input.connect(_on_loot_input)
         loot_container.add_child(button)
@@ -49,7 +50,7 @@ func _on_loot_input(event: InputEvent):
         return
     
     if event.pressed:
-        dragging_item = {"button": button, "item_name": button.get_meta("item_name")}
+        dragging_item = {"button": button, "item_name": button.get_meta("item_name"), "item_id": button.get_meta("item_id")}
         button.z_index = 100
     else:
         stop_drag()
@@ -63,12 +64,28 @@ func stop_drag():
         var slot = inventory_slots[i]
         if Rect2(slot.global_position, slot.size).has_point(mouse_pos) and slot.texture_normal == empty_slot_texture:
             slot.texture_normal = dragging_item.button.texture_normal
+            
+            # Tell server to remove this specific item by ID
+            get_tree().get_first_node_in_group("loot_manager").request_item_pickup.rpc_id(1, dragging_item.item_id)
+            
             dragging_item.button.queue_free()
             item_added_to_inventory.emit(dragging_item.item_name, i)
             break
     
     dragging_item.button.z_index = 0
     dragging_item = null
+
+@rpc("any_peer", "reliable")
+func request_item_pickup(item_id: String):
+    if not multiplayer.is_server():
+        return
+    
+    # Find the loot bag containing this item and remove it
+    var loot_bags = get_tree().get_nodes_in_group("loot_bags")
+    for bag in loot_bags:
+        if item_id in bag.items_by_id:
+            bag.remove_item_by_id(item_id)
+            break
 
 func _process(_delta):
     if dragging_item:

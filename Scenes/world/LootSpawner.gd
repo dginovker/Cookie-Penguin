@@ -17,5 +17,4 @@ func spawn_loot_bag(spawn_data: Dictionary):
     if not multiplayer.is_server():
         return
     
-    print("Trying to spawn with data " + str(spawn_data))
     spawn([spawn_data])

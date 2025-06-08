@@ -10,8 +10,7 @@ extends CharacterBody2D
 # TODO update loot table
 @export var loot_drop_chance = 1  # 70% chance to drop loot
 @export var loot_table = {
-    "health_potion": {"chance": 1},
-    "sword": {"chance": 1},
+    "health_potion": {"chance": 1}
 }
 
 @onready var hit_particles = $HitGPUParticles2D
@@ -211,6 +210,8 @@ func roll_loot_drops():
     
     # If we have items to drop, spawn a loot bag
     if not dropped_items.is_empty():
+        for i in range(dropped_items.size()):
+            dropped_items[i]["id"] = str(Time.get_unix_time_from_system()) + "_" + str(randi())
         spawn_loot_bag(dropped_items)
 
 func spawn_loot_bag(items: Array):
