@@ -34,7 +34,7 @@ offset_bottom = 27.0
 layout_mode = 2
 offset_top = 31.0
 offset_right = 200.0
-offset_bottom = 31.0
+offset_bottom = 231.0
 columns = 4
 
 [node name="minimap_Control" type="Control" parent="right_Panel"]

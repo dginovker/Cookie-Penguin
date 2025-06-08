@@ -98,10 +98,11 @@ func receive_input(move: Vector2, aim: Vector2, shoot: bool):
 func spawn_bullet():
     var bullet_data = {
         "position": global_position,
-        "direction": aim_direction
+        "direction": aim_direction,
+        "damage": 50,  # Could vary based on weapon
+        "speed": 400
     }
-    # Access the bullet spawner through the player manager
-    get_parent().get_node("BulletMultiplayerSpawner").spawn(bullet_data)
+    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet("player_basic", bullet_data)
 
 func _on_water_status_changed(in_water: bool):
     if not multiplayer.is_server():

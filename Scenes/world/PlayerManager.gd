@@ -1,13 +1,11 @@
 extends Node2D
-
+# TODO - Move this to the PlayerMultiplayerSpawner like Bullets have it
 const PlayerScene := preload("res://Scenes/characters/players/Player.tscn")
-const BulletScene = preload("res://Scenes/bullet/bullet.tscn")
 
 var players := {}
 
 func _ready():
     $PlayerMultiplayerSpawner.spawn_function = _spawn_player_custom
-    $BulletMultiplayerSpawner.spawn_function = _spawn_bullet_custom
     
     if multiplayer.is_server():
         multiplayer.peer_connected.connect(_on_peer_connected)
@@ -27,13 +25,6 @@ func _spawn_player_custom(data: Variant) -> Node:
     
     players[peer_id] = p
     return p
-
-func _spawn_bullet_custom(data: Variant) -> Node:
-    var bullet_data = data as Dictionary
-    var bullet = BulletScene.instantiate()
-    bullet.position = bullet_data["position"]
-    bullet.direction = bullet_data["direction"]
-    return bullet
 
 func _on_peer_connected(id):
     print("Peer connected:", id)

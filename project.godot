@@ -26,6 +26,7 @@ mobs="Group for enemy NPCs"
 players="Group for players (controlled by clients)"
 chat_manager=""
 hud=""
+bullet_spawner=""
 
 [input]
 

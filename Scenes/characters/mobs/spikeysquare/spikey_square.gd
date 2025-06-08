@@ -69,11 +69,23 @@ func _chase_player(player, _delta):
     
     if shoot_timer <= 0:
         print("shooting ", player.name)
+        shoot_at_player(player)
         shoot_timer = shoot_cooldown
     
     if debug:
         queue_redraw()
-
+        
+func shoot_at_player(player):
+    var bullet_direction = (player.global_position - global_position).normalized()
+    var bullet_data = {
+        "position": global_position,
+        "direction": bullet_direction,
+        "damage": 25,
+        "speed": 200
+    }
+    
+    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet("enemy_basic", bullet_data)
+    
 func _wander(delta):
     wander_timer -= delta
     
