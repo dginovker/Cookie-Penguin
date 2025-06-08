@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var water_detector = $WaterDetector
 @export var speed := 200
-@export var max_health = 100
+@export var max_health = 99
 var current_health = 100
 var input_vector := Vector2.ZERO
 var aim_direction := Vector2.ZERO
@@ -22,6 +22,7 @@ func _ready():
         _setup_camera()
         self.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
         
+        $MultiplayerSynchronizer.synchronized.connect(_on_sync)
         # Create or find a UI layer
         var ui_layer = get_viewport().get_node_or_null("UILayer")
         if not ui_layer:
@@ -128,5 +129,10 @@ func sync_water_state(in_water: bool):
         water_detector.shader_material.set_shader_parameter("in_water", in_water)
 
 func take_damage(damage: int):
+    assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     current_health -= damage
+
+func _on_sync():
+    if not is_multiplayer_authority():
+        return
     hud_instance.update_health(current_health, max_health)

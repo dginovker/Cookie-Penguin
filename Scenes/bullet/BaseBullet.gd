@@ -39,14 +39,15 @@ func _on_body_entered(body):
     
     if body.is_in_group("walls"):
         hit_wall(body)
-    # We don't need to check if it hit a player vs a mob
-    # since bullets have the collision mask set to only
-    # collide with non-friendly targets
-    hit_target(body)
+    else:
+        # We don't need to check if it hit a player vs a mob
+        # since bullets have the collision mask set to only
+        # collide with non-friendly targets
+        hit_target(body)
     
 func hit_target(target):
-    if target.has_method("take_damage"):
-        target.take_damage(damage)
+    assert(multiplayer.is_server(), "Client is somehow triggering hit_target")
+    target.take_damage(damage)
     
     pierced_targets += 1
     if pierced_targets > pierce_count:

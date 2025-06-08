@@ -68,7 +68,6 @@ func _chase_player(player, _delta):
     velocity = direction * speed
     
     if shoot_timer <= 0:
-        print("shooting ", player.name)
         shoot_at_player(player)
         shoot_timer = shoot_cooldown
     
