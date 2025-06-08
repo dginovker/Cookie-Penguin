@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://mvl8eqnnmt48"]
+
+[ext_resource type="Script" uid="uid://bw2c4fdvt6juh" path="res://Scenes/hud/DraggableItem.gd" id="1_uaght"]
+
+[node name="DraggableItem" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uaght")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+horizontal_alignment = 1
+vertical_alignment = 2

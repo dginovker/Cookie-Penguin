@@ -27,6 +27,7 @@ players="Group for players (controlled by clients)"
 chat_manager=""
 hud=""
 bullet_spawner=""
+loot_spawners=""
 
 [input]
 

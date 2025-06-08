@@ -1,10 +1,18 @@
 extends CharacterBody2D
 
+# Spawn is managed by MobMultiplayerSpawner
+
 @export var speed = 50.0
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var debug = true
 @export var health = 100
+# TODO update loot table
+@export var loot_drop_chance = 1  # 70% chance to drop loot
+@export var loot_table = {
+    "health_potion": {"chance": 1},
+    "sword": {"chance": 1},
+}
 
 @onready var hit_particles = $HitGPUParticles2D
 @onready var death_particles = $DeathGPUParticles2D
@@ -148,6 +156,7 @@ func _on_player_exited(body):
         players_in_range.erase(body)
 
 func take_damage(amount):
+    assert(multiplayer.is_server(), "Client is somehow deciding how much damage mobs take")
     if health < 0:
         return
 
@@ -177,5 +186,38 @@ func handle_death():
     death_particles.restart()
     
     if multiplayer.is_server():
+        call_deferred("roll_loot_drops")
         await get_tree().create_timer(death_particles.lifetime).timeout
         queue_free()
+        
+func roll_loot_drops():
+    # Only server should roll loot
+    if not multiplayer.is_server():
+        return
+    
+    # Check if we should drop anything
+    if randf() > loot_drop_chance:
+        return  # No loot this time
+    
+    var dropped_items = []
+    
+    # Roll each item in the loot table
+    for item_name in loot_table:
+        var item_data = loot_table[item_name]
+        if randf() <= item_data.chance:
+            dropped_items.append({
+                "item_name": item_name,
+            })
+    
+    # If we have items to drop, spawn a loot bag
+    if not dropped_items.is_empty():
+        spawn_loot_bag(dropped_items)
+
+func spawn_loot_bag(items: Array):
+    assert(multiplayer.is_server(), "Somehow trying to spawn lootbag even though we're not the server!")
+    var loot_bag_data = {
+        "position": global_position,
+        "items": items
+    }
+    
+    get_tree().get_first_node_in_group("loot_spawners").spawn_loot_bag(loot_bag_data)

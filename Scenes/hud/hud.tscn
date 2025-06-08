@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=4 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
+[ext_resource type="Texture2D" uid="uid://ceqijco8wpq4u" path="res://Scenes/hud/right_hud_bg.png" id="2_4welq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6yks"]
-bg_color = Color(0.301961, 0.301961, 0.301961, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4welq"]
+texture = ExtResource("2_4welq")
 
 [node name="HUD_control" type="Control" groups=["hud"]]
 layout_mode = 3
@@ -14,35 +15,35 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4welq")
 
-[node name="right_Panel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -200.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_u6yks")
-
-[node name="hp_ProgressBar" type="ProgressBar" parent="right_Panel"]
-layout_mode = 2
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 0
 offset_right = 200.0
-offset_bottom = 27.0
+offset_bottom = 146.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_4welq")
 
-[node name="inven_GridContainer" type="GridContainer" parent="right_Panel"]
+[node name="right_Panel" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
-offset_top = 31.0
-offset_right = 200.0
-offset_bottom = 231.0
+
+[node name="hp_ProgressBar" type="ProgressBar" parent="PanelContainer/right_Panel"]
+layout_mode = 2
+
+[node name="inven_GridContainer" type="GridContainer" parent="PanelContainer/right_Panel"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
 columns = 4
 
-[node name="minimap_Control" type="Control" parent="right_Panel"]
+[node name="minimap_Control" type="Control" parent="PanelContainer/right_Panel"]
 layout_mode = 2
-anchors_preset = 0
-offset_top = 35.0
-offset_right = 200.0
-offset_bottom = 35.0
+
+[node name="loot_VBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/right_Panel/loot_VBoxContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="PanelContainer/right_Panel/loot_VBoxContainer"]
+layout_mode = 2
+columns = 4
 
 [node name="chat_VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
