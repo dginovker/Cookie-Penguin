@@ -16,7 +16,6 @@ func initialize(spawn_data: Dictionary):
     items = spawn_data.items
 
 func _on_player_entered(player):
-    print("Player entered " + str(player))
     if not player.is_in_group("players"):
         return
     
@@ -26,26 +25,19 @@ func _on_player_entered(player):
     show_loot_to_player.rpc_id(player.get_multiplayer_authority(), items)
 
 func _on_player_exited(player):
-    print("Player left " + str(player))
     if not player.is_in_group("players"):
         return
-    
+   
     players_in_range.erase(player)
-    
-    # Hide loot from player's HUD
-    hide_loot_from_player.rpc_id(player.get_multiplayer_authority())
-
-@rpc("any_peer", "call_local", "reliable")
-func show_loot_to_player(loot_items: Array):
-    print("Trying to show loot of " + str(loot_items))
-    var hud = get_tree().get_first_node_in_group("hud")
-    hud.show_loot_bag(loot_items)
+    hide_loot_from_player.rpc_id(player.get_multiplayer_authority())    
 
 @rpc("any_peer", "call_local", "reliable")
 func hide_loot_from_player():
-    var hud = get_tree().get_first_node_in_group("hud")
-    for child in hud.loot_container.get_children():
-        child.queue_free()
+    get_tree().get_first_node_in_group("hud").hide_loot_bag()
+
+@rpc("any_peer", "call_local", "reliable")
+func show_loot_to_player(loot_items: Array):
+    get_tree().get_first_node_in_group("hud").show_loot_bag(loot_items)
 
 func despawn():
     if multiplayer.is_server():
