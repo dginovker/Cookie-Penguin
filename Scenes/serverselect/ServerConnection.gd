@@ -11,8 +11,8 @@ func _ready():
     if "--host" in args:
         print("Auto-hosting via command-line")
         host_game()
-    if "--join" in args:
-        print("Auto-joining via command-line")
+    if not "--host" in args:
+        print("Auto-joining because we're not host..")
         join_game()
 
 func host_game():

@@ -1,8 +1,8 @@
 extends Control
 class_name InventoryManager
 
-@onready var inventory_container = $inven_GridContainer
-@onready var loot_container = $loot_VBoxContainer/GridContainer
+@onready var inventory_container = $InvenVBoxContainer/InvenGridContainer
+@onready var loot_container = $LootVBoxContainer/GridContainer
 
 var inventory_slots = []
 var health_potion_texture = preload("res://Scenes/items/health_potion.png")
