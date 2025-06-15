@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=6 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="Texture2D" uid="uid://ceqijco8wpq4u" path="res://Scenes/hud/right_hud_bg.png" id="2_4welq"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
+[ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4welq"]
 texture = ExtResource("2_4welq")
@@ -58,6 +59,54 @@ custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 columns = 4
 
+[node name="Slot1" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot2" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot3" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot4" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot5" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot6" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot7" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot8" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/inven_GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
 [node name="loot_VBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
 layout_mode = 2
 
@@ -67,6 +116,54 @@ layout_mode = 2
 [node name="GridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer"]
 layout_mode = 2
 columns = 4
+
+[node name="Slot1" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot2" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot3" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot4" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot5" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot6" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot7" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
+
+[node name="Slot8" type="TextureButton" parent="PanelContainer/right_Panel/InventoryManager/loot_VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+stretch_mode = 5
 
 [node name="chat_VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

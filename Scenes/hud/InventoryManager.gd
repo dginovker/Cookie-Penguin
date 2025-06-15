@@ -12,34 +12,39 @@ var dragging_item = null
 signal item_added_to_inventory(item_name: String, slot_index: int)
 
 func _ready():
-    create_inventory_slots()
-
-func create_inventory_slots():
-    for i in range(8):
-        var slot = TextureButton.new()
-        slot.custom_minimum_size = Vector2(40, 40)
-        slot.texture_normal = empty_slot_texture
-        slot.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-        inventory_slots.append(slot)
-        inventory_container.add_child(slot)
-
-func show_loot_bag(loot_items: Array):
-    for child in loot_container.get_children():
-        child.queue_free()
+    inventory_slots = inventory_container.get_children()
+    hide_loot_bag()
     
-    for item in loot_items:
-        var button = TextureButton.new()
-        button.custom_minimum_size = Vector2(40, 40)
-        button.texture_normal = health_potion_texture if item.item_name == "health_potion" else null
-        button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-        button.set_meta("item_id", item.id)  # Store ID instead of name
-        button.set_meta("item_name", item.item_name)
-        button.gui_input.connect(_on_loot_input)
-        loot_container.add_child(button)
+func show_loot_bag(loot_items: Array):
+    var loot_buttons = loot_container.get_children()
+    
+    # Disconnect all existing connections first
+    for button in loot_buttons:
+        if button.gui_input.is_connected(_on_loot_input):
+            button.gui_input.disconnect(_on_loot_input)
+    
+    # Configure all 8 slots
+    for i in range(loot_buttons.size()):
+        var button = loot_buttons[i]
+        button.visible = true
+        
+        if i < loot_items.size():
+            # Slot has an item
+            var item = loot_items[i]
+            button.texture_normal = health_potion_texture if item.item_name == "health_potion" else empty_slot_texture
+            button.set_meta("item_id", item.id)
+            button.set_meta("item_name", item.item_name)
+            button.gui_input.connect(_on_loot_input)
+        else:
+            button.texture_normal = empty_slot_texture
+            button.remove_meta("item_id")
+            button.remove_meta("item_name")
 
 func hide_loot_bag():
-    for child in loot_container.get_children():
-        child.queue_free()
+    for button in loot_container.get_children():
+        button.visible = false
+        if button.gui_input.is_connected(_on_loot_input):
+            button.gui_input.disconnect(_on_loot_input)
 
 func _on_loot_input(event: InputEvent):
     if not event is InputEventMouseButton or event.button_index != MOUSE_BUTTON_LEFT:
