@@ -1,3 +1,4 @@
+class_name HUD
 extends Control
 
 @onready var health_bar = $PanelContainer/right_Panel/hp_TextureProgressBar
