@@ -5,14 +5,13 @@ enum ContainerType { BACKPACK, GEAR, LOOT }
 
 @export var container_type: ContainerType
 @export var slot_count: int = 8
-@onready var grid_container = get_child(1)  # Assumes 2nd child is the GridContainer
+@onready var grid_container = get_child(1)  # Assumes first child is the GridContainer
 
 var slots: Array = []
 var slot_items: Dictionary = {}  # slot_index -> item_data
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 
 func _ready():
-    assert(grid_container is GridContainer, "BaseContainer expected to get a GridContainer, got " + grid_container.get_class())
     slots = grid_container.get_children()
     setup_slots()
 
@@ -31,8 +30,7 @@ func _on_slot_input(event: InputEvent, slot_index: int):
     
     if event.pressed:
         start_drag(slot_index)
-    else:
-        finish_drag(slot_index)
+    # Remove the else clause - DragManager handles mouse release globally
 
 func start_drag(slot_index: int):
     if not has_item_at_slot(slot_index):
@@ -40,9 +38,6 @@ func start_drag(slot_index: int):
         
     var item_data = get_item_at_slot(slot_index)
     DragManager.start_drag(item_data, self, slot_index)
-
-func finish_drag(slot_index: int):
-    DragManager.finish_drag(self, slot_index)
 
 func can_accept_item(_item_data: ItemData, slot_index: int) -> bool:
     # Base implementation - override in subclasses for restrictions
@@ -57,7 +52,6 @@ func get_item_at_slot(slot_index: int) -> Dictionary:
 func add_item_to_slot(item_data: Dictionary, slot_index: int):
     slot_items[slot_index] = item_data
     update_slot_visual(slot_index)
-    print("Added ", item_data, " to slot ", slot_index, " of ", get_class())
 
 func remove_item_from_slot(slot_index: int) -> Dictionary:
     var item_data = slot_items.get(slot_index, {})

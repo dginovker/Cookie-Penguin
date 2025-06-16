@@ -7,6 +7,7 @@ class_name InventoryManager
 
 func _ready():
     # Add containers to appropriate groups
+    # TODO - Change this to asserting that it's in a group so we don't get silent failures...
     gear_container.add_to_group("gear_containers")
     backpack_container.add_to_group("backpack_containers")
     loot_container.add_to_group("loot_containers")

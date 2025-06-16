@@ -36,9 +36,9 @@ bullet_spawner=""
 loot_spawners=""
 loot_bags=""
 loot_manager=""
-inventory_containers=""
 gear_containers=""
 loot_containers=""
+backpack_containers=""
 
 [input]
 

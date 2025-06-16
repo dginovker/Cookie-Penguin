@@ -57,14 +57,14 @@ vertical_alignment = 1
 layout_mode = 2
 script = ExtResource("3_vjapc")
 
-[node name="GearVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
+[node name="GearVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager" groups=["gear_containers"]]
 layout_mode = 2
 script = ExtResource("4_ekdxc")
 
 [node name="Label" type="Label" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer"]
 layout_mode = 2
 
-[node name="GearGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer" groups=["gear_containers"]]
+[node name="GearGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer"]
 layout_mode = 2
 columns = 4
 
@@ -92,14 +92,14 @@ layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 stretch_mode = 5
 
-[node name="BackpackVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
+[node name="BackpackVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager" groups=["backpack_containers"]]
 layout_mode = 2
 script = ExtResource("6_1ym45")
 
 [node name="Label" type="Label" parent="PanelContainer/right_Panel/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 
-[node name="BackpackGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/BackpackVBoxContainer" groups=["inventory_containers"]]
+[node name="BackpackGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/BackpackVBoxContainer"]
 custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 columns = 4

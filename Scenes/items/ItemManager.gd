@@ -148,18 +148,18 @@ func request_drop_to_world(from_container_path: String, from_slot: int, item_dat
     # Remove from server inventory and create loot bag
     remove_item_from_slot(peer_id, from_container_type, from_slot)
     
-    var loot_bag_scene = preload("res://Scenes/lootbag/LootBag.tscn")
-    var loot_bag = loot_bag_scene.instantiate()
+    # Create loot bag using the MultiplayerSpawner system
     var spawn_data = {
         "position": player.global_position,
         "items": [item_data]
     }
     
-    get_tree().current_scene.add_child(loot_bag)
-    loot_bag.initialize(spawn_data)
+    # Find the loot bag spawner and use it
+    var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
+    loot_spawner.spawn_loot_bag(spawn_data)
     
     confirm_item_removal.rpc_id(peer_id, from_container_path, from_slot)
-
+    
 @rpc("authority", "call_local", "reliable")
 func confirm_item_move(from_container_path: String, from_slot: int, to_container_path: String, to_slot: int, item_data: Dictionary):
     # Only update containers that aren't loot (since loot is managed separately)
