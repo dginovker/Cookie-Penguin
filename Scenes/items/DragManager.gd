@@ -75,7 +75,7 @@ func _process(_delta):
 func get_all_containers() -> Array:
     # Get all container nodes in the scene
     var containers = []
-    containers.append_array(get_tree().get_nodes_in_group("inventory_containers"))
+    containers.append_array(get_tree().get_nodes_in_group("backpack_containers"))
     containers.append_array(get_tree().get_nodes_in_group("gear_containers"))  
     containers.append_array(get_tree().get_nodes_in_group("loot_containers"))
     return containers

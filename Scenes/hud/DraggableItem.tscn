@@ -1,11 +1,99 @@
-[gd_scene load_steps=2 format=3 uid="uid://mvl8eqnnmt48"]
+[gd_scene load_steps=2 format=3 uid="uid://i5mef8nt5ae7"]
 
-[ext_resource type="Script" uid="uid://bw2c4fdvt6juh" path="res://Scenes/hud/DraggableItem.gd" id="1_uaght"]
+[sub_resource type="GDScript" id="GDScript_8j0ws"]
+script/source = "extends Control
+class_name DraggableItem
+
+@export var item_name: String = \"\"
+@export var item_texture: Texture2D
+@export var source_type: String = \"\"  # \"loot\" or \"inventory\"
+@export var source_index: int = -1
+
+var is_dragging = false
+var drag_offset = Vector2.ZERO
+var original_parent: Control
+var original_position: Vector2
+
+@onready var texture_rect = $TextureRect
+@onready var label = $Label
+
+signal item_dropped(item: DraggableItem, target: Control)
+
+func _ready():
+    # Set up the visual appearance
+    texture_rect.texture = item_texture
+    label.text = item_name
+    
+    # Connect mouse events
+    gui_input.connect(_on_gui_input)
+
+func _on_gui_input(event):
+    if event is InputEventMouseButton:
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            if event.pressed:
+                start_drag(event.position)
+            else:
+                stop_drag()
+
+func start_drag(click_position: Vector2):
+    is_dragging = true
+    drag_offset = click_position
+    original_parent = get_parent()
+    original_position = position
+    
+    # Move to a higher z-index for dragging
+    z_index = 100
+    
+    # Reparent to HUD root so it can move freely
+    var hud_root = get_tree().get_first_node_in_group(\"hud\")
+    get_parent().remove_child(self)
+    hud_root.add_child(self)
+
+func stop_drag():
+    if not is_dragging:
+        return
+    
+    is_dragging = false
+    z_index = 0
+    
+    # Check what we're dropping onto
+    var drop_target = find_drop_target()
+    
+    if drop_target:
+        item_dropped.emit(self, drop_target)
+    else:
+        # Return to original position if invalid drop
+        return_to_original_position()
+
+func _process(_delta):
+    if is_dragging:
+        global_position = get_global_mouse_position() - drag_offset
+
+func find_drop_target() -> Control:
+    # Get all inventory slots and check if we're over one
+    var hud = get_tree().get_first_node_in_group(\"hud\")
+    
+    var inventory_container = hud.get_node(\"right_Panel/inven_GridContainer\")
+    
+    for child in inventory_container.get_children():
+        if child is Control:
+            var rect = Rect2(child.global_position, child.size)
+            if rect.has_point(get_global_mouse_position()):
+                return child
+    
+    return null
+
+func return_to_original_position():
+    # Return to original parent and position
+    get_parent().remove_child(self)
+    original_parent.add_child(self)
+    position = original_position
+"
 
 [node name="DraggableItem" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_uaght")
+script = SubResource("GDScript_8j0ws")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(40, 40)

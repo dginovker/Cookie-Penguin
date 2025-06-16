@@ -2,13 +2,13 @@ extends Control
 class_name InventoryManager
 
 @onready var gear_container: GearContainer = $GearVBoxContainer
-@onready var inventory_container: InventoryContainer = $BackpackVBoxContainer  
+@onready var backpack_container: BackpackContainer = $BackpackVBoxContainer  
 @onready var loot_container: LootContainer = $LootVBoxContainer
 
 func _ready():
     # Add containers to appropriate groups
     gear_container.add_to_group("gear_containers")
-    inventory_container.add_to_group("inventory_containers")
+    backpack_container.add_to_group("backpack_containers")
     loot_container.add_to_group("loot_containers")
     
     # Hide loot initially
