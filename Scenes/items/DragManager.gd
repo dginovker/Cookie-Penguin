@@ -54,7 +54,7 @@ func finish_drag(to_container: BaseContainer, to_slot: int):
         
         if dropped_outside:
             # Drop to world
-            var item_manager = get_tree().get_first_node_in_group("item_manager")
+            var item_manager: ItemManager = get_tree().get_first_node_in_group("item_manager")
             item_manager.request_drop_to_world.rpc_id(1, from_container.get_path(), from_slot, item_data)
         else:
             # Invalid drop - do nothing (item stays where it was)
