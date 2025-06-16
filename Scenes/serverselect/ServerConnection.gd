@@ -34,6 +34,7 @@ func host_game():
     get_window().title = "Server"
 
 func join_game():
+    # TODO - Pressing join_game multiple times causes issues
     print("Joining game...")
     get_window().title = "Client loading.."
 

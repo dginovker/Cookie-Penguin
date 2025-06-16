@@ -5,7 +5,7 @@ func _ready():
     container_type = ContainerType.LOOT
     super._ready()
 
-func can_accept_item(item_data: ItemData, slot_index: int) -> bool:
+func can_accept_item(_item_data: ItemData, _slot_index: int) -> bool:
     # Loot container is read-only (can't drop items into it)
     return false
 

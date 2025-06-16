@@ -10,7 +10,6 @@ extends Control
 func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
-    inventory_manager.item_added_to_inventory.connect(_on_item_added_to_inventory)
 
 # TODO - delete this and call it directly?
 func show_loot_bag(loot_items: Array):

@@ -1,7 +1,7 @@
 class_name BaseContainer
 extends Control
 
-enum ContainerType { INVENTORY, GEAR, LOOT }
+enum ContainerType { BACKPACK, GEAR, LOOT }
 
 @export var container_type: ContainerType
 @export var slot_count: int = 8
@@ -10,9 +10,6 @@ enum ContainerType { INVENTORY, GEAR, LOOT }
 var slots: Array = []
 var slot_items: Dictionary = {}  # slot_index -> item_data
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
-
-signal item_moved(from_container: BaseContainer, from_slot: int, to_container: BaseContainer, to_slot: int)
-signal item_dropped_to_world(item_data: Dictionary, container: BaseContainer, slot: int)
 
 func _ready():
     assert(grid_container is GridContainer, "BaseContainer expected to get a GridContainer, got " + grid_container.get_class())
@@ -47,7 +44,7 @@ func start_drag(slot_index: int):
 func finish_drag(slot_index: int):
     DragManager.finish_drag(self, slot_index)
 
-func can_accept_item(item_data: ItemData, slot_index: int) -> bool:
+func can_accept_item(_item_data: ItemData, slot_index: int) -> bool:
     # Base implementation - override in subclasses for restrictions
     return not has_item_at_slot(slot_index)
 

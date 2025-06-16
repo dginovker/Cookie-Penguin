@@ -2,7 +2,7 @@ extends Control
 class_name InventoryManager
 
 @onready var gear_container: GearContainer = $GearVBoxContainer
-@onready var inventory_container: InventoryContainer = $InvenVBoxContainer  
+@onready var inventory_container: InventoryContainer = $BackpackVBoxContainer  
 @onready var loot_container: LootContainer = $LootVBoxContainer
 
 func _ready():
@@ -19,6 +19,3 @@ func show_loot_bag(loot_items: Array):
 
 func hide_loot_bag():
     loot_container.hide_loot_items()
-
-# Legacy compatibility - can remove once everything uses new system
-signal item_added_to_inventory(item_name: String, slot_index: int)
