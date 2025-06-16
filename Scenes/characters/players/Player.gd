@@ -13,9 +13,6 @@ var fire_cooldown := 0.0
 var peer_id := 0
 var is_submerged := false
 
-var hud_scene = preload("res://Scenes/hud/hud.tscn")
-var hud_instance
-
 func _ready():
     water_detector.setup(animated_sprite)
     water_detector.water_status_changed.connect(_on_water_status_changed)
@@ -24,17 +21,6 @@ func _ready():
         self.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
         
         $MultiplayerSynchronizer.synchronized.connect(_on_sync)
-        # Create or find a UI layer
-        var ui_layer = get_viewport().get_node_or_null("UILayer")
-        if not ui_layer:
-            ui_layer = CanvasLayer.new()
-            ui_layer.name = "UILayer"
-            ui_layer.layer = 10  # High layer to render on top
-            get_viewport().add_child(ui_layer)
-        
-        hud_instance = hud_scene.instantiate()
-        ui_layer.add_child(hud_instance)
-        hud_instance.update_health(current_health, max_health)
         
 func _setup_camera():
     $Camera2D.make_current()
@@ -136,4 +122,5 @@ func take_damage(damage: int):
 func _on_sync():
     if not is_multiplayer_authority():
         return
-    hud_instance.update_health(current_health, max_health)
+    var hud: HUD = get_tree().get_first_node_in_group("hud")
+    hud.update_health(current_health, max_health)

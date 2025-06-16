@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://cgk2sqpo6aegq"]
+[gd_scene load_steps=12 format=4 uid="uid://cgk2sqpo6aegq"]
 
 [ext_resource type="Script" uid="uid://q1q23l5v1d83" path="res://Scenes/world/PlayerManager.gd" id="1_nra32"]
 [ext_resource type="Script" uid="uid://b1i312xbh6dk2" path="res://Scenes/world/mobs/MobSpawner.gd" id="2_s8fwa"]
@@ -7,7 +7,7 @@
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]
 [ext_resource type="Script" uid="uid://ys0qx8efmu08" path="res://Scenes/world/ChatManager.gd" id="5_j1b4x"]
 [ext_resource type="Texture2D" uid="uid://cvojle3tygwie" path="res://Scenes/world/map/tiles/obstacletiles.png" id="5_wmi8j"]
-[ext_resource type="Script" uid="uid://c3thpx1cbf5j4" path="res://Scenes/world/LootManager.gd" id="8_jyvkd"]
+[ext_resource type="PackedScene" uid="uid://gmxtnjlkyc3c" path="res://Scenes/hud/hud.tscn" id="7_jyvkd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j1b4x"]
 texture = ExtResource("5_wmi8j")
@@ -22,6 +22,8 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/2 = SubResource("TileSetAtlasSource_j1b4x")
 tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [0, Vector2i(0, 1)], [2, Vector2i(0, 1)], [0, Vector2i(1, 0)], [2, Vector2i(1, 0)], [0, Vector2i(1, 1)], [2, Vector2i(1, 1)], [1, Vector2i(0, 0)], [2, Vector2i(2, 0)], [1, Vector2i(0, 1)], [2, Vector2i(2, 1)], [1, Vector2i(1, 0)], [2, Vector2i(3, 0)], [1, Vector2i(1, 1)], [2, Vector2i(3, 1)]]
+
+[sub_resource type="GDScript" id="GDScript_yds2r"]
 
 [node name="Game" type="Node2D"]
 
@@ -63,8 +65,13 @@ autostart = true
 _spawnable_scenes = PackedStringArray("uid://bvgvht0bkgstv")
 spawn_path = NodePath("..")
 
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="HUD_control" parent="UILayer" instance=ExtResource("7_jyvkd")]
+
 [node name="chat_manager" type="Node" parent="." groups=["chat_manager"]]
 script = ExtResource("5_j1b4x")
 
 [node name="loot_mananger" type="Node" parent="." groups=["loot_manager"]]
-script = ExtResource("8_jyvkd")
+script = SubResource("GDScript_yds2r")

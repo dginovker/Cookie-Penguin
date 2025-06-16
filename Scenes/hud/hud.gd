@@ -12,6 +12,7 @@ func _ready():
     chat_input.text_submitted.connect(_on_chat_submitted)
     inventory_manager.item_added_to_inventory.connect(_on_item_added_to_inventory)
 
+# TODO - delete this and call it directly?
 func show_loot_bag(loot_items: Array):
     inventory_manager.show_loot_bag(loot_items)
 

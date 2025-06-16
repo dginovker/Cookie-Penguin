@@ -1,9 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=9 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="Texture2D" uid="uid://ceqijco8wpq4u" path="res://Scenes/hud/right_hud_bg.png" id="2_4welq"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
+[ext_resource type="Script" uid="uid://cx6p1gx8iykwg" path="res://Scenes/items/GearContainer.gd" id="4_ekdxc"]
+[ext_resource type="Script" uid="uid://3bjjvajal4ny" path="res://Scenes/items/InventoryContainer.gd" id="6_1ym45"]
+[ext_resource type="Script" uid="uid://nqxdlq7fg4t3" path="res://Scenes/items/LootContainer.gd" id="7_j7wy3"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4welq"]
 texture = ExtResource("2_4welq")
@@ -56,8 +59,12 @@ script = ExtResource("3_vjapc")
 
 [node name="GearVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
 layout_mode = 2
+script = ExtResource("4_ekdxc")
 
-[node name="GearGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer"]
+[node name="Label" type="Label" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer"]
+layout_mode = 2
+
+[node name="GearGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/GearVBoxContainer" groups=["gear_containers"]]
 layout_mode = 2
 columns = 4
 
@@ -87,11 +94,12 @@ stretch_mode = 5
 
 [node name="InvenVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
 layout_mode = 2
+script = ExtResource("6_1ym45")
 
 [node name="Label" type="Label" parent="PanelContainer/right_Panel/InventoryManager/InvenVBoxContainer"]
 layout_mode = 2
 
-[node name="InvenGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/InvenVBoxContainer"]
+[node name="InvenGridContainer" type="GridContainer" parent="PanelContainer/right_Panel/InventoryManager/InvenVBoxContainer" groups=["inventory_containers"]]
 custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 columns = 4
@@ -144,8 +152,9 @@ layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 stretch_mode = 5
 
-[node name="LootVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager"]
+[node name="LootVBoxContainer" type="VBoxContainer" parent="PanelContainer/right_Panel/InventoryManager" groups=["loot_containers"]]
 layout_mode = 2
+script = ExtResource("7_j7wy3")
 
 [node name="Label" type="Label" parent="PanelContainer/right_Panel/InventoryManager/LootVBoxContainer"]
 layout_mode = 2
