@@ -7,11 +7,11 @@ extends CharacterBody2D
 @export var wander_range = 100.0
 @export var debug = true
 @export var health = 100
-
-# Simplified loot system - just list item names and chances
-@export var loot_drop_chance = 0.7  # 70% chance to drop loot
-@export var loot_items: Array[String] = ["health_potion"]  # Items that can drop
-@export var drop_chances: Array[float] = [0.8]  # Chance for each item
+# TODO update loot table
+@export var loot_drop_chance = 1  # 70% chance to drop loot
+@export var loot_table = {
+    "health_potion": {"chance": 1}
+}
 
 @onready var hit_particles = $HitGPUParticles2D
 @onready var death_particles = $DeathGPUParticles2D
@@ -25,8 +25,10 @@ var is_paused = false
 var pause_timer = 0.0
 
 func _ready():
-    set_multiplayer_authority(1)
+    # Server has authority over all mobs
+    set_multiplayer_authority(1)  # 1 = server ID
     
+    # Only server runs mob logic
     if not is_multiplayer_authority():
         return
         
@@ -36,6 +38,7 @@ func _ready():
     $AggressionArea.body_exited.connect(_on_player_exited)
 
 func _physics_process(delta):
+    # Only server processes mob AI and movement
     if not is_multiplayer_authority():
         return
         
@@ -52,13 +55,16 @@ func _physics_process(delta):
     move_and_slide()
 
 func _draw():
+    # Only show debug on server
     if not debug or not is_multiplayer_authority():
         return
 
+    # Draw aggression range
     var aggro_shape = $AggressionArea/CollisionShape2D.shape
     var size = aggro_shape.size
-    draw_rect(Rect2(-size/2, size), Color.RED, false, 2.0)
+    draw_rect(Rect2(-size/2, size), Color.RED, false, 2.0)	
 
+    # Draw line to target player
     var target = _get_nearest_player()
     if target:
         var to_player = target.global_position - global_position
@@ -105,11 +111,13 @@ func _wander(delta):
         queue_redraw()
 
 func _new_wander_direction():
+    # Chance to pause instead of moving
     if randf() < 0.7:
         is_paused = true
         pause_timer = randf_range(1.0, 2.5)
         return
     
+    # Choose direction that stays within wander range
     var attempts = 0
     while attempts < 10:
         wander_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
@@ -121,6 +129,7 @@ func _new_wander_direction():
     wander_timer = randf_range(1.0, 3.0)
 
 func _get_nearest_player():
+    # Clean up invalid players first
     players_in_range = players_in_range.filter(func(p): return is_instance_valid(p))
     
     if players_in_range.is_empty():
@@ -150,6 +159,7 @@ func take_damage(amount):
     if health < 0:
         return
 
+    # Trigger damage particles on all clients
     show_damage_effect.rpc()
     
     if not multiplayer.is_server():
@@ -159,16 +169,18 @@ func take_damage(amount):
     if health < 0:
         handle_death.rpc()
 
+
 @rpc("any_peer", "call_local", "reliable")
 func show_damage_effect():
-    hit_particles.restart()
+    hit_particles.restart()  # Triggers the particles
 
 @rpc("any_peer", "call_local", "reliable") 
 func handle_death():
+    # Disable the mob immediately
     set_physics_process(false)
     set_process(false)
     $CollisionShape2D.set_deferred("disabled", true)
-    $Sprite2D.visible = false
+    $Sprite2D.visible = false  # Hide the sprite but keep the node
     
     death_particles.restart()
     
@@ -176,41 +188,37 @@ func handle_death():
         call_deferred("roll_loot_drops")
         await get_tree().create_timer(death_particles.lifetime).timeout
         queue_free()
-
+        
 func roll_loot_drops():
+    # Only server should roll loot
     if not multiplayer.is_server():
         return
     
     # Check if we should drop anything
     if randf() > loot_drop_chance:
-        return
+        return  # No loot this time
     
-    # Roll for each possible item
     var dropped_items = []
-    for i in range(loot_items.size()):
-        var item_name: String = loot_items[i]
-        var chance: float = drop_chances[i]
-        
-        if randf() <= chance:
-            # Create item using ItemRegistry data
-            var item_data = ItemRegistry.get_item_data(item_name)
+    
+    # Roll each item in the loot table
+    for item_name in loot_table:
+        var item_data = loot_table[item_name]
+        if randf() <= item_data.chance:
             dropped_items.append({
-                "id": generate_unique_id(),
                 "item_name": item_name,
-                # Copy all properties from ItemRegistry
-                "type": item_data.type,
-                "rarity": item_data.rarity,
-                "stats": item_data.stats
             })
     
-    # Spawn loot bag if we have items
+    # If we have items to drop, spawn a loot bag
     if not dropped_items.is_empty():
-        var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
-        var spawn_data = {
-            "position": global_position,
-            "items": dropped_items
-        }
-        loot_spawner.spawn_loot_bag(spawn_data)
+        for i in range(dropped_items.size()):
+            dropped_items[i]["id"] = str(Time.get_unix_time_from_system()) + "_" + str(randi())
+        spawn_loot_bag(dropped_items)
 
-func generate_unique_id() -> String:
-    return str(Time.get_unix_time_from_system()) + "_" + str(randi())
+func spawn_loot_bag(items: Array):
+    assert(multiplayer.is_server(), "Somehow trying to spawn lootbag even though we're not the server!")
+    var loot_bag_data = {
+        "position": global_position,
+        "items": items
+    }
+    
+    get_tree().get_first_node_in_group("loot_spawners").spawn_loot_bag(loot_bag_data)

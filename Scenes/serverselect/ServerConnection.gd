@@ -17,7 +17,6 @@ func _ready():
 
 func host_game():
     print("Hosting game...")
-    get_window().title = "Server starting.."
     var peer = ENetMultiplayerPeer.new()
     var result = peer.create_server(PORT, MAX_PLAYERS)
     if result != OK:
@@ -31,20 +30,15 @@ func host_game():
 
     # Load the game scene after starting the server
     call_deferred("load_world_scene")
-    get_window().title = "Server"
 
 func join_game():
-    # TODO - Pressing join_game multiple times causes issues
     print("Joining game...")
-    get_window().title = "Client loading.."
-
     var peer = ENetMultiplayerPeer.new()
     peer.create_client("127.0.0.1", PORT)  # Replace IP as needed
     multiplayer.multiplayer_peer = peer
 
     multiplayer.connected_to_server.connect(load_world_scene)
     multiplayer.connection_failed.connect(_on_connection_failed)
-    get_window().title = "Client"
 
 func load_world_scene():
     var game_scene = load("res://Scenes/world/World.tscn").instantiate()

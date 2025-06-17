@@ -30,7 +30,7 @@ func _on_player_entered(player: Player):
     # Show loot to the player's HUD - use current items_by_id
     show_loot_to_player.rpc_id(player.get_multiplayer_authority(), items_by_id.values())
 
-func _on_player_exited(player: Player):
+func _on_player_exited(player):
     assert(multiplayer.is_server(), "Client is calculating player leaving lootbag")
     if not player.is_in_group("players"):
         return
@@ -38,13 +38,14 @@ func _on_player_exited(player: Player):
     players_in_range.erase(player)
     
     # Hide loot from player's HUD
-    ItemManager.hide_loot_from_player.rpc_id(player.get_multiplayer_authority())
+    var loot_manager : Loot_Manager = get_tree().get_first_node_in_group("loot_manager")
+    print("Removing loot from ",  player.get_multiplayer_authority())
+    loot_manager.hide_loot_from_player.rpc_id(player.get_multiplayer_authority())
 
 @rpc("any_peer", "call_local", "reliable")
 func show_loot_to_player(loot_items: Array):
     assert(!multiplayer.is_server(), "The server doesn't have a HUD; this is supposed to be called on the client!")
-    var hud: HUD = get_tree().get_first_node_in_group("hud")
-    hud.show_loot_bag(loot_items)
+    get_tree().get_first_node_in_group("hud").show_loot_bag(loot_items)
 
 @rpc("authority", "call_local", "reliable")
 func remove_item_by_id(item_id: String):

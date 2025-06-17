@@ -15,15 +15,9 @@ run/main_scene="uid://wibj8e7f6avp"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-ItemRegistry="*res://Scenes/items/ItemRegistry.gd"
-DragManager="*res://Scenes/items/DragManager.gd"
-ItemManager="*res://Scenes/items/ItemManager.gd"
-
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/gamedev_assistant/plugin.cfg")
 
 [global_group]
 
@@ -36,9 +30,6 @@ bullet_spawner=""
 loot_spawners=""
 loot_bags=""
 loot_manager=""
-gear_containers=""
-loot_containers=""
-backpack_containers=""
 
 [input]
 

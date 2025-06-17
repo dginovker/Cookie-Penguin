@@ -1,4 +1,3 @@
-class_name LootSpawner
 extends MultiplayerSpawner
 
 func _ready():

@@ -7,7 +7,7 @@
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]
 [ext_resource type="Script" uid="uid://ys0qx8efmu08" path="res://Scenes/world/ChatManager.gd" id="5_j1b4x"]
 [ext_resource type="Texture2D" uid="uid://cvojle3tygwie" path="res://Scenes/world/map/tiles/obstacletiles.png" id="5_wmi8j"]
-[ext_resource type="PackedScene" uid="uid://gmxtnjlkyc3c" path="res://Scenes/hud/hud.tscn" id="7_jyvkd"]
+[ext_resource type="Script" uid="uid://c3thpx1cbf5j4" path="res://Scenes/world/LootManager.gd" id="8_jyvkd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j1b4x"]
 texture = ExtResource("5_wmi8j")
@@ -63,10 +63,8 @@ autostart = true
 _spawnable_scenes = PackedStringArray("uid://bvgvht0bkgstv")
 spawn_path = NodePath("..")
 
-[node name="UILayer" type="CanvasLayer" parent="."]
-layer = 10
-
-[node name="HUD_control" parent="UILayer" instance=ExtResource("7_jyvkd")]
-
 [node name="chat_manager" type="Node" parent="." groups=["chat_manager"]]
 script = ExtResource("5_j1b4x")
+
+[node name="loot_mananger" type="Node" parent="." groups=["loot_manager"]]
+script = ExtResource("8_jyvkd")

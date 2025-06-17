@@ -1,4 +1,5 @@
 extends Node2D
+# TODO - Move this to the PlayerMultiplayerSpawner like Bullets have it
 const PlayerScene := preload("res://Scenes/characters/players/Player.tscn")
 
 var players := {}
