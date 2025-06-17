@@ -11,10 +11,12 @@ func spawn_loot_custom(spawn_data: Dictionary):
 
     # Spawn the items
     if multiplayer.is_server():
+        loot_bag.lootbag_id = randi()
         var item_location = ItemLocation.new(ItemLocation.Type.LOOTBAG, loot_bag.lootbag_id)
         for item: String in spawn_data.items:
             var item_instance = ItemInstance.new(item, item_location)
             ItemManager.add_item(item_instance)
+            print("Created ", item_instance, "validate its location matches the lootbag id")
     
     return loot_bag
 

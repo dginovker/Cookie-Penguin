@@ -1,14 +1,12 @@
 extends Area2D
 class_name LootBag
 
-@export var lootbag_id: String
+@export var lootbag_id: int
 var nearby_players: Array[int] = []
-# TODO - Implement a static dict of lootbag ids to instances so the lootbag contents can be visually updated for each player when someone loots an item
-
-func _init():
-    lootbag_id = generate_lootbag_id()
+static var lootbags: Dictionary = {}
 
 func _ready():
+    LootBag.lootbags[lootbag_id] = self
     if multiplayer.is_server():
         body_entered.connect(_on_player_entered)
         body_exited.connect(_on_player_exited)
@@ -32,6 +30,7 @@ func _on_player_entered(body):
 @rpc("authority", "call_local")
 func send_lootbag_contents(item_data: Array[Dictionary]):
     assert(!multiplayer.is_server())
+    print("Got an update that lootbag ", lootbag_id, " has ", item_data)
     var items: Array[ItemInstance] = []
     for item: Dictionary in item_data:
         items.append(ItemInstance.from_dict(item))
@@ -52,5 +51,15 @@ func hide_lootbag_contents():
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.hide_loot_bag()
 
-func generate_lootbag_id() -> String:
-    return "lootbag_" + str(randi())
+func _exit_tree():
+    LootBag.lootbags.erase(lootbag_id)
+
+func broadcast_lootbag_update():
+    var location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id)
+    var items: Array[ItemInstance] = ItemManager.get_location_items(location)
+    var item_data: Array[Dictionary] = []
+    for item: ItemInstance in items:
+        item_data.append(item.to_dict())
+    for player_id in nearby_players:
+        print("Calling send_lootbag_contents  on id ", lootbag_id, " to ", player_id, " with data ", item_data)
+        send_lootbag_contents.rpc_id(player_id, item_data)

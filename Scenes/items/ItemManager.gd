@@ -40,15 +40,15 @@ func get_location_items(location: ItemLocation) -> Array[ItemInstance]:
     if location_contents.has(loc_key):
         for uuid in location_contents[loc_key]:
             result.append(items[uuid])
-    print("get_location_items returning ", result, " for ", location)
     return result
     
 @rpc("any_peer", "call_remote", "reliable")
-func request_loot_item(item_uuid: String, player_id: String, slot_id: int):
+func request_loot_item(item_uuid: String, player_id: int, slot_id: int):
     assert(multiplayer.is_server())
     # Validate the request
     var requested_item: ItemInstance = items[item_uuid]
-
+    var lootbag_id = requested_item.location.owner_id
+    
     # Check if the requested_item is still in a lootbag    
     if requested_item.location.type != ItemLocation.Type.LOOTBAG:
         print("Too late! It's gone.")
@@ -56,7 +56,10 @@ func request_loot_item(item_uuid: String, player_id: String, slot_id: int):
     
     # Move item to player's backpack
     var player_backpack = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id, slot_id)
-    
     if move_item(item_uuid, player_backpack):
-        print("TODO - Update lootbag visual for all players that the item was taken out")
+        # Theory - move item changed the location, so we need to broadcast the original looting bag id?
         print("TODO - Update the player who took it's HUD to show that they now have the item")
+        # Notify all viewers of the lootbag
+        print("Broadcasting lootbag update for lootbag ", lootbag_id)
+        var lootbag: LootBag = LootBag.lootbags[lootbag_id]
+        lootbag.broadcast_lootbag_update()

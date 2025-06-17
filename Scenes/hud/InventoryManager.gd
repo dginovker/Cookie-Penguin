@@ -69,7 +69,7 @@ func stop_drag():
             # slot.texture_normal = dragging_item.button.texture_normal
             
             # Tell server to remove this specific item by ID
-            ItemManager.request_loot_item.rpc_id(1, dragging_item.uuid, multiplayer.multiplayer_peer.get_unique_id())
+            ItemManager.request_loot_item.rpc_id(1, dragging_item.uuid, multiplayer.multiplayer_peer.get_unique_id(), i)
             
             dragging_item.button.queue_free()
             break
