@@ -9,13 +9,11 @@ var health_potion_texture = preload("res://Scenes/items/health_potion.png")
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 var dragging_item = null
 
-signal item_added_to_inventory(item_name: String, slot_index: int)
-
 func _ready():
     inventory_slots = inventory_container.get_children()
     hide_loot_bag()
     
-func show_loot_bag(loot_items: Array):
+func show_loot_bag(loot_items: Array[ItemInstance]):
     var loot_buttons = loot_container.get_children()
     
     # Disconnect all existing connections first
@@ -30,15 +28,14 @@ func show_loot_bag(loot_items: Array):
         
         if i < loot_items.size():
             # Slot has an item
-            var item = loot_items[i]
-            button.texture_normal = health_potion_texture if item.item_name == "health_potion" else empty_slot_texture
-            button.set_meta("item_id", item.id)
-            button.set_meta("item_name", item.item_name)
+            var item: ItemInstance = loot_items[i]
+            # TODO - Fix how we get the texture from ItemInstance
+            button.texture_normal = health_potion_texture
+            button.set_meta("uuid", item.uuid)
             button.gui_input.connect(_on_loot_input)
         else:
             button.texture_normal = empty_slot_texture
-            button.remove_meta("item_id")
-            button.remove_meta("item_name")
+            button.remove_meta("uuid")
 
 func hide_loot_bag():
     for button in loot_container.get_children():
@@ -55,7 +52,7 @@ func _on_loot_input(event: InputEvent):
         return
     
     if event.pressed:
-        dragging_item = {"button": button, "item_name": button.get_meta("item_name"), "item_id": button.get_meta("item_id")}
+        dragging_item = {"button": button, "uuid": button.get_meta("uuid")}
         button.z_index = 100
     else:
         stop_drag()
@@ -68,13 +65,13 @@ func stop_drag():
     for i in range(inventory_slots.size()):
         var slot = inventory_slots[i]
         if Rect2(slot.global_position, slot.size).has_point(mouse_pos) and slot.texture_normal == empty_slot_texture:
-            slot.texture_normal = dragging_item.button.texture_normal
+            # This would update the slot to have the item; instead, let's wait for the server to do this
+            # slot.texture_normal = dragging_item.button.texture_normal
             
             # Tell server to remove this specific item by ID
-            get_tree().get_first_node_in_group("loot_manager").request_item_pickup.rpc_id(1, dragging_item.item_id)
+            ItemManager.request_loot_item.rpc_id(1, dragging_item.uuid, multiplayer.multiplayer_peer.get_unique_id())
             
             dragging_item.button.queue_free()
-            item_added_to_inventory.emit(dragging_item.item_name, i)
             break
     
     dragging_item.button.z_index = 0

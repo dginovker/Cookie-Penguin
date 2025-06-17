@@ -198,27 +198,24 @@ func roll_loot_drops():
     if randf() > loot_drop_chance:
         return  # No loot this time
     
-    var dropped_items = []
+    var dropped_items: Array[String] = []
     
     # Roll each item in the loot table
     for item_name in loot_table:
         var item_data = loot_table[item_name]
         if randf() <= item_data.chance:
-            dropped_items.append({
-                "item_name": item_name,
-            })
+            dropped_items.append(item_name)
     
     # If we have items to drop, spawn a loot bag
     if not dropped_items.is_empty():
-        for i in range(dropped_items.size()):
-            dropped_items[i]["id"] = str(Time.get_unix_time_from_system()) + "_" + str(randi())
         spawn_loot_bag(dropped_items)
 
-func spawn_loot_bag(items: Array):
+func spawn_loot_bag(items: Array[String]):
     assert(multiplayer.is_server(), "Somehow trying to spawn lootbag even though we're not the server!")
     var loot_bag_data = {
         "position": global_position,
         "items": items
     }
     
-    get_tree().get_first_node_in_group("loot_spawners").spawn_loot_bag(loot_bag_data)
+    var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
+    loot_spawner.spawn_loot_bag(loot_bag_data)

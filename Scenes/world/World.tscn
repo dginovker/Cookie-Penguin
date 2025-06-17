@@ -25,18 +25,18 @@ tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [0, Vecto
 
 [node name="Game" type="Node2D"]
 
-[node name="players" type="Node2D" parent="."]
+[node name="spawners" type="Node2D" parent="."]
 script = ExtResource("1_nra32")
 
-[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="players"]
+[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="spawners"]
 _spawnable_scenes = PackedStringArray("uid://ce4yp8qoqkg71")
 spawn_path = NodePath("..")
 
-[node name="BulletMultiplayerSpawner" type="MultiplayerSpawner" parent="players" groups=["bullet_spawner"]]
+[node name="BulletMultiplayerSpawner" type="MultiplayerSpawner" parent="spawners" groups=["bullet_spawner"]]
 spawn_path = NodePath("..")
 script = ExtResource("2_yds2r")
 
-[node name="LootbagMultiplayerSpawner" type="MultiplayerSpawner" parent="players" groups=["loot_spawners"]]
+[node name="LootbagMultiplayerSpawner" type="MultiplayerSpawner" parent="spawners" groups=["loot_spawners"]]
 spawn_path = NodePath(".")
 script = ExtResource("3_yds2r")
 

@@ -5,22 +5,17 @@ extends Control
 @onready var health_text = $PanelContainer/right_Panel/hp_TextureProgressBar/Label
 @onready var chat_display = $chat_VBoxContainer/chatdisplay_RichTextLabel
 @onready var chat_input = $chat_VBoxContainer/chatinput_LineEdit
-@onready var inventory_manager = $PanelContainer/right_Panel/InventoryManager
+@onready var inventory_manager: InventoryManager = $PanelContainer/right_Panel/InventoryManager
 
 func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
-    inventory_manager.item_added_to_inventory.connect(_on_item_added_to_inventory)
 
-func show_loot_bag(loot_items: Array):
+func show_loot_bag(loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(loot_items)
 
 func hide_loot_bag():
     inventory_manager.hide_loot_bag()
-
-func _on_item_added_to_inventory(item_name: String, slot_index: int):
-    print("Added ", item_name, " to inventory slot ", slot_index)
-    # Add any additional logic here (sounds, effects, etc.)
 
 func update_health(current_health: int, max_health: int):
     health_bar.max_value = max_health

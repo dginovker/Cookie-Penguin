@@ -15,9 +15,13 @@ run/main_scene="uid://wibj8e7f6avp"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+ItemManager="*res://Scenes/items/ItemManager.gd"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gamedev_assistant/plugin.cfg")
+enabled=PackedStringArray()
 
 [global_group]
 
