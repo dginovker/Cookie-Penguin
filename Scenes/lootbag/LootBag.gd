@@ -24,18 +24,21 @@ func _on_player_entered(body):
     var item_data: Array[Dictionary] = []
     for item: ItemInstance in items:
         item_data.append(item.to_dict())
-    print("Sending player contents: ", item_data)
     send_lootbag_contents.rpc_id(player.get_multiplayer_authority(), item_data)
 
-@rpc("authority", "call_local")
+@rpc("authority", "call_local", "reliable", 69)
 func send_lootbag_contents(item_data: Array[Dictionary]):
     assert(!multiplayer.is_server())
-    print("Got an update that lootbag ", lootbag_id, " has ", item_data)
     var items: Array[ItemInstance] = []
     for item: Dictionary in item_data:
         items.append(ItemInstance.from_dict(item))
     var hud: HUD = get_tree().get_first_node_in_group("hud")
-    hud.show_loot_bag(items)
+    # I love race conditions
+    if len(items) > 0:
+        hud.show_loot_bag(items)
+    else:
+        hud.hide_loot_bag()
+        visible = false
 
 func _on_player_exited(body):
     if body is not Player:
@@ -61,5 +64,7 @@ func broadcast_lootbag_update():
     for item: ItemInstance in items:
         item_data.append(item.to_dict())
     for player_id in nearby_players:
-        print("Calling send_lootbag_contents  on id ", lootbag_id, " to ", player_id, " with data ", item_data)
         send_lootbag_contents.rpc_id(player_id, item_data)
+    if len(items) == 0:
+        # TODO - This is a blatant race condition. Remove the sleep to see for yourself
+        get_tree().create_timer(10).timeout.connect(queue_free)

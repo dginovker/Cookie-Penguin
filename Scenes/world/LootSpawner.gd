@@ -16,7 +16,6 @@ func spawn_loot_custom(spawn_data: Dictionary):
         for item: String in spawn_data.items:
             var item_instance = ItemInstance.new(item, item_location)
             ItemManager.add_item(item_instance)
-            print("Created ", item_instance, "validate its location matches the lootbag id")
     
     return loot_bag
 

@@ -57,9 +57,25 @@ func request_loot_item(item_uuid: String, player_id: int, slot_id: int):
     # Move item to player's backpack
     var player_backpack = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id, slot_id)
     if move_item(item_uuid, player_backpack):
-        # Theory - move item changed the location, so we need to broadcast the original looting bag id?
-        print("TODO - Update the player who took it's HUD to show that they now have the item")
         # Notify all viewers of the lootbag
-        print("Broadcasting lootbag update for lootbag ", lootbag_id)
         var lootbag: LootBag = LootBag.lootbags[lootbag_id]
         lootbag.broadcast_lootbag_update()
+        # Notify the player to update their inventory
+        var player_items = get_player_backpack(player_id)
+        var item_data: Array[Dictionary] = []
+        for item in player_items:
+            item_data.append(item.to_dict())
+        send_player_inventory.rpc_id(player_id, item_data)
+
+func get_player_backpack(player_id: int) -> Array[ItemInstance]:
+    var location = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id)
+    return get_location_items(location)
+
+@rpc("authority", "call_local")
+func send_player_inventory(item_data: Array[Dictionary]):
+    assert(!multiplayer.is_server())
+    var items: Array[ItemInstance] = []
+    for item: Dictionary in item_data:
+        items.append(ItemInstance.from_dict(item))
+    var hud: HUD = get_tree().get_first_node_in_group("hud")
+    hud.inventory_manager.update_inventory(items)
