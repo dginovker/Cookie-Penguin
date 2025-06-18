@@ -12,6 +12,10 @@ func _init(type: String = "", loc: ItemLocation = null):
 
 # Helpers
 
+var health_potion_texture = preload("res://Scenes/items/health_potion.png")
+func get_texture() -> Texture2D:
+    return health_potion_texture
+
 static func from_dict(item_data: Dictionary) -> ItemInstance:
     var item = ItemInstance.new()
     item.uuid = item_data.uuid

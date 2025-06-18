@@ -1,36 +1,35 @@
 extends Control
 class_name InventoryManager
 
-@onready var inventory_container = $InvenVBoxContainer/InvenGridContainer
+@onready var gear_container = $GearVBoxContainer/GearGridContainer
+@onready var backpack_container = $BackpackVBoxContainer/BackpackGridContainer
 @onready var loot_container = $LootVBoxContainer/GridContainer
 
-var inventory_slots = []
-var health_potion_texture = preload("res://Scenes/items/health_potion.png")
+var backpack_slots = []
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 var dragging_item = null
 
 func _ready():
-    inventory_slots = inventory_container.get_children()
+    backpack_slots = backpack_container.get_children()
     hide_loot_bag()
     
 func show_loot_bag(loot_items: Array[ItemInstance]):
     var loot_buttons = loot_container.get_children()
     
     # Disconnect all existing connections first
-    for button in loot_buttons:
+    for button: TextureButton in loot_buttons:
         if button.gui_input.is_connected(_on_loot_input):
             button.gui_input.disconnect(_on_loot_input)
     
     # Configure all 8 slots
     for i in range(loot_buttons.size()):
-        var button = loot_buttons[i]
+        var button: TextureButton = loot_buttons[i]
         button.visible = true
         
         if i < loot_items.size():
             # Slot has an item
             var item: ItemInstance = loot_items[i]
-            # TODO - Fix how we get the texture from ItemInstance
-            button.texture_normal = health_potion_texture
+            button.texture_normal = item.get_texture()
             button.set_meta("uuid", item.uuid)
             button.gui_input.connect(_on_loot_input)
         else:
@@ -62,16 +61,14 @@ func stop_drag():
         return
     
     var mouse_pos = get_global_mouse_position()
-    for i in range(inventory_slots.size()):
-        var slot = inventory_slots[i]
+    for i in range(backpack_slots.size()):
+        var slot = backpack_slots[i]
         if Rect2(slot.global_position, slot.size).has_point(mouse_pos) and slot.texture_normal == empty_slot_texture:
             # This would update the slot to have the item; instead, let's wait for the server to do this
             # slot.texture_normal = dragging_item.button.texture_normal
             
             # Tell server to remove this specific item by ID
-            ItemManager.request_loot_item.rpc_id(1, dragging_item.uuid, multiplayer.multiplayer_peer.get_unique_id(), i)
-            
-            dragging_item.button.queue_free()
+            ItemManager.request_move_item.rpc_id(1, dragging_item.uuid, ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, multiplayer.multiplayer_peer.get_unique_id(), i).to_string())
             break
     
     dragging_item.button.z_index = 0
@@ -81,17 +78,15 @@ func _process(_delta):
     if dragging_item:
         dragging_item.button.global_position = get_global_mouse_position() - Vector2(20, 20)
 
-func update_inventory(items: Array[ItemInstance]):        
+func update_backpack(items: Array[ItemInstance]):        
     # Clear all slots first
-    for slot in inventory_slots:
+    for slot in backpack_slots:
         slot.texture_normal = empty_slot_texture
         slot.remove_meta("uuid")
     
     # Place each item in its designated slot
     for item: ItemInstance in items:
-        print("Setting item ", item)
         var slot_index = item.location.slot
-        var slot = inventory_slots[slot_index]
-        # TODO - Texture
-        slot.texture_normal = health_potion_texture
+        var slot = backpack_slots[slot_index]
+        slot.texture_normal = item.get_texture()
         slot.set_meta("uuid", item.uuid)
