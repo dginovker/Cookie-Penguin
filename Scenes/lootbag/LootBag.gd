@@ -50,6 +50,9 @@ func _on_player_exited(body):
 
 @rpc("authority", "call_local") 
 func hide_lootbag_contents():
+    if multiplayer == null:
+        # Bag despawned
+        return
     assert(!multiplayer.is_server())
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.hide_loot_bag()
@@ -67,4 +70,5 @@ func broadcast_lootbag_update():
         send_lootbag_contents.rpc_id(player_id, item_data)
     if len(items) == 0:
         # TODO - This is a blatant race condition. Remove the sleep to see for yourself
+        # This is also causing the Looting Bag to appear visually on the server
         get_tree().create_timer(10).timeout.connect(queue_free)

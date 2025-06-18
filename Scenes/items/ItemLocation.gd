@@ -17,8 +17,11 @@ func _init(loc_type: Type, owner: int, slot_num: int = 0):
     owner_id = owner
     slot = slot_num
 
+func get_container() -> String:
+    return "%s:%d" % [Type.keys()[type], owner_id]
+
 func _to_string() -> String:
-    return "%s:%s:%d" % [Type.keys()[type], owner_id, slot]
+    return "%s:%d:%d" % [Type.keys()[type], owner_id, slot]
     
 static func from_string(location_str: String) -> ItemLocation:
     var parts = location_str.split(":")

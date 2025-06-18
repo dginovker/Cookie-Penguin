@@ -81,15 +81,17 @@ func _process(_delta):
     if dragging_item:
         dragging_item.button.global_position = get_global_mouse_position() - Vector2(20, 20)
 
-func update_inventory(items: Array[ItemInstance]):
-    # TODO - put the item in the correct slot
-    # Update the inventory UI with the new items
-    for i in range(inventory_slots.size()):
-        var slot = inventory_slots[i]
-        if i < items.size():
-            # TODO: Set the correct texture for the item type
-            slot.texture_normal = health_potion_texture
-            slot.set_meta("uuid", items[i].uuid)
-        else:
-            slot.texture_normal = empty_slot_texture
-            slot.remove_meta("uuid")
+func update_inventory(items: Array[ItemInstance]):        
+    # Clear all slots first
+    for slot in inventory_slots:
+        slot.texture_normal = empty_slot_texture
+        slot.remove_meta("uuid")
+    
+    # Place each item in its designated slot
+    for item: ItemInstance in items:
+        print("Setting item ", item)
+        var slot_index = item.location.slot
+        var slot = inventory_slots[slot_index]
+        # TODO - Texture
+        slot.texture_normal = health_potion_texture
+        slot.set_meta("uuid", item.uuid)
