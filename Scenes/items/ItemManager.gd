@@ -77,8 +77,8 @@ func get_player_backpack(player_id: int) -> Array[ItemInstance]:
 @rpc("authority", "call_local")
 func send_player_backpack(item_data: Array[Dictionary]):
     assert(!multiplayer.is_server())
-    var items: Array[ItemInstance] = []
+    var item_instances: Array[ItemInstance] = []
     for item: Dictionary in item_data:
-        items.append(ItemInstance.from_dict(item))
+        item_instances.append(ItemInstance.from_dict(item))
     var hud: HUD = get_tree().get_first_node_in_group("hud")
-    hud.inventory_manager.update_backpack(items)
+    hud.inventory_manager.update_backpack(item_instances)

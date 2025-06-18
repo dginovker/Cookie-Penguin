@@ -35,7 +35,7 @@ func send_lootbag_contents(item_data: Array[Dictionary]):
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     # I love race conditions
     if len(items) > 0:
-        hud.show_loot_bag(items)
+        hud.show_loot_bag(lootbag_id, items)
     else:
         hud.hide_loot_bag()
         visible = false

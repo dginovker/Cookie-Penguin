@@ -11,8 +11,8 @@ func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
 
-func show_loot_bag(loot_items: Array[ItemInstance]):
-    inventory_manager.show_loot_bag(loot_items)
+func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
+    inventory_manager.show_loot_bag(lootbag_id, loot_items)
 
 func hide_loot_bag():
     inventory_manager.hide_loot_bag()
