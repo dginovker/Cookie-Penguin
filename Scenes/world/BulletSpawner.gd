@@ -1,37 +1,25 @@
 extends MultiplayerSpawner
+class_name BulletSpawner
 
 func _ready():
     spawn_function = spawn_bullet_custom
 
-func spawn_bullet_custom(spawn_data: Array):
-    # spawn_data[0] contains our bullet data dictionary
-    var data = spawn_data[0] as Dictionary
-    var bullet_type = data.get("bullet_type", "player_basic")
+func spawn_bullet_custom(bullet_type_str: String):
+    var bullet_type: BulletType = BulletType.from_string(bullet_type_str)
+    assert(bullet_type != null, "The bullet made from " + bullet_type_str + " was null!")
 
     # Create the appropriate bullet scene
-    var bullet_scene_path = get_bullet_scene_path(bullet_type)
-    var bullet_scene = load(bullet_scene_path)
-    var bullet = bullet_scene.instantiate()
+    var bullet_scene = load("res://Scenes/bullet/Bullet.tscn")
+    var bullet: BulletInstance = bullet_scene.instantiate()
     
     # Initialize the bullet with our data (see BaseBullet.gd)
-    bullet.initialize(data)
+    bullet.initialize(bullet_type)
 
     return bullet
 
-func get_bullet_scene_path(bullet_type: String) -> String:
-    match bullet_type:
-        "player_basic":
-            return "res://Scenes/bullet/PlayerBasicBullet.tscn"
-        "enemy_basic":
-            return "res://Scenes/bullet/EnemyBasicBullet.tscn"
-        _:
-            push_error("BulletSpawner got unknown bullet_type " + bullet_type)
-            return ""
-
 # Public function for easy spawning
-func spawn_bullet(bullet_type: String, spawn_data: Dictionary):
+func spawn_bullet(bullet_type: BulletType):
     if not multiplayer.is_server():
         return
     
-    spawn_data["bullet_type"] = bullet_type
-    spawn([spawn_data])
+    spawn(bullet_type.to_string())

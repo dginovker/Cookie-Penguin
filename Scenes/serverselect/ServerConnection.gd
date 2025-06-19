@@ -17,6 +17,7 @@ func _ready():
 
 func host_game():
     print("Hosting game...")
+    PlayerManager.start_server()
     var peer = ENetMultiplayerPeer.new()
     var result = peer.create_server(PORT, MAX_PLAYERS)
     if result != OK:
@@ -24,8 +25,6 @@ func host_game():
         return
 
     multiplayer.multiplayer_peer = peer
-    multiplayer.peer_connected.connect(_on_peer_connected)
-    multiplayer.peer_disconnected.connect(_on_peer_disconnected)
     multiplayer.connection_failed.connect(_on_connection_failed)
 
     # Load the game scene after starting the server
@@ -44,12 +43,6 @@ func load_world_scene():
     var game_scene = load("res://Scenes/world/World.tscn").instantiate()
     get_tree().root.add_child(game_scene)
     queue_free()  # remove the main menu
-
-func _on_peer_connected(id):
-    print("Peer connected: ", id)
-
-func _on_peer_disconnected(id):
-    print("Peer disconnected: ", id)
 
 func _on_connection_failed():
     print("Failed to connect to server.")

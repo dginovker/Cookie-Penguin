@@ -7,10 +7,9 @@ extends CharacterBody2D
 @export var wander_range = 100.0
 @export var debug = true
 @export var health = 100
-# TODO update loot table
-@export var loot_drop_chance = 1  # 70% chance to drop loot
 @export var loot_table = {
-    "health_potion": {"chance": 1}
+    "health_potion": 1,
+    "tier_0_sword": 0.5
 }
 
 @onready var hit_particles = $HitGPUParticles2D
@@ -83,14 +82,8 @@ func _chase_player(player, _delta):
         
 func shoot_at_player(player):
     var bullet_direction = (player.global_position - global_position).normalized()
-    var bullet_data = {
-        "position": global_position,
-        "direction": bullet_direction,
-        "damage": 25,
-        "speed": 200
-    }
-    
-    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet("enemy_basic", bullet_data)
+    var bullet_type: BulletType = BulletType.new('tier_0_bullet.png', global_position, bullet_direction, 2**1 + 1)    
+    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
     
 func _wander(delta):
     wander_timer -= delta
@@ -193,17 +186,13 @@ func roll_loot_drops():
     # Only server should roll loot
     if not multiplayer.is_server():
         return
-    
-    # Check if we should drop anything
-    if randf() > loot_drop_chance:
-        return  # No loot this time
-    
+        
     var dropped_items: Array[String] = []
     
     # Roll each item in the loot table
     for item_name in loot_table:
-        var item_data = loot_table[item_name]
-        if randf() <= item_data.chance:
+        var chance: float = loot_table[item_name]
+        if randf() <= chance:
             dropped_items.append(item_name)
     
     # If we have items to drop, spawn a loot bag

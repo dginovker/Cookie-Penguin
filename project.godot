@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 ItemManager="*res://Scenes/items/ItemManager.gd"
+PlayerManager="*res://Scenes/world/PlayerManager.gd"
+WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
 
 [editor_plugins]
 
@@ -34,6 +36,7 @@ bullet_spawner=""
 loot_spawners=""
 loot_bags=""
 loot_manager=""
+player_spawner=""
 
 [input]
 

@@ -12,9 +12,23 @@ func _init(type: String = "", loc: ItemLocation = null):
 
 # Helpers
 
-var health_potion_texture = preload("res://Scenes/items/health_potion.png")
 func get_texture() -> Texture2D:
-    return health_potion_texture
+    """
+    Does this look inefficient to you?
+    Could you make a "faster" function with "less lines of code"?
+    Good for you!
+    I'll keep my code readable and obvious.
+    """
+    if item_type == "health_potion":
+        return preload("res://Scenes/items/health_potion.png")
+    if item_type == "tier_0_sword":
+        return preload("res://Scenes/items/tier_0_sword.png")
+    if item_type == "tier_1_sword":
+        return preload("res://Scenes/items/tier_1_sword.png")
+    if item_type == "tier_2_sword":
+        return preload("res://Scenes/items/tier_2_sword.png")
+    assert(false, "Didn't find the texture for " + item_type)
+    return null
 
 static func from_dict(item_data: Dictionary) -> ItemInstance:
     var item = ItemInstance.new()

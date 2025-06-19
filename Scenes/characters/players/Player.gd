@@ -7,10 +7,10 @@ extends CharacterBody2D
 @export var max_health = 99
 var current_health = 100
 var input_vector := Vector2.ZERO
-var aim_direction := Vector2.ZERO
+var aim_direction: Vector2 = Vector2.ZERO
 var shooting := false
 var fire_cooldown := 0.0
-var peer_id := 0
+var peer_id := -1 # Gets set in PlayerSpawner
 var is_submerged := false
 
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
@@ -22,20 +22,23 @@ func _ready():
     if is_multiplayer_authority():
         _setup_camera()
         self.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
-        
         $MultiplayerSynchronizer.synchronized.connect(_on_sync)
-        # Create or find a UI layer
-        var ui_layer = get_viewport().get_node_or_null("UILayer")
-        if not ui_layer:
-            ui_layer = CanvasLayer.new()
-            ui_layer.name = "UILayer"
-            ui_layer.layer = 10  # High layer to render on top
-            get_viewport().add_child(ui_layer)
         
-        hud_instance = hud_scene.instantiate()
-        ui_layer.add_child(hud_instance)
-        hud_instance.update_health(current_health, max_health)
-        
+        # Defer HUD creation to next frame
+        call_deferred("setup_hud")
+
+func setup_hud():
+    var ui_layer = get_viewport().get_node_or_null("UILayer")
+    if not ui_layer:
+        ui_layer = CanvasLayer.new()
+        ui_layer.name = "UILayer"
+        ui_layer.layer = 10
+        get_viewport().add_child(ui_layer)
+    
+    hud_instance = hud_scene.instantiate()
+    ui_layer.add_child(hud_instance)
+    hud_instance.update_health(current_health, max_health)
+     
 func _setup_camera():
     $Camera2D.make_current()
 
@@ -56,8 +59,9 @@ func _physics_process(delta):
     # Handle shooting
     fire_cooldown -= delta
     if shooting and fire_cooldown <= 0:
-        spawn_bullet()
-        fire_cooldown = 0.25
+        var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
+        bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", global_position, aim_direction, 2**2 + 1))
+        fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(_delta):
     # Only the owning client handles input
@@ -97,15 +101,6 @@ func receive_input(move: Vector2, aim: Vector2, shoot: bool):
     aim_direction = aim
     shooting = shoot
 
-func spawn_bullet():
-    var bullet_data = {
-        "position": global_position,
-        "direction": aim_direction,
-        "damage": 50,  # Could vary based on weapon
-        "speed": 400
-    }
-    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet("player_basic", bullet_data)
-
 func _on_water_status_changed(in_water: bool):
     if not multiplayer.is_server():
         return
@@ -136,4 +131,5 @@ func take_damage(damage: int):
 func _on_sync():
     if not is_multiplayer_authority():
         return
-    hud_instance.update_health(current_health, max_health)
+    if hud_instance:
+        hud_instance.update_health(current_health, max_health)

@@ -1,26 +1,21 @@
 # BaseBullet.gd
 extends Area2D
-class_name BaseBullet
+class_name BulletInstance
 
-@export var speed := 270
-@export var damage := 25
 @export var lifetime := 10.0
 @export var pierce_count := 0
+@export var bullet_type: BulletType
 
-var direction = Vector2.ZERO
 var pierced_targets = 0
 var shooter_type = ""
 
-# This gets called by MultiplayerSpawner with the spawn data
-func initialize(spawn_data: Dictionary):
-    global_position = spawn_data.position
-    direction = spawn_data.direction
+# This gets called by MultiplayerSpawner
+func initialize(p_bullet_type: BulletType):
+    assert(p_bullet_type != null)
+    bullet_type = p_bullet_type
+    global_position = bullet_type.start_position
+    collision_mask = bullet_type.collision_mask
     
-    # Apply any additional properties
-    for property in spawn_data:
-        if property in self:
-            set(property, spawn_data[property])
-
 func _ready():
     if not multiplayer.is_server():
         return
@@ -31,7 +26,7 @@ func _ready():
 func _process(delta):
     if not is_inside_tree():
         return
-    position += direction * speed * delta
+    position += bullet_type.direction * bullet_type.speed * delta
 
 func _on_body_entered(body):
     if not multiplayer.is_server():
@@ -40,14 +35,11 @@ func _on_body_entered(body):
     if body.is_in_group("walls"):
         hit_wall(body)
     else:
-        # We don't need to check if it hit a player vs a mob
-        # since bullets have the collision mask set to only
-        # collide with non-friendly targets
         hit_target(body)
     
 func hit_target(target):
     assert(multiplayer.is_server(), "Client is somehow triggering hit_target")
-    target.take_damage(damage)
+    target.take_damage(bullet_type.damage)
     
     pierced_targets += 1
     if pierced_targets > pierce_count:
