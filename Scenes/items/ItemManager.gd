@@ -56,23 +56,28 @@ func request_move_item(item_uuid: String, new_location_string: String):
     if not move_item(item_uuid, new_location):
         print("Failed to move ", item_uuid, " to ", new_location)
         return
-        
+    print("Move from ", original_location, " to ", new_location, "success")
+    
     if original_location.type == ItemLocation.Type.LOOTBAG:
         # Notify all viewers of the lootbag
         var lootbag: LootBag = LootBag.lootbags[original_location.owner_id]
         lootbag.broadcast_lootbag_update()
 
-    if new_location.type == ItemLocation.Type.PLAYER_BACKPACK:
+    if original_location.type == ItemLocation.Type.PLAYER_BACKPACK or new_location.type == ItemLocation.Type.PLAYER_BACKPACK:
         # Notify the player to update their backpack
-        var player_items = get_player_backpack(new_location.owner_id)
+        var player_items: Array[ItemInstance] = get_location_items(ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, new_location.owner_id))
         var item_data: Array[Dictionary] = []
         for item in player_items:
             item_data.append(item.to_dict())
         send_player_backpack.rpc_id(new_location.owner_id, item_data)
 
-func get_player_backpack(player_id: int) -> Array[ItemInstance]:
-    var location = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id)
-    return get_location_items(location)
+    if original_location.type == ItemLocation.Type.PLAYER_GEAR or new_location.type == ItemLocation.Type.PLAYER_GEAR:
+        # Notify the player to update their equipment
+        var player_items = get_location_items(ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, new_location.owner_id))
+        var item_data: Array[Dictionary] = []
+        for item in player_items:
+            item_data.append(item.to_dict())
+        send_player_gear.rpc_id(new_location.owner_id, item_data)
 
 @rpc("authority", "call_local")
 func send_player_backpack(item_data: Array[Dictionary]):
@@ -82,3 +87,12 @@ func send_player_backpack(item_data: Array[Dictionary]):
         item_instances.append(ItemInstance.from_dict(item))
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.inventory_manager.update_backpack(item_instances)
+
+@rpc("authority", "call_local")
+func send_player_gear(item_data: Array[Dictionary]):
+    assert(!multiplayer.is_server())
+    var item_instances: Array[ItemInstance] = []
+    for item: Dictionary in item_data:
+        item_instances.append(ItemInstance.from_dict(item))
+    var hud: HUD = get_tree().get_first_node_in_group("hud")
+    hud.inventory_manager.update_gear(item_instances)

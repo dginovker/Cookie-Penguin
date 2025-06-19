@@ -3,7 +3,7 @@ class_name ItemLocation
 
 enum Type {
     PLAYER_BACKPACK,
-    PLAYER_EQUIPMENT, 
+    PLAYER_GEAR, 
     LOOTBAG,
     GROUND
 }

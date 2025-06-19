@@ -13,7 +13,7 @@ var current_lootbag_id: int = -1
 func _ready():
     for i in range(gear_slots.size()):
         var slot = gear_slots[i]
-        slot.set_meta("container_type", ItemLocation.Type.PLAYER_EQUIPMENT)
+        slot.set_meta("container_type", ItemLocation.Type.PLAYER_GEAR)
         slot.set_meta("slot_index", i)
         slot.gui_input.connect(_on_slot_input.bind(slot))
 
@@ -87,8 +87,8 @@ func stop_drag():
         match container_type:
             ItemLocation.Type.PLAYER_BACKPACK:
                 new_location = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id, slot_index)
-            ItemLocation.Type.PLAYER_EQUIPMENT:
-                new_location = ItemLocation.new(ItemLocation.Type.PLAYER_EQUIPMENT, player_id, slot_index)
+            ItemLocation.Type.PLAYER_GEAR:
+                new_location = ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, player_id, slot_index)
             ItemLocation.Type.LOOTBAG:
                 new_location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id, slot_index)
         ItemManager.request_move_item.rpc_id(1, dragging_item.get_meta("uuid"), new_location.to_string())
@@ -112,5 +112,19 @@ func update_backpack(items: Array[ItemInstance]):
     for item: ItemInstance in items:
         var slot_index = item.location.slot
         var slot = backpack_slots[slot_index]
+        slot.texture_normal = item.get_texture()
+        slot.set_meta("uuid", item.uuid)
+        
+func update_gear(items: Array[ItemInstance]):
+    print("Updating gear to have ", items)
+    # Clear all slots first
+    for slot in gear_slots:
+        slot.texture_normal = empty_slot_texture
+        slot.remove_meta("uuid")
+    
+    # Place each item in its designated slot
+    for item: ItemInstance in items:
+        var slot_index = item.location.slot
+        var slot = gear_slots[slot_index]
         slot.texture_normal = item.get_texture()
         slot.set_meta("uuid", item.uuid)
