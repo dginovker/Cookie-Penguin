@@ -28,7 +28,6 @@ func _on_player_entered(body):
 
 @rpc("authority", "call_local", "reliable", 69)
 func send_lootbag_contents(item_data: Array[Dictionary]):
-    assert(!multiplayer.is_server())
     var items: Array[ItemInstance] = []
     for item: Dictionary in item_data:
         items.append(ItemInstance.from_dict(item))

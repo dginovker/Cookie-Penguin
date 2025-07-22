@@ -11,15 +11,16 @@ config_version=5
 [application]
 
 config/name="test"
-run/main_scene="uid://wibj8e7f6avp"
+run/main_scene="uid://dd0v8aq8px2ub"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 ItemManager="*res://Scenes/items/ItemManager.gd"
-PlayerManager="*res://Scenes/world/PlayerManager.gd"
+PlayerManager="*res://Globals/PlayerManager.gd"
 WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
+Connector="*res://Globals/Connector.gd"
 
 [editor_plugins]
 

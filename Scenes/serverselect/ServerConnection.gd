@@ -1,48 +1,25 @@
 extends Node
 
-const PORT := 9999
-const MAX_PLAYERS := 16
+var peer: WebSocketMultiplayerPeer
 
 func _ready():
-    $HostButton.pressed.connect(host_game)
-    $JoinButton.pressed.connect(join_game)
+    peer = WebSocketMultiplayerPeer.new()
+    
+    if OS.get_name() == "Web":
+        # Join the server
+        print("Joining as Websocket Client..")
+        peer.create_client("ws://127.0.0.1:10000") # Test Local!!
+        #peer.create_client("wss://duck.openredsoftware.com/blobjump") # Real server!
+    else:
+        # We are the server
+        PlayerManager.start_listening()
+        peer.create_server(10000)
 
-    var args = OS.get_cmdline_args()
-    if "--host" in args:
-        print("Auto-hosting via command-line")
-        host_game()
-    if not "--host" in args:
-        print("Auto-joining because we're not host..")
-        join_game()
-
-func host_game():
-    print("Hosting game...")
-    PlayerManager.start_server()
-    var peer = ENetMultiplayerPeer.new()
-    var result = peer.create_server(PORT, MAX_PLAYERS)
-    if result != OK:
-        push_error("Failed to start server!")
-        return
-
-    multiplayer.multiplayer_peer = peer
-    multiplayer.connection_failed.connect(_on_connection_failed)
-
-    # Load the game scene after starting the server
-    call_deferred("load_world_scene")
-
-func join_game():
-    print("Joining game...")
-    var peer = ENetMultiplayerPeer.new()
-    peer.create_client("127.0.0.1", PORT)  # Replace IP as needed
-    multiplayer.multiplayer_peer = peer
-
-    multiplayer.connected_to_server.connect(load_world_scene)
-    multiplayer.connection_failed.connect(_on_connection_failed)
-
-func load_world_scene():
-    var game_scene = load("res://Scenes/world/World.tscn").instantiate()
-    get_tree().root.add_child(game_scene)
-    queue_free()  # remove the main menu
-
-func _on_connection_failed():
-    print("Failed to connect to server.")
+        multiplayer.multiplayer_peer = peer # Todo - Test what happens if I remove this then document it
+    
+        await get_tree().process_frame # Wait a frame so we don't change scenes during _ready
+    
+        var game_scene = load("res://Scenes/world/World.tscn").instantiate()
+        get_tree().root.add_child(game_scene)
+        PlayerManager.spawn_player(1)
+        queue_free()  # remove the main menu

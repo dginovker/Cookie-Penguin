@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://wibj8e7f6avp"]
+[gd_scene load_steps=2 format=3 uid="uid://dd0v8aq8px2ub"]
 
 [ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/serverselect/ServerConnection.gd" id="1_ufl2m"]
 

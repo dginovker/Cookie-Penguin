@@ -53,6 +53,9 @@ func _physics_process(delta):
     
     move_and_slide()
 
+func _process(_delta: float):      
+    queue_redraw()
+
 func _draw():
     # Only show debug on server
     if not debug or not is_multiplayer_authority():
@@ -76,9 +79,6 @@ func _chase_player(player, _delta):
     if shoot_timer <= 0:
         shoot_at_player(player)
         shoot_timer = shoot_cooldown
-    
-    if debug:
-        queue_redraw()
         
 func shoot_at_player(player):
     var bullet_direction = (player.global_position - global_position).normalized()
@@ -99,9 +99,6 @@ func _wander(delta):
         _new_wander_direction()
     
     velocity = wander_direction * speed * 0.5
-    
-    if debug:
-        queue_redraw()
 
 func _new_wander_direction():
     # Chance to pause instead of moving
