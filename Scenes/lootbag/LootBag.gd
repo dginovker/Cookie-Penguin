@@ -3,10 +3,9 @@ class_name LootBag
 
 @export var lootbag_id: int
 var nearby_players: Array[int] = []
-static var lootbags: Dictionary = {}
 
 func _ready():
-    LootBag.lootbags[lootbag_id] = self
+    LootbagManager.lootbags[lootbag_id] = self
     if multiplayer.is_server():
         body_entered.connect(_on_player_entered)
         body_exited.connect(_on_player_exited)
@@ -19,8 +18,7 @@ func _on_player_entered(body):
     nearby_players.append(player.get_multiplayer_authority())
     
     # Send lootbag contents to player
-    var location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id)
-    var items: Array[ItemInstance] = ItemManager.get_location_items(location)
+    var items: Array[ItemInstance] = ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)
     var item_data: Array[Dictionary] = []
     for item: ItemInstance in items:
         item_data.append(item.to_dict())
@@ -46,28 +44,32 @@ func _on_player_exited(body):
     var player: Player = body
     nearby_players.erase(player.get_multiplayer_authority())
     hide_lootbag_contents.rpc_id(player.get_multiplayer_authority())
+    
+    if len(nearby_players) == 0 and visible == false:
+        await get_tree().create_timer(60).timeout # Race condition tolerance
 
 @rpc("authority", "call_local") 
 func hide_lootbag_contents():
     if multiplayer == null:
         # Bag despawned
         return
-    assert(!multiplayer.is_server())
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.hide_loot_bag()
 
 func _exit_tree():
-    LootBag.lootbags.erase(lootbag_id)
+    LootbagManager.lootbags.erase(lootbag_id)
 
 func broadcast_lootbag_update():
-    var location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id)
-    var items: Array[ItemInstance] = ItemManager.get_location_items(location)
-    var item_data: Array[Dictionary] = []
-    for item: ItemInstance in items:
-        item_data.append(item.to_dict())
     for player_id in nearby_players:
-        send_lootbag_contents.rpc_id(player_id, item_data)
-    if len(items) == 0:
-        # TODO - This is a blatant race condition. Remove the sleep to see for yourself
-        # This is also causing the Looting Bag to appear visually on the server
-        get_tree().create_timer(10).timeout.connect(queue_free)
+        send_lootbag_contents.rpc_id(player_id, get_serialized_item_data())
+    if len(get_items()) == 0:
+        visible = false
+
+func get_items() -> Array[ItemInstance]:
+    return ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)
+
+func get_serialized_item_data() -> Array[Dictionary]:
+    var item_data: Array[Dictionary] = []
+    for item: ItemInstance in get_items():
+        item_data.append(item.to_dict())
+    return item_data

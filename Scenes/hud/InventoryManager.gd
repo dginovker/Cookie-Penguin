@@ -83,7 +83,7 @@ func stop_drag():
         var slot_index = target_slot.get_meta("slot_index")
         var player_id = multiplayer.multiplayer_peer.get_unique_id()
         var lootbag_id = target_slot.get_meta("lootbag_id") if target_slot.has_meta("lootbag_id") else null
-        var new_location = null
+        var new_location: ItemLocation = null
         match container_type:
             ItemLocation.Type.PLAYER_BACKPACK:
                 new_location = ItemLocation.new(ItemLocation.Type.PLAYER_BACKPACK, player_id, slot_index)
@@ -91,8 +91,8 @@ func stop_drag():
                 new_location = ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, player_id, slot_index)
             ItemLocation.Type.LOOTBAG:
                 new_location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id, slot_index)
+        print("Requesting move to ", new_location)
         ItemManager.request_move_item.rpc_id(1, dragging_item.get_meta("uuid"), new_location.to_string())
-        print("Requesting to move to ", new_location)
     dragging_item.z_index = 0
     dragging_item.position = dragging_item.get_meta("original_position")
     dragging_item = null
@@ -102,7 +102,7 @@ func _process(_delta):
         dragging_item.global_position = get_global_mouse_position() - Vector2(20, 20)
 
 func update_backpack(items: Array[ItemInstance]):
-    print("Updating backpack to have ", items)
+    print("HUD: Updating backpack to have ", items)
     # Clear all slots first
     for slot in backpack_slots:
         slot.texture_normal = empty_slot_texture

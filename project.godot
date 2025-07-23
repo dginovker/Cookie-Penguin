@@ -20,7 +20,7 @@ config/icon="res://icon.svg"
 ItemManager="*res://Scenes/items/ItemManager.gd"
 PlayerManager="*res://Globals/PlayerManager.gd"
 WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
-Connector="*res://Globals/Connector.gd"
+LootbagManager="*res://Globals/LootbagManager.gd"
 
 [editor_plugins]
 

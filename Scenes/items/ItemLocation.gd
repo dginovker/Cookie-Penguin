@@ -1,4 +1,4 @@
-# ItemLocation.gd
+# Item locations can hold 1 item each
 class_name ItemLocation
 
 enum Type {
@@ -12,13 +12,10 @@ var type: Type
 var owner_id: int  # PlayerID or LootbagID
 var slot: int
 
-func _init(loc_type: Type, owner: int, slot_num: int = 0):
+func _init(loc_type: Type, owner: int, slot_num: int):
     type = loc_type
     owner_id = owner
     slot = slot_num
-
-func get_container() -> String:
-    return "%s:%d" % [Type.keys()[type], owner_id]
 
 func _to_string() -> String:
     return "%s:%d:%d" % [Type.keys()[type], owner_id, slot]

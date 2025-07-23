@@ -17,7 +17,7 @@ func get_texture() -> Texture2D:
     Does this look inefficient to you?
     Could you make a "faster" function with "less lines of code"?
     Good for you!
-    I'll keep my code readable and obvious.
+    I like code readable and obvious.
     """
     if item_type == "health_potion":
         return preload("res://Scenes/items/health_potion.png")

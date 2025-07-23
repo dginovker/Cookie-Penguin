@@ -5,6 +5,8 @@ func _ready():
     spawn_function = spawn_loot_custom
 
 func spawn_loot_custom(spawn_data: Dictionary):
+    # spawn_data.position is the location of the lootbag
+    # spawn_data.items are the name of items to spawn
     var loot_bag_scene = preload("res://Scenes/lootbag/LootBag.tscn")
     var loot_bag: LootBag = loot_bag_scene.instantiate()
     loot_bag.position = spawn_data.position
@@ -12,10 +14,9 @@ func spawn_loot_custom(spawn_data: Dictionary):
     # Spawn the items
     if multiplayer.is_server():
         loot_bag.lootbag_id = randi()
-        var item_location = ItemLocation.new(ItemLocation.Type.LOOTBAG, loot_bag.lootbag_id)
-        for item: String in spawn_data.items:
-            var item_instance = ItemInstance.new(item, item_location)
-            ItemManager.add_item(item_instance)
+        for i in range(len(spawn_data.items)):
+            var item := ItemInstance.new(spawn_data.items[i], ItemLocation.new(ItemLocation.Type.LOOTBAG, loot_bag.lootbag_id, i))
+            ItemManager.spawn_item(item)
     
     return loot_bag
 
