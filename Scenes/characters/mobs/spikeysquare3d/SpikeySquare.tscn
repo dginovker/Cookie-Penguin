@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3 uid="uid://j73v2fk3d7rr"]
+
+[ext_resource type="Script" uid="uid://byjalaegs6sto" path="res://Scenes/characters/mobs/spikeysquare/spikey_square.gd" id="1_iwdu4"]
+[ext_resource type="Texture2D" uid="uid://bohqpwwdx8gnv" path="res://Scenes/characters/mobs/spikeysquare/SpikeySquare.png" id="2_dytcf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ix0of"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6rynf"]
+size = Vector2(308, 199.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ix0of"]
+properties/0/path = NodePath(".:global_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:velocity")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ix0of"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 30.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 30, 0)
+linear_accel_min = -50.0
+linear_accel_max = -20.0
+scale_min = 4.0
+scale_max = 4.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u64nv"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 30.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 30, 0)
+linear_accel_min = -50.0
+linear_accel_max = -20.0
+scale_min = 4.0
+scale_max = 4.0
+
+[node name="SpikeySquare" type="CharacterBody2D" groups=["mobs"]]
+collision_layer = 4
+script = ExtResource("1_iwdu4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dytcf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ix0of")
+
+[node name="AggressionArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AggressionArea"]
+shape = SubResource("RectangleShape2D_6rynf")
+
+[node name="HealthComponent" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ix0of")
+
+[node name="HitGPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 2
+lifetime = 0.1
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ix0of")
+
+[node name="DeathGPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 5
+lifetime = 0.2
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_u64nv")

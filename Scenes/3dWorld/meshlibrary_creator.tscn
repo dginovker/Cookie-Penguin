@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsvu7adkk1vgx"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_gdmwp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2e1gj"]
+albedo_color = Color(0, 1, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gdmwp"]
+albedo_color = Color(1, 0.788235, 0.196078, 1)
+
+[node name="meshlib_base" type="Node3D"]
+
+[node name="grassblock" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_gdmwp")
+surface_material_override/0 = SubResource("StandardMaterial3D_2e1gj")
+
+[node name="sandblock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("BoxMesh_gdmwp")
+surface_material_override/0 = SubResource("StandardMaterial3D_gdmwp")
