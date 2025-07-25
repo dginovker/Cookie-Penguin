@@ -19,7 +19,7 @@ func _ready():
     
         await get_tree().process_frame # Wait a frame so we don't change scenes during _ready
     
-        var game_scene = load("res://Scenes/world/World.tscn").instantiate()
+        var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
         get_tree().root.add_child(game_scene)
         PlayerManager.spawn_player(1)
         queue_free()  # remove the main menu

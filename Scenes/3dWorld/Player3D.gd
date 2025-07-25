@@ -2,7 +2,7 @@ class_name Player3D
 extends CharacterBody3D
 
 @onready var animated_sprite = $AnimatedSprite3D
-@export var speed := 5
+@export var speed := 6
 @export var max_health = 99
 var current_health = 100
 var input_vector := Vector3.ZERO
@@ -48,28 +48,31 @@ func _physics_process(delta):
     if is_submerged:
         speed_multiplier *= 0.8
     velocity = input_vector * speed * speed_multiplier
-    move_and_slide()
+    move_and_slide() # handles delta for us
     
     # Handle shooting
     fire_cooldown -= delta
     if shooting and fire_cooldown <= 0:
-        print("lol I goofed this")
         return
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         #bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", global_position, aim_direction, 2**2 + 1))
         bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", Vector2.ZERO, aim_direction, 2**2 + 1))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
-func _process(_delta):
+func _process(delta):
     # Only the owning client handles input
     if not is_multiplayer_authority():
         return
 
-    input_vector = Vector3(
+    var local_input = Vector3(
         Input.get_action_strength("right") - Input.get_action_strength("left"),
         0,
         Input.get_action_strength("down") - Input.get_action_strength("up")
-    ).normalized()
+    )
+
+    # Rotate input around Y axis by camera's global Y rotation
+    var angle = $Camera3D.global_transform.basis.get_euler().y
+    input_vector = local_input.rotated(Vector3.UP, angle).normalized()
 
     var aim_dir = Vector2.ZERO #(get_global_mouse_position() - global_position).normalized()
     var shoot = Input.is_action_pressed("shoot")
@@ -88,6 +91,10 @@ func _process(_delta):
 
     # Send input to server
     receive_input.rpc_id(1, input_vector, aim_dir, shoot)
+    
+    # Rotate camera around y axis
+    var camera_vector = Vector2(Input.get_action_strength("clockwise"), Input.get_action_strength("counter_clockwise")).normalized()
+    $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
 
 @rpc("any_peer", "call_local", "unreliable")
 func receive_input(move: Vector3, aim: Vector2, shoot: bool):

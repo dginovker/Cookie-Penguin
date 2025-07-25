@@ -1,11 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://f5tk13xsoscg"]
+[gd_scene load_steps=6 format=3 uid="uid://f5tk13xsoscg"]
 
 [ext_resource type="MeshLibrary" uid="uid://71mupy7xw3oj" path="res://Scenes/3dWorld/ground.tres" id="1_100nj"]
+[ext_resource type="PackedScene" uid="uid://mea08a0dtw5q" path="res://Scenes/3dWorld/Tree3d.tscn" id="2_51fcu"]
 [ext_resource type="PackedScene" uid="uid://e4wv43pmsssg" path="res://Scenes/3dWorld/Player3D.tscn" id="2_f7e4t"]
+[ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
+[ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/3dWorld/PlayerSpawner3D.gd" id="4_utcp4"]
 
 [node name="3Dworld" type="Node3D"]
 
-[node name="GridMap" type="GridMap" parent="."]
+[node name="Map" type="Node" parent="."]
+
+[node name="GridMap" type="GridMap" parent="Map"]
 mesh_library = ExtResource("1_100nj")
 cell_size = Vector3(1, 1, 1)
 data = {
@@ -13,7 +18,23 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(0, -1, 0)
 
+[node name="Sprite3D" parent="Map" instance=ExtResource("2_51fcu")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 5, 0, 0)
+
 [node name="CharacterBody3D" parent="." instance=ExtResource("2_f7e4t")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 50, 0)
+
+[node name="Mobs" type="Node" parent="."]
+script = ExtResource("3_4c81v")
+
+[node name="SpawnTimer" type="Timer" parent="Mobs"]
+wait_time = 0.1
+autostart = true
+
+[node name="Players" type="Node" parent="."]
+
+[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="Players" groups=["player_spawner"]]
+spawn_path = NodePath("..")
+script = ExtResource("4_utcp4")

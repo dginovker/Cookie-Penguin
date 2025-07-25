@@ -1,6 +1,6 @@
-extends Node2D
+extends Node
 
-var players: Dictionary[int, Player] = {}
+var players: Dictionary[int, Player3D] = {}
 
 func start_listening():
     multiplayer.peer_connected.connect(spawn_player)
@@ -9,7 +9,7 @@ func start_listening():
 func spawn_player(id):
     assert(multiplayer.is_server())
     print("Peer connected:", id)
-    var player_spawner: PlayerSpawner = get_tree().get_first_node_in_group("player_spawner")
+    var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
     players[id] = player_spawner.spawn(id)
 
 func despawn_player(id):

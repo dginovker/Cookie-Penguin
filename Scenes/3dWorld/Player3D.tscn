@@ -64,6 +64,7 @@ collision_layer = 2
 script = ExtResource("1_awgpe")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
+offset = Vector2(0, 16)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_uq6qx")
 animation = &"horizontal_walk"

@@ -1,8 +1,8 @@
-extends CharacterBody2D
+extends CharacterBody3D
 
 # Spawn is managed by MobMultiplayerSpawner
 
-@export var speed = 50.0
+@export var speed = 2.0
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var debug = true
@@ -12,14 +12,11 @@ extends CharacterBody2D
     "tier_0_sword": 0.5
 }
 
-@onready var hit_particles = $HitGPUParticles2D
-@onready var death_particles = $DeathGPUParticles2D
-
 var players_in_range = []
-var wander_direction = Vector2.ZERO
+var wander_direction = Vector3.ZERO
 var wander_timer = 0.0
 var shoot_timer = 0.0
-var wander_center: Vector2
+var wander_center: Vector3
 var is_paused = false
 var pause_timer = 0.0
 
@@ -44,7 +41,7 @@ func _physics_process(delta):
     shoot_timer -= delta
     pause_timer -= delta
     
-    var target_player = _get_nearest_player()
+    var target_player: Player3D = _get_nearest_player()
     if target_player:
         wander_center = global_position
         _chase_player(target_player, delta)
@@ -53,27 +50,9 @@ func _physics_process(delta):
     
     move_and_slide()
 
-func _process(_delta: float):      
-    queue_redraw()
-
-func _draw():
-    # Only show debug on server
-    if not debug or not is_multiplayer_authority():
-        return
-
-    # Draw aggression range
-    var aggro_shape = $AggressionArea/CollisionShape2D.shape
-    var size = aggro_shape.size
-    draw_rect(Rect2(-size/2, size), Color.RED, false, 2.0)	
-
-    # Draw line to target player
-    var target = _get_nearest_player()
-    if target:
-        var to_player = target.global_position - global_position
-        draw_line(Vector2.ZERO, to_player, Color.YELLOW, 3.0)
-
-func _chase_player(player, _delta):
-    var direction = (player.global_position - global_position).normalized()
+func _chase_player(player: Player3D, _delta):
+    var direction: Vector3 = (player.global_position - global_position).normalized()
+    assert(direction.y == 0)
     velocity = direction * speed
     
     if shoot_timer <= 0:
@@ -81,23 +60,25 @@ func _chase_player(player, _delta):
         shoot_timer = shoot_cooldown
         
 func shoot_at_player(player):
-    var bullet_direction = (player.global_position - global_position).normalized()
-    var bullet_type: BulletType = BulletType.new('tier_0_bullet.png', global_position, bullet_direction, 2**1 + 1)    
-    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
+    return
+    #var bullet_direction = (player.global_position - global_position).normalized()
+    #var bullet_type: BulletType = BulletType.new('tier_0_bullet.png', global_position, bullet_direction, 2**1 + 1)    
+    #get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
     
 func _wander(delta):
     wander_timer -= delta
     
     if is_paused:
-        velocity = Vector2.ZERO
+        velocity = Vector3.ZERO
         if pause_timer <= 0:
             is_paused = false
             _new_wander_direction()
         return
     
-    if wander_timer <= 0 or is_on_wall() or global_position.distance_to(wander_center) > wander_range:
+    if wander_timer <= 0 or global_position.distance_to(wander_center) > wander_range:
         _new_wander_direction()
     
+    assert(wander_direction.y == 0)
     velocity = wander_direction * speed * 0.5
 
 func _new_wander_direction():
@@ -110,7 +91,7 @@ func _new_wander_direction():
     # Choose direction that stays within wander range
     var attempts = 0
     while attempts < 10:
-        wander_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
+        wander_direction = Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)).normalized()
         var test_position = global_position + wander_direction * speed * 0.5 * 2.0
         if test_position.distance_to(wander_center) <= wander_range:
             break
@@ -148,9 +129,6 @@ func take_damage(amount):
     assert(multiplayer.is_server(), "Client is somehow deciding how much damage mobs take")
     if health < 0:
         return
-
-    # Trigger damage particles on all clients
-    show_damage_effect.rpc()
     
     if not multiplayer.is_server():
         return
@@ -160,23 +138,18 @@ func take_damage(amount):
         handle_death.rpc()
 
 
-@rpc("any_peer", "call_local", "reliable")
-func show_damage_effect():
-    hit_particles.restart()  # Triggers the particles
-
 @rpc("any_peer", "call_local", "reliable") 
 func handle_death():
     # Disable the mob immediately
     set_physics_process(false)
     set_process(false)
-    $CollisionShape2D.set_deferred("disabled", true)
-    $Sprite2D.visible = false  # Hide the sprite but keep the node
-    
-    death_particles.restart()
+    $CollisionShape3D.set_deferred("disabled", true)
+    $Sprite3D.visible = false  # Hide the sprite but keep the node
     
     if multiplayer.is_server():
         call_deferred("roll_loot_drops")
-        await get_tree().create_timer(death_particles.lifetime).timeout
+        # I love race conditions
+        await get_tree().create_timer(5).timeout
         queue_free()
         
 func roll_loot_drops():

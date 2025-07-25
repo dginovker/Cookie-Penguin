@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://mea08a0dtw5q"]
+
+[ext_resource type="Texture2D" uid="uid://cwdncw0558ggr" path="res://Scenes/world/map/tiles/tree.png" id="1_dmnjd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dmnjd"]
+size = Vector3(0.105381, 0.281494, 0.261719)
+
+[node name="StaticBody3D" type="StaticBody3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+offset = Vector2(0, 16)
+billboard = 1
+texture = ExtResource("1_dmnjd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_dmnjd")
