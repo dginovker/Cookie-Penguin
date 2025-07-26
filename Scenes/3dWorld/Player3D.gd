@@ -59,7 +59,7 @@ func _physics_process(delta):
         bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", Vector2.ZERO, aim_direction, 2**2 + 1))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
-func _process(delta):
+func _process(delta):    
     # Only the owning client handles input
     if not is_multiplayer_authority():
         return

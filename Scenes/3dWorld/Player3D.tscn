@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=12 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/3dWorld/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://dcrmd33ntyc4q" path="res://Scenes/characters/players/sprites/penguin_front_1.png" id="2_ll3jl"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dvsupnh0neag1" path="res://Scenes/characters/players/sprites/penguin_2.png" id="5_8dg8p"]
 [ext_resource type="Texture2D" uid="uid://cn14nomim8v1t" path="res://Scenes/characters/players/sprites/penguin_back_1.png" id="6_whgio"]
 [ext_resource type="Texture2D" uid="uid://d25sam38eyc5d" path="res://Scenes/characters/players/sprites/penguin_back_2.png" id="7_pcovo"]
+[ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/YSort3D.gd" id="8_0ny3v"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uq6qx"]
 animations = [{
@@ -63,12 +64,14 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 collision_layer = 2
 script = ExtResource("1_awgpe")
 
-[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." node_paths=PackedStringArray("sprite")]
 offset = Vector2(0, 16)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_uq6qx")
 animation = &"horizontal_walk"
 frame_progress = 0.739626
+script = ExtResource("8_0ny3v")
+sprite = NodePath(".")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_0ny3v")
