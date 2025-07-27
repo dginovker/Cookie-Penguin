@@ -61,10 +61,11 @@ func _chase_player(player: Player3D, _delta):
         shoot_timer = shoot_cooldown
 
 func shoot_at_player(player):
-    return
-    #var bullet_direction = (player.global_position - global_position).normalized()
-    #var bullet_type: BulletType = BulletType.new('tier_0_bullet.png', global_position, bullet_direction, 2**1 + 1)
-    #get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
+    var bullet_direction: Vector3 = (player.global_position - global_position).normalized()
+    var bullet_pos = global_position
+    bullet_pos.y = 2
+    var bullet_type: Bullet = Bullet.new('tier_0_bullet.png', bullet_pos, bullet_direction, 2**1)
+    get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 
 func _wander(delta):
     wander_timer -= delta

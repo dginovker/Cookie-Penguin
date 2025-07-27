@@ -11,10 +11,10 @@ func _ready():
         body_exited.connect(_on_player_exited)
 
 func _on_player_entered(body):
-    if body is not Player:
+    if body is not Player3D:
         return
     
-    var player: Player = body
+    var player: Player3D = body
     nearby_players.append(player.get_multiplayer_authority())
     
     # Send lootbag contents to player
@@ -38,10 +38,10 @@ func send_lootbag_contents(item_data: Array[Dictionary]):
         visible = false
 
 func _on_player_exited(body):
-    if body is not Player:
+    if body is not Player3D:
         return
         
-    var player: Player = body
+    var player: Player3D = body
     nearby_players.erase(player.get_multiplayer_authority())
     hide_lootbag_contents.rpc_id(player.get_multiplayer_authority())
     

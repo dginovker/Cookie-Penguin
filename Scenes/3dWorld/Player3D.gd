@@ -6,7 +6,7 @@ extends CharacterBody3D
 @export var max_health = 99
 var current_health = 100
 var input_vector := Vector3.ZERO
-var aim_direction: Vector2 = Vector2.ZERO
+var aim_direction: Vector3 = Vector3.ZERO
 var shooting := false
 var fire_cooldown := 0.0
 var peer_id := -1 # Gets set in PlayerSpawner
@@ -65,10 +65,10 @@ func _physics_process(delta):
     # Handle shooting
     fire_cooldown -= delta
     if shooting and fire_cooldown <= 0:
-        return
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
-        #bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", global_position, aim_direction, 2**2 + 1))
-        bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", Vector2.ZERO, aim_direction, 2**2 + 1))
+        var bullet_pos = global_position
+        bullet_pos.y = 2
+        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, 2**2))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
@@ -86,7 +86,27 @@ func _process(delta):
     var angle = $Camera3D.global_transform.basis.get_euler().y
     input_vector = local_input.rotated(Vector3.UP, angle).normalized()
 
-    var aim_dir = Vector2.ZERO #(get_global_mouse_position() - global_position).normalized()
+    # Calculate the aim direction
+    # Aim direction should be the line between the center of the player (as viewed in the camera)
+    # and the mouse (where it appears on the screen), and then finally ROTATEAD
+    # based on the camera rotation.
+    # I.E. if the camera (which defaults to -90, 0, 0 in a top-down view) is NOT rotated,
+    # and the mouse is STRAIGHT UP, the bullet should travel in the POSITIVE Z
+    # if the Camera is rotated, the aim should be rotated based on that 
+
+    # Aim direction: get the mouse position and calculate direction in world space
+    var mouse_position = get_viewport().get_mouse_position()
+    var mouse_ray_origin = $Camera3D.project_ray_origin(mouse_position)
+    var mouse_ray_normal = $Camera3D.project_ray_normal(mouse_position)
+
+    # Calculate the direction the player should aim towards
+    var aim_dir = (mouse_ray_origin + mouse_ray_normal * 10 - global_position).normalized()
+
+    # Update aim direction
+    aim_direction = aim_dir
+
+    #print(aim_dir)
+
     var shoot = Input.is_action_pressed("shoot")
 
     # Handle animations
@@ -109,7 +129,7 @@ func _process(delta):
     $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
 
 @rpc("any_peer", "call_local", "unreliable")
-func receive_input(move: Vector3, aim: Vector2, shoot: bool):
+func receive_input(move: Vector3, aim: Vector3, shoot: bool):
     # Only server processes input
     if not multiplayer.is_server():
         return

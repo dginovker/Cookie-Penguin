@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/characters/mobs/spikeysquare3d/spikey_square3d.gd" id="1_mq7ec"]
 [ext_resource type="Texture2D" uid="uid://bohqpwwdx8gnv" path="res://Scenes/characters/mobs/spikeysquare/SpikeySquare.png" id="2_coodi"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_iwdu4"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
+size = Vector3(2.169, 8.19604, 2.097)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dytcf"]
 
@@ -26,8 +27,8 @@ billboard = 1
 texture = ExtResource("2_coodi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.63, 0, 0, 0, 0.63, 0, 0, 0, 0.63, 0, 0, 0)
-shape = SubResource("SphereShape3D_iwdu4")
+transform = Transform3D(0.63, 0, 0, 0, 0.63, 0, 0, 0, 0.63, 0, 2.57631, -0.620097)
+shape = SubResource("BoxShape3D_mq7ec")
 
 [node name="AggressionArea" type="Area3D" parent="."]
 collision_mask = 2

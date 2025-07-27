@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=4 uid="uid://cgk2sqpo6aegq"]
 
 [ext_resource type="Script" uid="uid://vja0i1o4xrxp" path="res://Scenes/world/PlayerSpawner.gd" id="2_jyvkd"]
-[ext_resource type="Script" uid="uid://b1i312xbh6dk2" path="res://Scenes/world/mobs/MobSpawner.gd" id="2_s8fwa"]
+[ext_resource type="Script" uid="uid://b1i312xbh6dk2" path="res://Scenes/world/MobSpawner.gd" id="2_s8fwa"]
 [ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/world/BulletSpawner.gd" id="2_yds2r"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/world/LootSpawner.gd" id="3_yds2r"]
 [ext_resource type="TileSet" uid="uid://becvbwpinhj76" path="res://Scenes/world/map/tiles/WorldTiles.tres" id="4_s8fwa"]

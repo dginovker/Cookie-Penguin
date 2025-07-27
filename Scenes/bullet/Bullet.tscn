@@ -3,15 +3,17 @@
 [ext_resource type="Script" uid="uid://bkr2uo17gxv0m" path="res://Scenes/bullet/BulletInstance.gd" id="1_vq2b2"]
 [ext_resource type="Texture2D" uid="uid://5xfdns1lkeso" path="res://Scenes/bullet/tier_0_bullet.png" id="2_k7hq6"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v7oki"]
-size = Vector2(4, 4)
+[sub_resource type="SphereShape3D" id="SphereShape3D_vq2b2"]
+radius = 0.12487
 
-[node name="BulletArea2d" type="Area2D"]
-collision_mask = 5
+[node name="BulletArea" type="Area3D"]
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("1_vq2b2")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite3D" parent="."]
+billboard = 1
 texture = ExtResource("2_k7hq6")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_v7oki")
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_vq2b2")
