@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://cxwmdkj2sbdue" path="res://Scenes/lootbag/LootBag.gd" id="1_24her"]
 [ext_resource type="Texture2D" uid="uid://c8hy8wyeaidk6" path="res://Scenes/lootbag/tier_0.png" id="2_8xu2o"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0wcb2"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_8xu2o"]
+size = Vector3(0.621094, 2.35059, 0.551758)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8xu2o"]
 properties/0/path = NodePath(".:global_position")
@@ -16,15 +17,19 @@ properties/2/path = NodePath(".:visible")
 properties/2/spawn = true
 properties/2/replication_mode = 2
 
-[node name="LootBag" type="Area2D" groups=["loot_bags"]]
-collision_mask = 2
+[node name="LootBag" type="Area3D" groups=["loot_bags"]]
+collision_layer = 0
+collision_mask = 4
 script = ExtResource("1_24her")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+billboard = 1
 texture = ExtResource("2_8xu2o")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_0wcb2")
+[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.902832, 0)
+shape = SubResource("BoxShape3D_8xu2o")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_8xu2o")

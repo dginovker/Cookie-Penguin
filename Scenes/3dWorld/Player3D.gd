@@ -68,7 +68,7 @@ func _physics_process(delta):
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         var bullet_pos = global_position
         bullet_pos.y = 2
-        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, 2**2))
+        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
@@ -85,14 +85,6 @@ func _process(delta):
     # Rotate input around Y axis by camera's global Y rotation
     var angle = $Camera3D.global_transform.basis.get_euler().y
     input_vector = local_input.rotated(Vector3.UP, angle).normalized()
-
-    # Calculate the aim direction
-    # Aim direction should be the line between the center of the player (as viewed in the camera)
-    # and the mouse (where it appears on the screen), and then finally ROTATEAD
-    # based on the camera rotation.
-    # I.E. if the camera (which defaults to -90, 0, 0 in a top-down view) is NOT rotated,
-    # and the mouse is STRAIGHT UP, the bullet should travel in the POSITIVE Z
-    # if the Camera is rotated, the aim should be rotated based on that 
 
     # Aim direction: get the mouse position and calculate direction in world space
     var mouse_position = get_viewport().get_mouse_position()

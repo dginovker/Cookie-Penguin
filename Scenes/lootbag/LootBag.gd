@@ -1,4 +1,4 @@
-extends Area2D
+extends Area3D
 class_name LootBag
 
 @export var lootbag_id: int
@@ -9,6 +9,13 @@ func _ready():
     if multiplayer.is_server():
         body_entered.connect(_on_player_entered)
         body_exited.connect(_on_player_exited)
+
+        # Snap to the floor
+        var query = PhysicsRayQueryParameters3D.create(global_position, global_position + Vector3.DOWN * 1000)
+        query.exclude = [self]
+        var result = get_world_3d().direct_space_state.intersect_ray(query)
+        global_position.y = result.position.y
+    
 
 func _on_player_entered(body):
     if body is not Player3D:
