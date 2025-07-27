@@ -1,29 +1,27 @@
-[gd_scene load_steps=12 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=13 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/3dWorld/Player3D.gd" id="1_awgpe"]
+[ext_resource type="Texture2D" uid="uid://ctv014qxtnfls" path="res://Scenes/3dWorld/ShitStar.png" id="2_8j212"]
 [ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/YSort3D.gd" id="8_0ny3v"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeyrk"]
-load_path = "res://.godot/imported/penguin_front_1.png-2fc8b403d42b72d60a999e9d03d8f28f.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8j212"]
-load_path = "res://.godot/imported/penguin_front_2.png-18f50cf53b288451556f42ce2b1ff95f.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gwcla"]
-load_path = "res://.godot/imported/penguin.png-efb24f686fe1465e495fd37d73b557a4.s3tc.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ggayc"]
-load_path = "res://.godot/imported/penguin_2.png-5103bedcb2fc91e9cf65da32cce4c306.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hkfi6"]
-load_path = "res://.godot/imported/penguin_back_1.png-0bcbb5fe0ca1714e007c08ec75c2ae7f.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_awgpe"]
-load_path = "res://.godot/imported/penguin_back_2.png-c29ee8d941269f1cd06c666ea28521b3.ctex"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uq6qx"]
 animations = [{
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_8j212")
+}, {
 "duration": 1.0,
 "texture": SubResource("CompressedTexture2D_aeyrk")
 }, {
@@ -36,6 +34,9 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("2_8j212")
+}, {
+"duration": 1.0,
 "texture": SubResource("CompressedTexture2D_gwcla")
 }, {
 "duration": 1.0,
@@ -46,6 +47,9 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_8j212")
+}, {
 "duration": 1.0,
 "texture": SubResource("CompressedTexture2D_hkfi6")
 }, {
@@ -80,8 +84,7 @@ script = ExtResource("1_awgpe")
 offset = Vector2(0, 16)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_uq6qx")
-animation = &"horizontal_walk"
-frame_progress = 0.739626
+animation = &"downwards_walk"
 script = ExtResource("8_0ny3v")
 sprite = NodePath(".")
 

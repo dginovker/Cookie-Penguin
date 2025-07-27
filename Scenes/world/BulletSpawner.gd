@@ -6,7 +6,6 @@ func _ready():
 
 func spawn_bullet_custom(bullet_str: String):
     var bullet_type: Bullet = Bullet.from_string(bullet_str)
-    print("Spawned bullet from ", bullet_str)
     assert(bullet_type != null, "The bullet made from " + bullet_str + " was null!")
 
     # Create the appropriate bullet scene
