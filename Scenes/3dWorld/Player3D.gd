@@ -19,7 +19,7 @@ func _ready():
     if is_multiplayer_authority():
         _setup_camera()
         $MultiplayerSynchronizer.synchronized.connect(_on_sync)
-        
+
         # Defer HUD creation to next frame
         call_deferred("setup_hud")
 
@@ -30,26 +30,38 @@ func setup_hud():
         ui_layer.name = "UILayer"
         ui_layer.layer = 10
         get_viewport().add_child(ui_layer)
-    
+
     hud_instance = hud_scene.instantiate()
     ui_layer.add_child(hud_instance)
     hud_instance.update_health(current_health, max_health)
-     
+
 func _setup_camera():
     $Camera3D.make_current()
 
-func _physics_process(delta):    
+
+var last_input_direction = Vector3.ZERO
+func _physics_process(delta):
     # Only server processes movement and shooting
     if not multiplayer.is_server():
         return
-    
-    # Handle movement
-    var speed_multiplier = 1
-    if is_submerged:
-        speed_multiplier *= 0.8
-    velocity = input_vector * speed * speed_multiplier
-    move_and_slide() # handles delta for us
-    
+
+    velocity = Vector3(input_vector.x * speed, -100, input_vector.z * speed)
+
+    # Direction and raycast update
+    var dir := Vector3(input_vector.x, 0, input_vector.z)
+    if dir.length() > 0.01:
+        last_input_direction = dir.normalized()
+    $HeadRayCast3D.target_position = Vector3(input_vector.x, 0, input_vector.z)
+    $HeadRayCast3D.force_raycast_update()
+
+    # Climb logic
+    if is_on_floor() and is_on_wall() and not $HeadRayCast3D.is_colliding():
+            global_translate(Vector3.UP * 1.1)
+            apply_floor_snap()
+    floor_snap_length = 3
+    apply_floor_snap() # Without this, running against a wall you can't climb up makes you go megaspastic
+    move_and_slide()
+
     # Handle shooting
     fire_cooldown -= delta
     if shooting and fire_cooldown <= 0:
@@ -59,7 +71,7 @@ func _physics_process(delta):
         bulletspawner.spawn_bullet(BulletType.new("tier_0_bullet.png", Vector2.ZERO, aim_direction, 2**2 + 1))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
-func _process(delta):    
+func _process(delta):
     # Only the owning client handles input
     if not is_multiplayer_authority():
         return
@@ -91,7 +103,7 @@ func _process(delta):
 
     # Send input to server
     receive_input.rpc_id(1, input_vector, aim_dir, shoot)
-    
+
     # Rotate camera around y axis
     var camera_vector = Vector2(Input.get_action_strength("clockwise"), Input.get_action_strength("counter_clockwise")).normalized()
     $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
@@ -101,7 +113,7 @@ func receive_input(move: Vector3, aim: Vector2, shoot: bool):
     # Only server processes input
     if not multiplayer.is_server():
         return
-    
+
     input_vector = move
     aim_direction = aim
     shooting = shoot

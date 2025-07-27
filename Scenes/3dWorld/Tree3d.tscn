@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/YSort3D.gd" id="1_p1k3u"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dmnjd"]
-size = Vector3(0.105381, 0.281494, 0.261719)
+size = Vector3(0.105, 20, 0.262)
 
 [node name="StaticBody3D" type="StaticBody3D"]
 
