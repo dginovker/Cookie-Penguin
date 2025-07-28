@@ -5,7 +5,7 @@ var peer: WebSocketMultiplayerPeer
 func _ready():
     peer = WebSocketMultiplayerPeer.new()
     
-    if OS.get_name() == "Web" || true:
+    if OS.get_name() == "Web":
         # Join the server
         print("Joining as Websocket Client..")
         peer.create_client("ws://127.0.0.1:10000") # Test Local!!

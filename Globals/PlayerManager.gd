@@ -13,7 +13,10 @@ func spawn_player(id):
     if id != 1:
         load_scene_on_client.rpc_id(id)
         print("Called the RPC")
-
+    else:
+        # Spawn the server player
+        var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
+        players[id] = player_spawner.spawn(id)
 
 func despawn_player(id):
     assert(multiplayer.is_server())
@@ -29,7 +32,6 @@ func load_scene_on_client():
     var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
     get_tree().root.add_child(game_scene)
     await get_tree().process_frame
-    # TEST WITH DEBUGGER - where is thhe PlayerManager existing right now?? It should not be in the ServerSelect!!
     get_node("/root/ServerSelect").queue_free()  # remove the main menu
     client_loaded_scene.rpc_id(1)
 
