@@ -5,6 +5,7 @@ class_name LootBag
 var nearby_players: Array[int] = []
 
 func _ready():
+    $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
     LootbagManager.lootbags[lootbag_id] = self
     if multiplayer.is_server():
         body_entered.connect(_on_player_entered)
@@ -16,6 +17,8 @@ func _ready():
         var result = get_world_3d().direct_space_state.intersect_ray(query)
         global_position.y = result.position.y
     
+func _visibility_filter(other_p: int) -> bool:
+    return PlayerManager.map_players.get(other_p, false)
 
 func _on_player_entered(body):
     if body is not Player3D:

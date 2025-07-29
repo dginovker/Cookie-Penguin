@@ -11,11 +11,25 @@ var shooting := false
 var fire_cooldown := 0.0
 var peer_id := -1 # Gets set in PlayerSpawner
 var is_submerged := false
+var location: String = "%016x" % [randi()] # Which map we're in for syncing multiplayer stuff. Start with a random string to prevent lobby people syncing with eachother
 
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
 var hud_instance
 
+func _enter_tree() -> void:
+    if get_multiplayer().is_server():
+        $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
+        # Immediately apply the filter if you don't want to wait for the next frame
+        $MultiplayerSynchronizer.update_visibility()
+        
+func _visibility_filter(to_peer: int) -> bool:
+    print(to_peer, ": ", PlayerManager.map_players.get(to_peer, false))
+    return PlayerManager.map_players.get(to_peer, false)
+
 func _ready():
+    #print("Setting visibility for peer_id ", peer_id, " to true")
+    #$MultiplayerSynchronizer.set_visibility_for(peer_id, true)
+    print("Ready for player! Am I authority? ", is_multiplayer_authority())
     if is_multiplayer_authority():
         _setup_camera()
         $MultiplayerSynchronizer.synchronized.connect(_on_sync)
@@ -64,12 +78,12 @@ func _physics_process(delta):
 
     # Handle shooting
     fire_cooldown -= delta
-    if shooting and fire_cooldown <= 0:
-        var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
-        var bullet_pos = global_position
-        bullet_pos.y = 2
-        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
-        fire_cooldown = WeaponHelper.get_cooldown(peer_id)
+    #if shooting and fire_cooldown <= 0:
+        #var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
+        #var bullet_pos = global_position
+        #bullet_pos.y = 2
+        #bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
+        #fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
     # Only the owning client handles input

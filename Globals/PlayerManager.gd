@@ -2,6 +2,7 @@
 extends Node
 
 var players: Dictionary[int, Player3D] = {}
+var map_players: Dictionary[int, bool] = {}
 
 func start_listening():
     multiplayer.peer_connected.connect(spawn_player)
@@ -21,24 +22,26 @@ func spawn_player(id):
 func despawn_player(id):
     assert(multiplayer.is_server())
     print("Peer disconnected:", id)
-    var p = players.get(id)
     players.erase(id)
 
 
 @rpc("authority", "call_remote", "reliable")
 func load_scene_on_client():
-    print("Got the RPC call")
+    print("Got the RPC call to load the scene")
     assert(!multiplayer.is_server())
     var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
     get_tree().root.add_child(game_scene)
     await get_tree().process_frame
     get_node("/root/ServerSelect").queue_free()  # remove the main menu
+    print("Telling the server we loaded...")
     client_loaded_scene.rpc_id(1)
 
 @rpc("any_peer", "call_remote", "reliable")
 func client_loaded_scene():
     assert(multiplayer.is_server())
     var id = multiplayer.get_remote_sender_id()
-    print("Client", id, "says they loaded the scene.")
+    print("Client ", id, " says they loaded the scene, giving them visibilty of our syncronizers...")
+    map_players[id] = true
+    await get_tree().process_frame
     var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
     players[id] = player_spawner.spawn(id)

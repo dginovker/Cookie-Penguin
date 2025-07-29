@@ -8,7 +8,7 @@ var SpikeySquareScene := preload("res://Scenes/characters/mobs/spikeysquare3d/Sp
 func _ready():
     if not multiplayer.is_server():
         return
-
+    
     # One-time setup
     spawnable_tiles = ($"../Map/GridMap" as GridMap).get_used_cells()
     spawn_timer.timeout.connect(_on_SpawnTimer_timeout)
