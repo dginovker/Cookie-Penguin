@@ -73,12 +73,12 @@ func _physics_process(delta):
 
     # Handle shooting
     fire_cooldown -= delta
-    #if shooting and fire_cooldown <= 0:
-        #var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
-        #var bullet_pos = global_position
-        #bullet_pos.y = 2
-        #bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
-        #fire_cooldown = WeaponHelper.get_cooldown(peer_id)
+    if shooting and fire_cooldown <= 0:
+        var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
+        var bullet_pos = global_position
+        bullet_pos.y = 2
+        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
+        fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
     # Only the owning client handles input

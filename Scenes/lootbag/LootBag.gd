@@ -21,7 +21,9 @@ func _ready():
         var query = PhysicsRayQueryParameters3D.create(global_position, global_position + Vector3.DOWN * 1000)
         query.exclude = [self]
         var result = get_world_3d().direct_space_state.intersect_ray(query)
-        global_position.y = result.position.y
+        if result:
+            # If we were over the land...            
+            global_position.y = result.position.y
     
 func _on_player_entered(body):
     if body is not Player3D:
