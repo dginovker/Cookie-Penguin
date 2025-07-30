@@ -20,6 +20,13 @@ var wander_center: Vector3
 var is_paused = false
 var pause_timer = 0.0
 
+func _enter_tree():
+    $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
+    $MultiplayerSynchronizer.update_visibility()
+
+func _visibility_filter(other_p: int) -> bool:
+    return PlayerManager.map_players.get(other_p, false)
+    
 func _ready():
     # Server has authority over all mobs
     set_multiplayer_authority(1)  # 1 = server ID
@@ -28,15 +35,10 @@ func _ready():
     if not is_multiplayer_authority():
         return
         
-    #$MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
-
     wander_center = global_position
     _new_wander_direction()
     $AggressionArea.body_entered.connect(_on_player_entered)
     $AggressionArea.body_exited.connect(_on_player_exited)
-
-func _visibility_filter(other_p: int) -> bool:
-    return PlayerManager.map_players.get(other_p, false)
 
 func _physics_process(delta):
     # Only server processes mob AI and movement
@@ -61,9 +63,9 @@ func _chase_player(player: Player3D, _delta):
     direction.y = 0
     velocity = direction * speed
 
-    #if shoot_timer <= 0:
-        #shoot_at_player(player)
-        #shoot_timer = shoot_cooldown
+    if shoot_timer <= 0:
+        shoot_at_player(player)
+        shoot_timer = shoot_cooldown
 
 func shoot_at_player(player):
     var bullet_direction: Vector3 = (player.global_position - global_position).normalized()

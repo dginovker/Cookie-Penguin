@@ -43,5 +43,9 @@ func client_loaded_scene():
     print("Client ", id, " says they loaded the scene, giving them visibilty of our syncronizers...")
     map_players[id] = true
     await get_tree().process_frame
+    for mob in get_tree().get_nodes_in_group("mobs"):
+        var sync = mob.get_node("MultiplayerSynchronizer")
+        sync.update_visibility()
+
     var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
     players[id] = player_spawner.spawn(id)

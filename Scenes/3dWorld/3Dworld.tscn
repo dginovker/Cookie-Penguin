@@ -29,11 +29,16 @@ transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 5, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 50, 0)
 
 [node name="Mobs" type="Node" parent="."]
-script = ExtResource("3_4c81v")
 
 [node name="SpawnTimer" type="Timer" parent="Mobs"]
 wait_time = 0.1
 autostart = true
+
+[node name="MobMultiplayerSpawner" type="MultiplayerSpawner" parent="Mobs" node_paths=PackedStringArray("spawn_timer", "gridmap")]
+spawn_path = NodePath("..")
+script = ExtResource("3_4c81v")
+spawn_timer = NodePath("../SpawnTimer")
+gridmap = NodePath("../../Map/GridMap")
 
 [node name="Players" type="Node" parent="."]
 
