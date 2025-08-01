@@ -112,15 +112,10 @@ func _process(delta):
 
     # Handle animations
     if input_vector == Vector3.ZERO:
-        animated_sprite.stop()
+        animated_sprite.play("stand")
     else:
         animated_sprite.set_flip_h(Input.get_action_strength("left") > 0)
-        if input_vector.x == -1 or input_vector.x == 1:
-            animated_sprite.play("horizontal_walk")
-        if input_vector.y == -1:
-            animated_sprite.play("upwards_walk")
-        if input_vector.y == 1:
-            animated_sprite.play("downwards_walk")
+        animated_sprite.play("walk")
 
     # Send input to server
     receive_input.rpc_id(1, input_vector, aim_dir, shoot)

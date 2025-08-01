@@ -1,64 +1,31 @@
-[gd_scene load_steps=13 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=9 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/3dWorld/Player3D.gd" id="1_awgpe"]
-[ext_resource type="Texture2D" uid="uid://ctv014qxtnfls" path="res://Scenes/3dWorld/ShitStar.png" id="2_8j212"]
+[ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
+[ext_resource type="Texture2D" uid="uid://cqv2gr4x48o1o" path="res://Scenes/Player/walk2.png" id="3_ggayc"]
+[ext_resource type="Texture2D" uid="uid://db0m4e286ui22" path="res://Scenes/Player/walk1.png" id="3_hkfi6"]
 [ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/YSort3D.gd" id="8_0ny3v"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeyrk"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8j212"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gwcla"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ggayc"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hkfi6"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_awgpe"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uq6qx"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_8j212")
-}, {
-"duration": 1.0,
-"texture": SubResource("CompressedTexture2D_aeyrk")
-}, {
-"duration": 1.0,
-"texture": SubResource("CompressedTexture2D_8j212")
+"texture": ExtResource("2_ggayc")
 }],
 "loop": true,
-"name": &"downwards_walk",
+"name": &"stand",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_8j212")
+"texture": ExtResource("3_ggayc")
 }, {
 "duration": 1.0,
-"texture": SubResource("CompressedTexture2D_gwcla")
-}, {
-"duration": 1.0,
-"texture": SubResource("CompressedTexture2D_ggayc")
+"texture": ExtResource("3_hkfi6")
 }],
 "loop": true,
-"name": &"horizontal_walk",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("2_8j212")
-}, {
-"duration": 1.0,
-"texture": SubResource("CompressedTexture2D_hkfi6")
-}, {
-"duration": 1.0,
-"texture": SubResource("CompressedTexture2D_awgpe")
-}],
-"loop": true,
-"name": &"upwards_walk",
-"speed": 5.0
+"name": &"walk",
+"speed": 3.0
 }]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_aeyrk"]
@@ -81,10 +48,12 @@ collision_layer = 4
 script = ExtResource("1_awgpe")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." node_paths=PackedStringArray("sprite")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 offset = Vector2(0, 16)
 billboard = 1
+texture_filter = 4
 sprite_frames = SubResource("SpriteFrames_uq6qx")
-animation = &"downwards_walk"
+animation = &"stand"
 script = ExtResource("8_0ny3v")
 sprite = NodePath(".")
 
@@ -93,7 +62,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -0.186)
 shape = SubResource("BoxShape3D_aeyrk")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.7, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.4, 0)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_2sntp")
