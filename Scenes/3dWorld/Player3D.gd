@@ -2,6 +2,8 @@ class_name Player3D
 extends CharacterBody3D
 
 @onready var animated_sprite = $AnimatedSprite3D
+@onready var multiplayer_sync = $MultiplayerSynchronizer
+
 @export var speed := 6
 @export var max_health = 99
 var current_health = 100
@@ -14,7 +16,7 @@ var is_submerged := false
 var location: String = "%016x" % [randi()] # Which map we're in for syncing multiplayer stuff. Start with a random string to prevent lobby people syncing with eachother
 
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
-var hud_instance
+var hud_instance: HUD
 
 func _enter_tree() -> void:
     if get_multiplayer().is_server():
@@ -27,7 +29,6 @@ func _visibility_filter(to_peer: int) -> bool:
 func _ready():
     if is_multiplayer_authority():
         _setup_camera()
-        $MultiplayerSynchronizer.synchronized.connect(_on_sync)
 
         # Defer HUD creation to next frame
         call_deferred("setup_hud")
@@ -77,13 +78,16 @@ func _physics_process(delta):
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         var bullet_pos = global_position
         bullet_pos.y = 2
-        bulletspawner.spawn_bullet(Bullet.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
+        bulletspawner.spawn_bullet(BulletData.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
     # Only the owning client handles input
     if not is_multiplayer_authority():
         return
+        
+    if hud_instance:
+        hud_instance.update_health(current_health, max_health)
 
     var local_input = Vector3(
         Input.get_action_strength("right") - Input.get_action_strength("left"),
@@ -137,9 +141,3 @@ func receive_input(move: Vector3, aim: Vector3, shoot: bool):
 func take_damage(damage: int):
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     current_health -= damage
-
-func _on_sync():
-    if not is_multiplayer_authority():
-        return
-    if hud_instance:
-        hud_instance.update_health(current_health, max_health)

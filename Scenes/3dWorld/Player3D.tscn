@@ -29,7 +29,7 @@ animations = [{
 }]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_aeyrk"]
-size = Vector3(0.33, 1, 0.335)
+size = Vector3(0.1, 1, 0.1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2sntp"]
 properties/0/path = NodePath(".:global_position")
@@ -49,7 +49,6 @@ script = ExtResource("1_awgpe")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." node_paths=PackedStringArray("sprite")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
-offset = Vector2(0, 16)
 billboard = 1
 texture_filter = 4
 sprite_frames = SubResource("SpriteFrames_uq6qx")
@@ -58,7 +57,7 @@ script = ExtResource("8_0ny3v")
 sprite = NodePath(".")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -0.186)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_aeyrk")
 
 [node name="Camera3D" type="Camera3D" parent="."]

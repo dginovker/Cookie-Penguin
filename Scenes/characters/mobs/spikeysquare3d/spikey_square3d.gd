@@ -20,6 +20,8 @@ var wander_center: Vector3
 var is_paused = false
 var pause_timer = 0.0
 
+@onready var aggro_area: Area3D = $AggressionArea
+
 func _enter_tree():
     $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
     $MultiplayerSynchronizer.update_visibility()
@@ -37,8 +39,8 @@ func _ready():
         
     wander_center = global_position
     _new_wander_direction()
-    $AggressionArea.body_entered.connect(_on_player_entered)
-    $AggressionArea.body_exited.connect(_on_player_exited)
+    aggro_area.body_entered.connect(_on_player_entered)
+    aggro_area.body_exited.connect(_on_player_exited)
 
 func _physics_process(delta):
     # Only server processes mob AI and movement
@@ -71,7 +73,7 @@ func shoot_at_player(player):
     var bullet_direction: Vector3 = (player.global_position - global_position).normalized()
     var bullet_pos = global_position
     bullet_pos.y = 2
-    var bullet_type: Bullet = Bullet.new('tier_0_bullet.png', bullet_pos, bullet_direction, 2**1)
+    var bullet_type: BulletData = BulletData.new('tier_0_bullet.png', bullet_pos, bullet_direction, Yeet.PLAYER_LAYER)
     get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 
 func _wander(delta):
@@ -126,11 +128,11 @@ func _get_nearest_player():
 
     return nearest
 
-func _on_player_entered(body):
+func _on_player_entered(body: Node3D):
     if body.is_in_group("players") and not players_in_range.has(body):
         players_in_range.append(body)
 
-func _on_player_exited(body):
+func _on_player_exited(body: Node3D):
     if body.is_in_group("players"):
         players_in_range.erase(body)
 
@@ -153,11 +155,13 @@ func handle_death():
     set_physics_process(false)
     set_process(false)
     $CollisionShape3D.set_deferred("disabled", true)
-    $Sprite3D.visible = false  # Hide the sprite but keep the node
+    $Sprite3D.visible = false  # Hide the sprite but keep the node so loot can spawn
 
     if multiplayer.is_server():
         call_deferred("roll_loot_drops")
         # I love race conditions
+        # TODO - Make a loot spawner singleton instead of making
+        # the mob control its own loot drop?
         await get_tree().create_timer(5).timeout
         queue_free()
 

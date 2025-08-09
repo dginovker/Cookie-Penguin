@@ -1,10 +1,10 @@
-# BaseBullet.gd
 extends Area3D
-class_name BulletInstance
+class_name BulletNode
 
 @export var lifetime := 10.0
 @export var pierce_count := 0
-@export var bullet: Bullet
+
+var bullet_data: BulletData
 
 var pierced_targets = 0
 var shooter_type = ""
@@ -13,11 +13,11 @@ var _pending_global_position: Vector3
 var _pending_collision_mask: int
 
 # This gets called by MultiplayerSpawner
-func initialize(p_bullet: Bullet):
-    assert(p_bullet != null)
-    bullet = p_bullet
-    _pending_global_position = bullet.start_position
-    _pending_collision_mask = bullet.collision_mask
+func initialize(p_bullet_data: BulletData):
+    assert(p_bullet_data != null)
+    bullet_data = p_bullet_data
+    _pending_global_position = bullet_data.start_position
+    _pending_collision_mask = bullet_data.collision_mask
     
 func _enter_tree():
     global_position = _pending_global_position
@@ -33,9 +33,9 @@ func _ready():
 func _physics_process(delta):
     if not is_inside_tree():
         return
-    position += bullet.direction * bullet.speed * delta
+    position += bullet_data.direction * bullet_data.speed * delta
 
-func _on_body_entered(body):
+func _on_body_entered(body: Node3D):
     if not multiplayer.is_server():
         return
     
@@ -44,9 +44,9 @@ func _on_body_entered(body):
     else:
         hit_target(body)
     
-func hit_target(target):
+func hit_target(target: Node3D):
     assert(multiplayer.is_server(), "Client is somehow triggering hit_target")
-    target.take_damage(bullet.damage)
+    target.take_damage(bullet_data.damage)
     
     pierced_targets += 1
     if pierced_targets > pierce_count:

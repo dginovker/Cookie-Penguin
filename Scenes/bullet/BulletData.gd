@@ -1,5 +1,6 @@
-extends Node
-class_name Bullet
+class_name BulletData
+# This class is just bullet info.
+# See BulletNode for the actual scene
 
 # Quirks- Bullets are always at y=2 so they intersect mob colliders (even if the mob is in water/lava/etc)
 
@@ -36,7 +37,7 @@ func _to_string() -> String:
         collision_mask
     ]
 
-static func from_string(data_str: String) -> Bullet:
+static func from_string(data_str: String) -> BulletData:
     var parts = data_str.split(":")
     var parsed_bullet_name = parts[0]
     var parsed_start_pos_parts = parts[1].split(",")
@@ -46,8 +47,8 @@ static func from_string(data_str: String) -> Bullet:
     var parsed_start_position = Vector3(float(parsed_start_pos_parts[0]), 2, float(parsed_start_pos_parts[1]))
     var parsed_direction = Vector3(float(parsed_dir_parts[0]), 0, float(parsed_dir_parts[1]))
     var parsed_collision_mask = int(parts[5])
-    var bullet: Bullet = Bullet.new(parsed_bullet_name, parsed_start_position, parsed_direction, parsed_collision_mask)
-    assert(bullet != null)
-    bullet.speed = parsed_speed
-    bullet.damage = parsed_damage
-    return bullet
+    var bullet_data: BulletData = BulletData.new(parsed_bullet_name, parsed_start_position, parsed_direction, parsed_collision_mask)
+    assert(bullet_data != null)
+    bullet_data.speed = parsed_speed
+    bullet_data.damage = parsed_damage
+    return bullet_data
