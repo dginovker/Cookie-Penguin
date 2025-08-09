@@ -28,7 +28,6 @@ billboard = 1
 texture = ExtResource("2_8xu2o")
 
 [node name="CollisionShape2D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.902832, 0)
 shape = SubResource("BoxShape3D_8xu2o")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]

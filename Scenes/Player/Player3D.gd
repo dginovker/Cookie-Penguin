@@ -66,9 +66,9 @@ func _physics_process(delta):
 
     # Climb logic
     if is_on_floor() and is_on_wall() and not $HeadRayCast3D.is_colliding():
-            global_translate(Vector3.UP * 1.1)
-            apply_floor_snap()
-    floor_snap_length = 3
+        global_translate(Vector3.UP * 1.1)
+        
+    floor_snap_length = 1.1
     apply_floor_snap() # Without this, running against a wall you can't climb up makes you go megaspastic
     move_and_slide()
 
