@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dk277rsgn5vg3"
-path="res://.godot/imported/groundtiles.png-847d8333ac4f1567fbf755423c8be5f7.ctex"
+uid="uid://5xvha578vlau"
+path="res://.godot/imported/rock.png-10979f967005ace6c8a890eabb7a38d2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/world/map/tiles/groundtiles.png"
-dest_files=["res://.godot/imported/groundtiles.png-847d8333ac4f1567fbf755423c8be5f7.ctex"]
+source_file="res://Scenes/3dWorld/rock.png"
+dest_files=["res://.godot/imported/rock.png-10979f967005ace6c8a890eabb7a38d2.ctex"]
 
 [params]
 

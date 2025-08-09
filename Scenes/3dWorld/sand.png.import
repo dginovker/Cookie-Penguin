@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvojle3tygwie"
-path="res://.godot/imported/obstacletiles.png-685170e4269e48470ed856562d3b93cd.ctex"
+uid="uid://mp7agt5p56h1"
+path="res://.godot/imported/sand.png-a1d30af751a072445a5d5d2af8e6236a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/world/map/tiles/obstacletiles.png"
-dest_files=["res://.godot/imported/obstacletiles.png-685170e4269e48470ed856562d3b93cd.ctex"]
+source_file="res://Scenes/3dWorld/sand.png"
+dest_files=["res://.godot/imported/sand.png-a1d30af751a072445a5d5d2af8e6236a.ctex"]
 
 [params]
 

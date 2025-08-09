@@ -3,9 +3,9 @@
 [ext_resource type="MeshLibrary" uid="uid://71mupy7xw3oj" path="res://Scenes/3dWorld/ground.tres" id="1_100nj"]
 [ext_resource type="PackedScene" uid="uid://mea08a0dtw5q" path="res://Scenes/3dWorld/Tree3d.tscn" id="2_51fcu"]
 [ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
-[ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/3dWorld/PlayerSpawner3D.gd" id="4_utcp4"]
-[ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/world/BulletSpawner.gd" id="6_5uwof"]
-[ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/world/LootSpawner.gd" id="7_qhyur"]
+[ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/Player/PlayerSpawner3D.gd" id="4_utcp4"]
+[ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
+[ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 
 [node name="3Dworld" type="Node3D"]
 

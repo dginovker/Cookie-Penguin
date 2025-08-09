@@ -1,7 +1,7 @@
 extends MultiplayerSpawner
 class_name PlayerSpawner3D
 
-const PlayerScene := preload("res://Scenes/3dWorld/Player3D.tscn")
+const PlayerScene := preload("res://Scenes/Player/Player3D.tscn")
 
 func _ready():
     spawn_function = _spawn_player_custom
