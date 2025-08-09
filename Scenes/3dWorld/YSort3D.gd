@@ -6,7 +6,6 @@ extends Node3D
 @export var sprite: SpriteBase3D
 
 func _process(_delta):
-    return
     var camera = get_viewport().get_camera_3d()
     if camera == null:
         return

@@ -4,7 +4,7 @@ extends MultiplayerSpawner
 @export var gridmap: GridMap
 
 var spawnable_tiles: Array[Vector3i] = []
-var SpikeySquareScene := preload("res://Scenes/characters/mobs/spikeysquare3d/SpikeySquare3D.tscn")
+var SpikeySquareScene := preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn")
 
 func _enter_tree() -> void:
     spawn_function = _spawn_player_custom

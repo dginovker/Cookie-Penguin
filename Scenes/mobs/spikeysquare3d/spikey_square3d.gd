@@ -70,9 +70,10 @@ func _chase_player(player: Player3D, _delta):
         shoot_timer = shoot_cooldown
 
 func shoot_at_player(player):
-    var bullet_direction: Vector3 = (player.global_position - global_position).normalized()
+    var to_player = player.global_position - global_position
+    to_player.y = 0
+    var bullet_direction = to_player.normalized()
     var bullet_pos = global_position
-    bullet_pos.y = 2
     var bullet_type: BulletData = BulletData.new('tier_0_bullet.png', bullet_pos, bullet_direction, Yeet.PLAYER_LAYER)
     get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 

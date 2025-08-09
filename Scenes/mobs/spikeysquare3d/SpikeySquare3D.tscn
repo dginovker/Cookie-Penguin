@@ -1,7 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://j73v2fk3d7rr"]
 
-[ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/characters/mobs/spikeysquare3d/spikey_square3d.gd" id="1_mq7ec"]
-[ext_resource type="Texture2D" uid="uid://bohqpwwdx8gnv" path="res://Scenes/characters/mobs/spikeysquare/SpikeySquare.png" id="2_coodi"]
+[ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/spikeysquare3d/spikey_square3d.gd" id="1_mq7ec"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_p3yev"]
+load_path = "res://.godot/imported/SpikeySquare.png-4e2cf558b1ef85bdb749efbe1d03937a.s3tc.ctex"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(2.169, 8.19604, 2.097)
@@ -24,7 +26,7 @@ script = ExtResource("1_mq7ec")
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 offset = Vector2(0, 16)
 billboard = 1
-texture = ExtResource("2_coodi")
+texture = SubResource("CompressedTexture2D_p3yev")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.63, 0, 0, 0, 0.63, 0, 0, 0, 0.63, 0, 2.57631, -0.620097)
@@ -34,7 +36,7 @@ shape = SubResource("BoxShape3D_mq7ec")
 collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AggressionArea"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_dytcf")
 
 [node name="HealthComponent" type="Node" parent="."]

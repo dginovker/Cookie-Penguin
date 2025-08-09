@@ -78,6 +78,7 @@ func _physics_process(delta):
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         var bullet_pos = global_position
         bullet_pos.y = 2
+        aim_direction.y = 0
         bulletspawner.spawn_bullet(BulletData.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
@@ -105,12 +106,10 @@ func _process(delta):
     var mouse_ray_normal = $Camera3D.project_ray_normal(mouse_position)
 
     # Calculate the direction the player should aim towards
-    var aim_dir = (mouse_ray_origin + mouse_ray_normal * 10 - global_position).normalized()
-
-    # Update aim direction
-    aim_direction = aim_dir
-
-    #print(aim_dir)
+    # Get a point some distance along the mouse ray
+    var target_point = mouse_ray_origin + mouse_ray_normal * 10
+    target_point.y = global_position.y
+    aim_direction = (target_point - global_position).normalized()
 
     var shoot = Input.is_action_pressed("shoot")
 
@@ -122,12 +121,13 @@ func _process(delta):
         animated_sprite.play("walk")
 
     # Send input to server
-    receive_input.rpc_id(1, input_vector, aim_dir, shoot)
+    receive_input.rpc_id(1, input_vector, aim_direction, shoot)
 
     # Rotate camera around y axis
     var camera_vector = Vector2(Input.get_action_strength("clockwise"), Input.get_action_strength("counter_clockwise")).normalized()
     $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
 
+# TODO - Could I possibly replace this with MultiplayerSync?
 @rpc("any_peer", "call_local", "unreliable")
 func receive_input(move: Vector3, aim: Vector3, shoot: bool):
     # Only server processes input

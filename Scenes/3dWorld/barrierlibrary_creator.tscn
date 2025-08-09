@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://uyoklpomt32f"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_cq3nt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cq3nt"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cq3nt"]
+
+[node name="BarrierlibraryCreator" type="Node3D"]
+
+[node name="invisible_barrier" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_cq3nt")
+surface_material_override/0 = SubResource("StandardMaterial3D_cq3nt")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="invisible_barrier"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="invisible_barrier/StaticBody3D"]
+shape = SubResource("BoxShape3D_cq3nt")
