@@ -1,10 +1,14 @@
 extends MultiplayerSpawner
 
 @export var spawn_timer: Timer
-@export var gridmap: GridMap
+@export var easylands_gridmap: GridMap
 
-var spawnable_tiles: Array[Vector3i] = []
-var SpikeySquareScene := preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn")
+var easylands_tiles: Array[Vector3i] = []
+var easyland_mobs: Array[String] = ["spikey_square"]
+
+var mob_resources: Dictionary[String, Resource] = {
+    "spikey_square": preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn")
+}
 
 func _enter_tree() -> void:
     spawn_function = _spawn_player_custom
@@ -14,12 +18,14 @@ func _ready():
         return
 
     # One-time setup
-    spawnable_tiles = gridmap.get_used_cells()
+    easylands_tiles = easylands_gridmap.get_used_cells()
+
     spawn_timer.timeout.connect(_on_SpawnTimer_timeout)
 
 func _spawn_player_custom(data: Variant) -> Node:
-    var mob = SpikeySquareScene.instantiate()
-    mob.position = data as Vector3
+    # data = [Vector3 (pos), String (mob name)]
+    var mob = mob_resources[(data[1] as String)].instantiate()
+    mob.position = data[0] as Vector3
     mob.add_to_group("mobs")
     mob.set_multiplayer_authority(1)
     return mob
@@ -28,14 +34,17 @@ func _on_SpawnTimer_timeout():
     if not multiplayer.is_server():
         return
 
-    if spawnable_tiles.is_empty():
-        return
+    _try_spawn(easylands_tiles, easyland_mobs)
 
-    var tile: Vector3i = spawnable_tiles.pick_random()
+func _try_spawn(tiles: Array[Vector3i], mobs: Array[String]):
+    assert(!tiles.is_empty())
+    assert(!mobs.is_empty())
+    
+    var tile: Vector3i = tiles.pick_random()
     var world_pos = Vector3(tile.x, tile.y, tile.z) + Vector3(0.5, 2.0, 0.5)
 
     if _is_spawn_area_clear(world_pos):
-        spawn(world_pos)
+        spawn([world_pos, mobs.pick_random()])
         
 func _is_spawn_area_clear(pos: Vector3) -> bool:
     var tile_size = 1
