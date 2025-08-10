@@ -2,12 +2,16 @@ extends MultiplayerSpawner
 
 @export var spawn_timer: Timer
 @export var easylands_gridmap: GridMap
+@export var midlands_gridmap: GridMap
 
 var easylands_tiles: Array[Vector3i] = []
 var easyland_mobs: Array[String] = ["spikey_square"]
+var midlands_tiles: Array[Vector3i] = []
+var midland_mobs: Array[String] = ["lolipop"]
 
 var mob_resources: Dictionary[String, Resource] = {
-    "spikey_square": preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn")
+    "spikey_square": preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn"),
+    "lolipop": preload("res://Scenes/mobs/lolipop/Lolipop.tscn")
 }
 
 func _enter_tree() -> void:
@@ -19,6 +23,7 @@ func _ready():
 
     # One-time setup
     easylands_tiles = easylands_gridmap.get_used_cells()
+    midlands_tiles = midlands_gridmap.get_used_cells()
 
     spawn_timer.timeout.connect(_on_SpawnTimer_timeout)
 
@@ -35,6 +40,7 @@ func _on_SpawnTimer_timeout():
         return
 
     _try_spawn(easylands_tiles, easyland_mobs)
+    _try_spawn(midlands_tiles, midland_mobs)
 
 func _try_spawn(tiles: Array[Vector3i], mobs: Array[String]):
     assert(!tiles.is_empty())

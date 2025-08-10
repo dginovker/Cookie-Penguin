@@ -1,16 +1,16 @@
+class_name MobNode
 extends CharacterBody3D
-
 # Spawn is managed by MobMultiplayerSpawner
 
 @export var speed = 2.0
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
-@export var debug = true
 @export var health = 100
 @export var loot_table = {
     "health_potion": 1,
     "tier_0_sword": 0.5
 }
+@export var bullet_name = 'tier_0_bullet.png'
 
 var players_in_range = []
 var wander_direction = Vector3.ZERO
@@ -58,7 +58,7 @@ func _physics_process(delta):
     else:
         _wander(delta)
 
-    move_and_slide()
+    #move_and_slide()
 
 func _chase_player(player: Player3D, _delta):
     var direction: Vector3 = (player.global_position - global_position).normalized()
@@ -74,7 +74,7 @@ func shoot_at_player(player):
     to_player.y = 0
     var bullet_direction = to_player.normalized()
     var bullet_pos = global_position
-    var bullet_type: BulletData = BulletData.new('tier_0_bullet.png', bullet_pos, bullet_direction, Yeet.PLAYER_LAYER)
+    var bullet_type: BulletData = BulletData.new(bullet_name, bullet_pos, bullet_direction, Yeet.PLAYER_LAYER)
     get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 
 func _wander(delta):
