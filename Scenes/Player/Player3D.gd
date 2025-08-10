@@ -101,11 +101,8 @@ func _process(delta):
     if hud_instance:
         hud_instance.update_health(current_health, max_health)
 
-    var local_input = Vector3(
-        Input.get_action_strength("right") - Input.get_action_strength("left"),
-        0,
-        Input.get_action_strength("down") - Input.get_action_strength("up"),
-    )
+    var v2 := Input.get_vector("left", "right", "up", "down")
+    var local_input := Vector3(v2.x, 0.0, v2.y)
 
     # Rotate input around Y axis by camera's global Y rotation
     var angle = $Camera3D.global_transform.basis.get_euler().y
