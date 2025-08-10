@@ -4,6 +4,8 @@ class_name BulletNode
 @export var lifetime := 10.0
 @export var pierce_count := 0
 
+@onready var sprite = $Sprite
+
 var bullet_data: BulletData
 
 var pierced_targets = 0
@@ -24,6 +26,7 @@ func _enter_tree():
     collision_mask = _pending_collision_mask
     
 func _ready():
+    sprite.texture = load("res://Scenes/bullet/" + bullet_data.bullet_name)
     if not multiplayer.is_server():
         return
     

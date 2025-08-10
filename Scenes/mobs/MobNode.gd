@@ -58,7 +58,7 @@ func _physics_process(delta):
     else:
         _wander(delta)
 
-    #move_and_slide()
+    move_and_slide()
 
 func _chase_player(player: Player3D, _delta):
     var direction: Vector3 = (player.global_position - global_position).normalized()

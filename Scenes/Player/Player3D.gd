@@ -30,8 +30,16 @@ func _ready():
     if is_multiplayer_authority():
         _setup_camera()
 
-        # Defer HUD creation to next frame
-        call_deferred("setup_hud")
+        # We previously deferred HUD creation to next frame..
+        # if there's no issues, delete this comment
+        setup_hud()
+
+        # Give new players a sword to start
+        var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))
+        ItemManager.spawn_item(sword)
+        var gear: Array[Dictionary] = [sword.to_dict()]
+        ItemManager.update_player_gear.rpc_id(peer_id, gear)
+
 
 func setup_hud():
     var ui_layer = get_viewport().get_node_or_null("UILayer")
@@ -79,7 +87,7 @@ func _physics_process(delta):
         var bullet_pos = global_position
         bullet_pos.y = 2
         aim_direction.y = 0
-        bulletspawner.spawn_bullet(BulletData.new("tier_0_bullet.png", bullet_pos, aim_direction, Yeet.MOB_LAYER))
+        bulletspawner.spawn_bullet(BulletData.new(WeaponHelper.get_bullet_name(peer_id), bullet_pos, aim_direction, Yeet.MOB_LAYER))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):

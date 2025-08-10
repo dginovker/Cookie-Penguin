@@ -21,6 +21,7 @@ properties/1/replication_mode = 1
 [node name="SpikeySquare" type="CharacterBody3D" groups=["mobs"]]
 collision_layer = 2
 script = ExtResource("1_mq7ec")
+health = 10
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)

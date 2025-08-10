@@ -19,9 +19,9 @@ properties/1/replication_mode = 1
 [node name="Lolipop" type="CharacterBody3D" groups=["mobs"]]
 collision_layer = 2
 script = ExtResource("1_atepr")
-speed = 3.0
+speed = 1.0
 shoot_cooldown = 0.7
-health = 200
+health = 50
 bullet_name = "tier_1_bullet.png"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
