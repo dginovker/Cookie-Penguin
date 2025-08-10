@@ -22,7 +22,6 @@ PlayerManager="*res://Globals/PlayerManager.gd"
 WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
 LootbagManager="*res://Globals/LootbagManager.gd"
 Yeet="*res://Globals/Yeet.gd"
-CustomInput="*res://Globals/CustomInput.gd"
 
 [editor_plugins]
 
