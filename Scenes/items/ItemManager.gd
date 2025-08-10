@@ -4,7 +4,7 @@ extends Node
 var items: Dictionary[String, ItemInstance] = {} # Source of truth on items. uuid -> instance
 
 func spawn_item(item: ItemInstance) -> void:
-    assert(multiplayer.is_server())
+    assert(multiplayer.is_server(), "Swap item was called by the client. Bad!")
     # Dupe check
     assert(!items.has(item.uuid), "Server is trying to add item " + str(item) + ", but that uuid already exists")
     items[item.uuid] = item
@@ -42,20 +42,19 @@ func request_move_item(item_uuid: String, new_location_string: String):
         lootbag.broadcast_lootbag_update()
 
     if original_location.type == ItemLocation.Type.PLAYER_BACKPACK or new_location.type == ItemLocation.Type.PLAYER_BACKPACK:
-        # Update the player's backpack
-        var player_items: Array[ItemInstance] = get_container_items(ItemLocation.Type.PLAYER_BACKPACK, new_location.owner_id)
-        var item_data: Array[Dictionary] = []
-        for item in player_items:
-            item_data.append(item.to_dict())
-        update_player_backpack.rpc_id(new_location.owner_id, item_data)
+        request_item_sync(new_location.owner_id)
 
     if original_location.type == ItemLocation.Type.PLAYER_GEAR or new_location.type == ItemLocation.Type.PLAYER_GEAR:
-        # Update the player's equipment
-        var player_items: Array[ItemInstance] = get_container_items(ItemLocation.Type.PLAYER_GEAR, new_location.owner_id)
-        var item_data: Array[Dictionary] = []
-        for item in player_items:
-            item_data.append(item.to_dict())
-        update_player_gear.rpc_id(new_location.owner_id, item_data)
+        request_item_sync(new_location.owner_id)
+
+@rpc("any_peer", "call_local", "reliable")
+func request_item_sync(peer_id: int):
+    assert(multiplayer.is_server(), "Clients should only request the server for their item sync!")
+    var gear_items: Array[Dictionary] = Yeet.serialize_array(get_container_items(ItemLocation.Type.PLAYER_GEAR, peer_id))
+    update_player_gear.rpc_id(peer_id, gear_items)
+
+    var backpack_items: Array[Dictionary] = Yeet.serialize_array(get_container_items(ItemLocation.Type.PLAYER_BACKPACK, peer_id))
+    update_player_backpack.rpc_id(peer_id, backpack_items)
 
 @rpc("authority", "call_local")
 func update_player_backpack(item_data: Array[Dictionary]):

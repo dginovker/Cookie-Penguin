@@ -27,19 +27,16 @@ func _visibility_filter(to_peer: int) -> bool:
     return PlayerManager.map_players.get(to_peer, false)
 
 func _ready():
-    if is_multiplayer_authority():
-        _setup_camera()
-
-        # We previously deferred HUD creation to next frame..
-        # if there's no issues, delete this comment
-        setup_hud()
-
+    if multiplayer.is_server():
         # Give new players a sword to start
         var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))
         ItemManager.spawn_item(sword)
-        var gear: Array[Dictionary] = [sword.to_dict()]
-        ItemManager.update_player_gear.rpc_id(peer_id, gear)
 
+    if is_multiplayer_authority():
+        _setup_camera()
+
+        setup_hud()
+        ItemManager.request_item_sync.rpc_id(1, peer_id) # Load our gear
 
 func setup_hud():
     var ui_layer = get_viewport().get_node_or_null("UILayer")
