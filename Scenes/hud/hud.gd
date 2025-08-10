@@ -6,10 +6,14 @@ extends Control
 @onready var chat_display = %chatdisplay_RichTextLabel
 @onready var chat_input = %chatinput_LineEdit
 @onready var inventory_manager: InventoryManager = %InventoryManager
+@onready var items_container: PanelContainer = %ItemsContainer
+@onready var hide_button: TextureButton = %HideButton
+@onready var hide_label: Label = %HideLabel
 
 func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
+    hide_button.pressed.connect(_hide_button_pressed)
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
@@ -34,3 +38,7 @@ func _input(event):
     if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER and not chat_input.has_focus():
         chat_input.grab_focus()
         get_viewport().set_input_as_handled()
+        
+func _hide_button_pressed():
+    items_container.visible = !items_container.visible
+    hide_label.text = "Hide" if items_container.visible else "Show"
