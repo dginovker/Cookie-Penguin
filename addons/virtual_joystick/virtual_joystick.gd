@@ -102,6 +102,7 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
 
 func _move_base(new_position: Vector2) -> void:
+    print("moving base...")
     _base.global_position = new_position - _base.pivot_offset * get_global_transform_with_canvas().get_scale()
 
 func _move_tip(new_position: Vector2) -> void:
