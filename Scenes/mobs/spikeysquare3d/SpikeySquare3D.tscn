@@ -1,9 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://j73v2fk3d7rr"]
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_mq7ec"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_p3yev"]
-load_path = "res://.godot/imported/SpikeySquare.png-4e2cf558b1ef85bdb749efbe1d03937a.s3tc.ctex"
+[ext_resource type="Texture2D" uid="uid://dl8elo62vgsm1" path="res://Scenes/mobs/spikeysquare3d/SpikeySquare.png" id="2_v51k2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)
@@ -26,7 +24,7 @@ health = 10
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 billboard = 1
-texture = SubResource("CompressedTexture2D_p3yev")
+texture = ExtResource("2_v51k2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
