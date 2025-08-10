@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ca6ip45hrlevm"]
 
-[ext_resource type="Shader" uid="uid://d3yqpjbmxekhw" path="res://Scenes/mobs/HealthBar3D.gdshader" id="1_nk0fl"]
+[ext_resource type="Shader" uid="uid://d3yqpjbmxekhw" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar3D.gdshader" id="1_nk0fl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gy5xy"]
 resource_local_to_scene = true

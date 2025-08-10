@@ -67,6 +67,8 @@ spawn_timer = NodePath("../SpawnTimer")
 easylands_gridmap = NodePath("../../GridMaps/EasyLands")
 midlands_gridmap = NodePath("../../GridMaps/MidLands")
 
+[node name="DamageTexts" type="Node" parent="Mobs" groups=["damage_texts"]]
+
 [node name="Players" type="Node" parent="."]
 
 [node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="Players" groups=["player_spawner"]]

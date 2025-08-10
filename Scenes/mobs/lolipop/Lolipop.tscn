@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_atepr"]
 [ext_resource type="Texture2D" uid="uid://btu3cda3if881" path="res://Scenes/mobs/lolipop/lolipop.png" id="2_fs184"]
-[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/mobs/HealthBar3D.tscn" id="3_v4y32"]
+[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar3D.tscn" id="3_v4y32"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)

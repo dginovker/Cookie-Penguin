@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgx52vo0t51yd"]
+
+[ext_resource type="Script" uid="uid://bo21p8qhu10jr" path="res://Scenes/Uncommon/DamageText/damage_text_3d.gd" id="1_dmelg"]
+[ext_resource type="Shader" uid="uid://bumssnynun51a" path="res://Scenes/Uncommon/DamageText/DamageText3D.gdshader" id="2_4efdm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4efdm"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_4efdm")
+shader_parameter/start_time = 0.0
+shader_parameter/life = 0.8
+shader_parameter/rise = 1.0
+shader_parameter/hp_left = 1.0
+
+[sub_resource type="TextMesh" id="TextMesh_40sni"]
+font_size = 96
+
+[node name="DamageText3d" type="Node3D"]
+script = ExtResource("1_dmelg")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_4efdm")
+mesh = SubResource("TextMesh_40sni")

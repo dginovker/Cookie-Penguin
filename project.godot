@@ -39,6 +39,7 @@ loot_spawners=""
 loot_bags=""
 loot_manager=""
 player_spawner=""
+damage_texts=""
 
 [input]
 
