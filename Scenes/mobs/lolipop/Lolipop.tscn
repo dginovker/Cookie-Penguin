@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bb4qj16o4tj8i"]
+[gd_scene load_steps=7 format=3 uid="uid://bb4qj16o4tj8i"]
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_atepr"]
 [ext_resource type="Texture2D" uid="uid://btu3cda3if881" path="res://Scenes/mobs/lolipop/lolipop.png" id="2_fs184"]
+[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/mobs/HealthBar3D.tscn" id="3_v4y32"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)
@@ -15,6 +16,12 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:velocity")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath("SpikeySquare:max_health")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:health")
+properties/3/spawn = true
+properties/3/replication_mode = 2
 
 [node name="Lolipop" type="CharacterBody3D" groups=["mobs"]]
 collision_layer = 2
@@ -45,3 +52,6 @@ shape = SubResource("SphereShape3D_dytcf")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ix0of")
+
+[node name="HealthBar3d" parent="." instance=ExtResource("3_v4y32")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.740474)

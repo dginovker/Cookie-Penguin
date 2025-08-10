@@ -19,8 +19,10 @@ var shoot_timer = 0.0
 var wander_center: Vector3
 var is_paused = false
 var pause_timer = 0.0
+var max_health = -1
 
 @onready var aggro_area: Area3D = $AggressionArea
+@onready var hb_mat := $HealthBar3d/Bar.material_override as ShaderMaterial
 
 func _enter_tree():
     $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
@@ -32,6 +34,9 @@ func _visibility_filter(other_p: int) -> bool:
 func _ready():
     # Server has authority over all mobs
     set_multiplayer_authority(1)  # 1 = server ID
+    
+    max_health = health
+    hb_mat.set_shader_parameter("health", 0.5)
 
     # Only server runs mob logic
     if not is_multiplayer_authority():
@@ -41,6 +46,9 @@ func _ready():
     _new_wander_direction()
     aggro_area.body_entered.connect(_on_player_entered)
     aggro_area.body_exited.connect(_on_player_exited)
+
+func _process(_delta):
+    hb_mat.set_shader_parameter("health", float(max(health, 0)) / max_health)
 
 func _physics_process(delta):
     # Only server processes mob AI and movement
