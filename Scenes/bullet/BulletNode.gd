@@ -35,12 +35,13 @@ func _ready():
         return
     
     connect("body_entered", _on_body_entered)
-    get_tree().create_timer(lifetime).timeout.connect(queue_free)
 
 func _physics_process(delta):
     if not is_inside_tree():
         return
     position += bullet_data.direction * bullet_data.speed * delta
+    if position.distance_to(bullet_data.start_position) > lifetime:
+        queue_free()
 
 func _on_body_entered(body: Node3D):
     if not multiplayer.is_server():

@@ -15,10 +15,10 @@ func _init(p_bullet_name: String, p_start_position: Vector3, p_direction: Vector
     direction = p_direction
     collision_mask = p_collision_mask
     if p_bullet_name == "tier_0_bullet.png":
-        speed = 5
+        speed = 3
         damage = 5
     elif p_bullet_name == "tier_1_bullet.png":
-        speed = 6
+        speed = 4
         damage = 10
     else:
         assert(false, "Lol what kind of bullet is " + p_bullet_name)

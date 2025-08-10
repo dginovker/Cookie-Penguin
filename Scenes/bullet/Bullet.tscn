@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://5xfdns1lkeso" path="res://Scenes/bullet/tier_0_bullet.png" id="2_k7hq6"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_vq2b2"]
-radius = 0.12487
+radius = 0.2
 
 [node name="BulletArea" type="Area3D"]
 collision_layer = 0
