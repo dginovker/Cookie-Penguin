@@ -47,7 +47,7 @@ func _try_spawn(tiles: Array[Vector3i], mobs: Array[String]):
     assert(!mobs.is_empty())
     
     var tile: Vector3i = tiles.pick_random()
-    var world_pos = Vector3(tile.x, tile.y, tile.z) + Vector3(0.5, 2.0, 0.5)
+    var world_pos = Vector3(tile.x, tile.y, tile.z) + Vector3(0.5, 1.01, 0.5)
 
     if _is_spawn_area_clear(world_pos):
         spawn([world_pos, mobs.pick_random()])

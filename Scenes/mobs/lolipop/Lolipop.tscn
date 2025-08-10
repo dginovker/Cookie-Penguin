@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://btu3cda3if881" path="res://Scenes/mobs/lolipop/lolipop.png" id="2_fs184"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
-size = Vector3(2.169, 8.19604, 2.097)
+size = Vector3(1, 2, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dytcf"]
 
@@ -32,7 +32,7 @@ texture_filter = 0
 texture = ExtResource("2_fs184")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.63, 0, 0, 0, 0.63, 0, 0, 0, 0.63, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_mq7ec")
 
 [node name="AggressionArea" type="Area3D" parent="."]
