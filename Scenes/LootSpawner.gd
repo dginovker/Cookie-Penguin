@@ -1,12 +1,29 @@
 extends MultiplayerSpawner
 class_name LootSpawner
 
-func _ready():
-    spawn_function = spawn_loot_custom
+func spawn_from_drop_table(global_pos: Vector3, drop_table: Dictionary[String, float]):
+    assert(multiplayer.is_server())
 
-func spawn_loot_custom(spawn_data: Dictionary):
-    # spawn_data.position is the location of the lootbag
-    # spawn_data.items are the name of items to spawn
+    var dropped_items: Array[String] = []
+
+    # Roll each item in the loot table
+    for item_name in drop_table:
+        if randf() <= drop_table[item_name]:
+            dropped_items.append(item_name)
+
+    if dropped_items.is_empty():
+        return
+
+    spawn({
+        "position": global_pos,
+        "items": dropped_items
+    })
+
+func _ready():
+    spawn_function = _spawn_loot_custom
+
+func _spawn_loot_custom(spawn_data: Dictionary):
+    # { "position": Vector3, "items": Array[String] } 
     var loot_bag_scene = preload("res://Scenes/lootbag/LootBag.tscn")
     var loot_bag: LootBag = loot_bag_scene.instantiate()
     loot_bag.position = spawn_data.position
@@ -20,8 +37,5 @@ func spawn_loot_custom(spawn_data: Dictionary):
     
     return loot_bag
 
-func spawn_loot_bag(spawn_data: Dictionary):
-    if not multiplayer.is_server():
-        return
-        
-    spawn(spawn_data)
+
+    

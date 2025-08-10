@@ -6,7 +6,7 @@ extends CharacterBody3D
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var health = 100
-@export var loot_table = {
+@export var drop_table: Dictionary[String, float] = {
     "health_potion": 1,
     "tier_0_sword": 0.5
 }
@@ -36,7 +36,6 @@ func _ready():
     set_multiplayer_authority(1)  # 1 = server ID
     
     max_health = health
-    hb_mat.set_shader_parameter("health", 0.5)
 
     # Only server runs mob logic
     if not is_multiplayer_authority():
@@ -155,48 +154,7 @@ func take_damage(amount):
 
     health -= amount
     if health < 0:
-        handle_death.rpc()
-
-
-@rpc("any_peer", "call_local", "reliable")
-func handle_death():
-    # Disable the mob immediately
-    set_physics_process(false)
-    set_process(false)
-    $CollisionShape3D.set_deferred("disabled", true)
-    $Sprite3D.visible = false  # Hide the sprite but keep the node so loot can spawn
-
-    if multiplayer.is_server():
-        call_deferred("roll_loot_drops")
-        # I love race conditions
-        # TODO - Make a loot spawner singleton instead of making
-        # the mob control its own loot drop?
-        await get_tree().create_timer(5).timeout
+        var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
+        loot_spawner.spawn_from_drop_table(global_position, drop_table)
         queue_free()
-
-func roll_loot_drops():
-    # Only server should roll loot
-    if not multiplayer.is_server():
-        return
-
-    var dropped_items: Array[String] = []
-
-    # Roll each item in the loot table
-    for item_name in loot_table:
-        var chance: float = loot_table[item_name]
-        if randf() <= chance:
-            dropped_items.append(item_name)
-
-    # If we have items to drop, spawn a loot bag
-    if not dropped_items.is_empty():
-        spawn_loot_bag(dropped_items)
-
-func spawn_loot_bag(items: Array[String]):
-    assert(multiplayer.is_server(), "Somehow trying to spawn lootbag even though we're not the server!")
-    var loot_bag_data = {
-        "position": global_position,
-        "items": items
-    }
-
-    var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
-    loot_spawner.spawn_loot_bag(loot_bag_data)
+        
