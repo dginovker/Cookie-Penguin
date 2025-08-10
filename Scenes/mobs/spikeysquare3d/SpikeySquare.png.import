@@ -3,25 +3,24 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dl8elo62vgsm1"
-path.s3tc="res://.godot/imported/SpikeySquare.png-e78caddc073ddfd02f5f7e7702078324.s3tc.ctex"
+path="res://.godot/imported/SpikeySquare.png-e78caddc073ddfd02f5f7e7702078324.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Scenes/mobs/spikeysquare3d/SpikeySquare.png"
-dest_files=["res://.godot/imported/SpikeySquare.png-e78caddc073ddfd02f5f7e7702078324.s3tc.ctex"]
+dest_files=["res://.godot/imported/SpikeySquare.png-e78caddc073ddfd02f5f7e7702078324.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=0
+compress/channel_pack=1
 mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
