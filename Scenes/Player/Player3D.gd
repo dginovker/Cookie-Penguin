@@ -96,9 +96,9 @@ func _process(delta):
         hud_instance.update_health(current_health, max_health)
 
     var local_input = Vector3(
-        Input.get_action_strength("right") - Input.get_action_strength("left"),
+        1 if CustomInput.right_pressed() else 0 - 1 if CustomInput.left_pressed() else 0,
         0,
-        Input.get_action_strength("down") - Input.get_action_strength("up")
+        1 if CustomInput.down_pressed() else 0 - 1 if CustomInput.up_pressed() else 0,
     )
 
     # Rotate input around Y axis by camera's global Y rotation
@@ -122,7 +122,7 @@ func _process(delta):
     if input_vector == Vector3.ZERO:
         animated_sprite.play("stand")
     else:
-        animated_sprite.set_flip_h(Input.get_action_strength("left") > 0)
+        animated_sprite.set_flip_h(CustomInput.left_pressed())
         animated_sprite.play("walk")
 
     # Send input to server

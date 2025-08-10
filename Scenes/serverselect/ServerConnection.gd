@@ -9,8 +9,8 @@ func _ready():
         # Join the server
         print("Joining as Websocket Client..")
         peer.create_client("ws://127.0.0.1:10000") # Test Local!!
+        #peer.create_client("wss://duck.openredsoftware.com/pinkdragon") # Real server!asdw        
         multiplayer.multiplayer_peer = peer
-        #peer.create_client("wss://duck.openredsoftware.com/blobjump") # Real server!
     else:
         # We are the server
         PlayerManager.start_listening()

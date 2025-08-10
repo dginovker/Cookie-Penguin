@@ -7,6 +7,11 @@ extends Control
 @onready var chat_input = $chat_VBoxContainer/chatinput_LineEdit
 @onready var inventory_manager: InventoryManager = $PanelContainer/right_Panel/InventoryManager
 
+@onready var left = $LeftTouchScreenButton
+@onready var right = $RightTouchScreenButton
+@onready var up = $UpTouchScreenButton
+@onready var down = $DownTouchScreenButton
+
 func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)

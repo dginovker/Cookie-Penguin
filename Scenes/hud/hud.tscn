@@ -1,9 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=10 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="Texture2D" uid="uid://ceqijco8wpq4u" path="res://Scenes/hud/right_hud_bg.png" id="2_4welq"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
+[ext_resource type="Texture2D" uid="uid://c28adshno1b2m" path="res://Scenes/hud/LeftButton.png" id="5_1ym45"]
+[ext_resource type="Texture2D" uid="uid://cqsn82arv0bpr" path="res://Scenes/hud/LeftButtonPressed.png" id="6_j7wy3"]
+[ext_resource type="Texture2D" uid="uid://d0fr8kf8dovxi" path="res://Scenes/hud/RightButton.png" id="7_ro43y"]
+[ext_resource type="Texture2D" uid="uid://c61fy1mry3npq" path="res://Scenes/hud/RightButtonPressed.png" id="8_l0dsp"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4welq"]
 texture = ExtResource("2_4welq")
@@ -24,7 +28,8 @@ anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -200.0
+offset_left = -202.0
+offset_right = -2.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_4welq")
@@ -221,3 +226,26 @@ scroll_following = true
 
 [node name="chatinput_LineEdit" type="LineEdit" parent="chat_VBoxContainer"]
 layout_mode = 2
+
+[node name="LeftTouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(34, 438)
+texture_normal = ExtResource("5_1ym45")
+texture_pressed = ExtResource("6_j7wy3")
+
+[node name="RightTouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(290, 438)
+texture_normal = ExtResource("7_ro43y")
+texture_pressed = ExtResource("8_l0dsp")
+
+[node name="UpTouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(159, 430)
+rotation = -1.5708
+scale = Vector2(1, 1.03125)
+texture_normal = ExtResource("7_ro43y")
+texture_pressed = ExtResource("8_l0dsp")
+
+[node name="DownTouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(292, 445)
+rotation = 1.5708
+texture_normal = ExtResource("7_ro43y")
+texture_pressed = ExtResource("8_l0dsp")
