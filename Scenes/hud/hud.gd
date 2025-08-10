@@ -1,16 +1,11 @@
 class_name HUD
 extends Control
 
-@onready var health_bar = $PanelContainer/right_Panel/hp_TextureProgressBar
-@onready var health_text = $PanelContainer/right_Panel/hp_TextureProgressBar/Label
-@onready var chat_display = $chat_VBoxContainer/chatdisplay_RichTextLabel
-@onready var chat_input = $chat_VBoxContainer/chatinput_LineEdit
-@onready var inventory_manager: InventoryManager = $PanelContainer/right_Panel/InventoryManager
-
-@onready var left = $LeftTouchScreenButton
-@onready var right = $RightTouchScreenButton
-@onready var up = $UpTouchScreenButton
-@onready var down = $DownTouchScreenButton
+@onready var health_bar = %hp_TextureProgressBar
+@onready var health_text = %hp_HealthText
+@onready var chat_display = %chatdisplay_RichTextLabel
+@onready var chat_input = %chatinput_LineEdit
+@onready var inventory_manager: InventoryManager = %InventoryManager
 
 func _ready():
     add_to_group("hud")

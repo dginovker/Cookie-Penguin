@@ -3,17 +3,19 @@ extends CharacterBody3D
 
 @onready var animated_sprite = $AnimatedSprite3D
 @onready var multiplayer_sync = $MultiplayerSynchronizer
+@onready var autofire_area = $AutofireArea3D
 
 @export var speed := 6
 @export var max_health = 99
+
 var current_health = 100
 var input_vector := Vector3.ZERO
-var aim_direction: Vector3 = Vector3.ZERO
-var shooting := false
-var fire_cooldown := 0.0
+
 var peer_id := -1 # Gets set in PlayerSpawner
-var is_submerged := false
 var location: String = "%016x" % [randi()] # Which map we're in for syncing multiplayer stuff. Start with a random string to prevent lobby people syncing with eachother
+
+var fire_cooldown := 0.0
+var mobs_in_range: Array[Node3D] = []
 
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
 var hud_instance: HUD
@@ -31,6 +33,9 @@ func _ready():
         # Give new players a sword to start
         var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))
         ItemManager.spawn_item(sword)
+        
+        autofire_area.body_entered.connect(_autofire_area_entered)
+        autofire_area.body_exited.connect(_autofire_area_exited)
 
     if is_multiplayer_authority():
         _setup_camera()
@@ -79,10 +84,11 @@ func _physics_process(delta):
 
     # Handle shooting
     fire_cooldown -= delta
-    if shooting and fire_cooldown <= 0:
+    if _get_nearest_mob() != null and fire_cooldown <= 0:
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         var bullet_pos = global_position
         bullet_pos.y = 2
+        var aim_direction: Vector3 = (_get_nearest_mob().global_position - global_position).normalized() 
         aim_direction.y = 0
         bulletspawner.spawn_bullet(BulletData.new(WeaponHelper.get_bullet_name(peer_id), bullet_pos, aim_direction, Yeet.MOB_LAYER))
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
@@ -96,37 +102,24 @@ func _process(delta):
         hud_instance.update_health(current_health, max_health)
 
     var local_input = Vector3(
-        1 if CustomInput.right_pressed() else 0 - 1 if CustomInput.left_pressed() else 0,
+        Input.get_action_strength("right") - Input.get_action_strength("left"),
         0,
-        1 if CustomInput.down_pressed() else 0 - 1 if CustomInput.up_pressed() else 0,
+        Input.get_action_strength("down") - Input.get_action_strength("up"),
     )
 
     # Rotate input around Y axis by camera's global Y rotation
     var angle = $Camera3D.global_transform.basis.get_euler().y
-    input_vector = local_input.rotated(Vector3.UP, angle).normalized()
-
-    # Aim direction: get the mouse position and calculate direction in world space
-    var mouse_position = get_viewport().get_mouse_position()
-    var mouse_ray_origin = $Camera3D.project_ray_origin(mouse_position)
-    var mouse_ray_normal = $Camera3D.project_ray_normal(mouse_position)
-
-    # Calculate the direction the player should aim towards
-    # Get a point some distance along the mouse ray
-    var target_point = mouse_ray_origin + mouse_ray_normal * 10
-    target_point.y = global_position.y
-    aim_direction = (target_point - global_position).normalized()
-
-    var shoot = Input.is_action_pressed("shoot")
+    input_vector = local_input.rotated(Vector3.UP, angle)
 
     # Handle animations
     if input_vector == Vector3.ZERO:
         animated_sprite.play("stand")
     else:
-        animated_sprite.set_flip_h(CustomInput.left_pressed())
+        animated_sprite.set_flip_h(Input.get_action_strength("left") > 0)
         animated_sprite.play("walk")
 
     # Send input to server
-    receive_input.rpc_id(1, input_vector, aim_direction, shoot)
+    receive_input.rpc_id(1, input_vector)
 
     # Rotate camera around y axis
     var camera_vector = Vector2(Input.get_action_strength("clockwise"), Input.get_action_strength("counter_clockwise")).normalized()
@@ -134,15 +127,41 @@ func _process(delta):
 
 # TODO - Could I possibly replace this with MultiplayerSync?
 @rpc("any_peer", "call_local", "unreliable")
-func receive_input(move: Vector3, aim: Vector3, shoot: bool):
+func receive_input(move: Vector3):
     # Only server processes input
     if not multiplayer.is_server():
         return
 
     input_vector = move
-    aim_direction = aim
-    shooting = shoot
 
 func take_damage(damage: int):
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     current_health -= damage
+
+func _autofire_area_entered(body: Node3D) -> void:
+    if not body.is_in_group("mobs"):
+        return
+    mobs_in_range.append(body)
+    
+func _autofire_area_exited(body: Node3D) -> void:
+    if not body.is_in_group("mobs"):
+        return
+    mobs_in_range.erase(body)
+
+func _get_nearest_mob() -> Node3D:
+    # Clean up invalid mobs first
+    mobs_in_range = mobs_in_range.filter(func(p: Node3D): return is_instance_valid(p) and p.is_visible)
+
+    if mobs_in_range.is_empty():
+        return null
+
+    var nearest = mobs_in_range[0]
+    var nearest_distance = global_position.distance_squared_to(nearest.global_position)
+
+    for mob in mobs_in_range:
+        var distance = global_position.distance_squared_to(mob.global_position)
+        if distance < nearest_distance:
+            nearest = mob
+            nearest_distance = distance
+
+    return nearest

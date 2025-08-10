@@ -21,7 +21,7 @@ collision_layer = 2
 script = ExtResource("1_mq7ec")
 health = 10
 
-[node name="Sprite3D" type="Sprite3D" parent="."]
+[node name="Sprite3D" type="Sprite3D" parent="." groups=["mobs"]]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 billboard = 1
 texture = ExtResource("2_v51k2")
@@ -31,6 +31,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_mq7ec")
 
 [node name="AggressionArea" type="Area3D" parent="."]
+collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AggressionArea"]
