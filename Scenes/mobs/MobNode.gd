@@ -22,7 +22,7 @@ var pause_timer = 0.0
 var max_health = -1
 
 @onready var aggro_area: Area3D = $AggressionArea
-@onready var hb_mat := $HealthBar3d/Bar.material_override as ShaderMaterial
+@onready var healthbar := $HealthBar
 
 const DAMAGE_TEXT := preload("res://Scenes/Uncommon/DamageText/DamageText3D.tscn")
 
@@ -32,24 +32,25 @@ func _enter_tree():
 
 func _visibility_filter(other_p: int) -> bool:
     return PlayerManager.map_players.get(other_p, false)
-    
+
 func _ready():
     # Server has authority over all mobs
     set_multiplayer_authority(1)  # 1 = server ID
-    
+
     max_health = health
 
     # Only server runs mob logic
     if not is_multiplayer_authority():
         return
-        
+
     wander_center = global_position
     _new_wander_direction()
     aggro_area.body_entered.connect(_on_player_entered)
     aggro_area.body_exited.connect(_on_player_exited)
 
 func _process(_delta):
-    hb_mat.set_shader_parameter("health", float(max(health, 0)) / max_health)
+    healthbar.update_health(max(health, 0) / max_health)
+    healthbar.update_location(global_position)
 
 func _physics_process(delta):
     # Only server processes mob AI and movement
@@ -158,13 +159,13 @@ func take_damage(amount):
         var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
         loot_spawner.spawn_from_drop_table(global_position, drop_table)
         queue_free()
-        
+
 @rpc("any_peer", "call_local", "unreliable")
 func _spawn_damage_text(amount: int):
     if !is_inside_tree():
         # We ded!
         return
-        
+
     var dt := DAMAGE_TEXT.instantiate()
     # put it above the mob’s head; tweak Y to your model height
     get_tree().get_first_node_in_group("damage_texts").add_child(dt)

@@ -45,13 +45,13 @@ func _on_SpawnTimer_timeout():
 func _try_spawn(tiles: Array[Vector3i], mobs: Array[String]):
     assert(!tiles.is_empty())
     assert(!mobs.is_empty())
-    
+
     var tile: Vector3i = tiles.pick_random()
     var world_pos = Vector3(tile.x, tile.y, tile.z) + Vector3(0.5, 1.01, 0.5)
 
     if _is_spawn_area_clear(world_pos):
         spawn([world_pos, mobs.pick_random()])
-        
+
 func _is_spawn_area_clear(pos: Vector3) -> bool:
     var tile_size = 1
     var min_distance = tile_size * 8

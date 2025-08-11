@@ -48,5 +48,4 @@ shape = SubResource("SphereShape3D_dytcf")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ix0of")
 
-[node name="HealthBar3d" parent="." instance=ExtResource("3_gxp4u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.747411)
+[node name="HealthBar" parent="." instance=ExtResource("3_gxp4u")]
