@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_mq7ec"]
 [ext_resource type="Texture2D" uid="uid://dl8elo62vgsm1" path="res://Scenes/mobs/spikeysquare3d/SpikeySquare.png" id="2_v51k2"]
-[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar3D.tscn" id="3_gxp4u"]
+[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="3_gxp4u"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)
@@ -26,7 +26,7 @@ properties/3/replication_mode = 2
 [node name="SpikeySquare" type="CharacterBody3D" groups=["mobs"]]
 collision_layer = 2
 script = ExtResource("1_mq7ec")
-health = 10
+health = 20.0
 
 [node name="Sprite3D" type="Sprite3D" parent="." groups=["mobs"]]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)

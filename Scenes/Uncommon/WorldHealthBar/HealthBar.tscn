@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://ca6ip45hrlevm"]
+
+[ext_resource type="Texture2D" uid="uid://cqths01jwvhjd" path="res://Scenes/Uncommon/WorldHealthBar/healthbarshape.png" id="1_ydi58"]
+[ext_resource type="Texture2D" uid="uid://bgo1w1x0vugu0" path="res://Scenes/Uncommon/WorldHealthBar/healthfill.png" id="2_7klgx"]
+[ext_resource type="Script" uid="uid://d4l56iergxbho" path="res://Scenes/Uncommon/WorldHealthBar/health_bar_3d.gd" id="3_1pdii"]
+
+[node name="TextureProgressBar" type="TextureProgressBar"]
+offset_right = 1.0
+offset_bottom = 1.0
+value = 50.0
+texture_over = ExtResource("1_ydi58")
+texture_progress = ExtResource("2_7klgx")
+script = ExtResource("3_1pdii")

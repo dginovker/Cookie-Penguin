@@ -5,8 +5,8 @@
 [ext_resource type="MeshLibrary" uid="uid://qn0yhv3hvj3y" path="res://Scenes/3dWorld/water.tres" id="2_qhyur"]
 [ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
 [ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/Player/PlayerSpawner3D.gd" id="4_utcp4"]
-[ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
-[ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
+[ext_resource type="Script" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
+[ext_resource type="Script" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 
 [node name="3Dworld" type="Node3D"]
 
@@ -86,4 +86,3 @@ script = ExtResource("6_5uwof")
 [node name="LootSpawner" type="MultiplayerSpawner" parent="Lootbags" groups=["loot_spawners"]]
 spawn_path = NodePath("..")
 script = ExtResource("7_qhyur")
-metadata/_custom_type_script = "uid://bwcv5tds6rgr"
