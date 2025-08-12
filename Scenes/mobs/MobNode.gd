@@ -169,5 +169,4 @@ func _spawn_damage_text(amount: int):
     var dt := DAMAGE_TEXT.instantiate()
     # put it above the mob’s head; tweak Y to your model height
     get_tree().get_first_node_in_group("damage_texts").add_child(dt)
-    dt.pop(amount, float(health) / max_health)
-    dt.global_position = global_position + Vector3(0, 1.4, 0)
+    dt.pop(global_position, amount, float(health) / max_health)

@@ -1,23 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://dgx52vo0t51yd"]
+[gd_scene load_steps=2 format=3 uid="uid://dgx52vo0t51yd"]
 
 [ext_resource type="Script" uid="uid://bo21p8qhu10jr" path="res://Scenes/Uncommon/DamageText/damage_text_3d.gd" id="1_dmelg"]
-[ext_resource type="Shader" uid="uid://bumssnynun51a" path="res://Scenes/Uncommon/DamageText/DamageText3D.gdshader" id="2_4efdm"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4efdm"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("2_4efdm")
-shader_parameter/start_time = 0.0
-shader_parameter/life = 0.8
-shader_parameter/rise = 1.0
-shader_parameter/hp_left = 1.0
-
-[sub_resource type="TextMesh" id="TextMesh_40sni"]
-font_size = 96
-
-[node name="DamageText3d" type="Node3D"]
+[node name="DamageText" type="Label3D"]
+transform = Transform3D(1, -0.000215499, 0.000113775, 0.000215503, 1, -1.78823e-05, -0.000113767, 1.79312e-05, 1, 0, 0, 0)
+billboard = 1
+no_depth_test = true
+fixed_size = true
+texture_filter = 0
+text = "-0"
+font_size = 16
+outline_size = 2
 script = ExtResource("1_dmelg")
-
-[node name="Mesh" type="MeshInstance3D" parent="."]
-material_override = SubResource("ShaderMaterial_4efdm")
-mesh = SubResource("TextMesh_40sni")
