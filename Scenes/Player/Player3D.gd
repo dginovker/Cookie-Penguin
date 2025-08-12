@@ -4,11 +4,12 @@ extends CharacterBody3D
 @onready var animated_sprite = $AnimatedSprite3D
 @onready var multiplayer_sync = $MultiplayerSynchronizer
 @onready var autofire_area = $AutofireArea3D
+@onready var healthbar := $HealthBar
 
 @export var speed := 6
-@export var max_health = 99
+@export var max_health = 99.0
 
-var current_health = 100
+var health = 100.0
 var input_vector := Vector3.ZERO
 
 var peer_id := -1 # Gets set in PlayerSpawner
@@ -53,7 +54,7 @@ func setup_hud():
 
     hud_instance = hud_scene.instantiate()
     ui_layer.add_child(hud_instance)
-    hud_instance.update_health(current_health, max_health)
+    hud_instance.update_health(health, max_health)
 
 func _setup_camera():
     $Camera3D.make_current()
@@ -94,12 +95,16 @@ func _physics_process(delta):
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
+    healthbar.update_health(max(health, 0) / max_health)
+    healthbar.update_location(global_position)
+
+    
     # Only the owning client handles input
     if not is_multiplayer_authority():
         return
         
     if hud_instance:
-        hud_instance.update_health(current_health, max_health)
+        hud_instance.update_health(health, max_health)
 
     var v2 := Input.get_vector("left", "right", "up", "down")
     var local_input := Vector3(v2.x, 0.0, v2.y)
@@ -133,7 +138,7 @@ func receive_input(move: Vector3):
 
 func take_damage(damage: int):
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
-    current_health -= damage
+    health -= damage
 
 func _autofire_area_entered(body: Node3D) -> void:
     if not body.is_in_group("mobs"):
