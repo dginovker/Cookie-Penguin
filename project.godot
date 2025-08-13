@@ -22,6 +22,7 @@ PlayerManager="*res://Globals/PlayerManager.gd"
 WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
 LootbagManager="*res://Globals/LootbagManager.gd"
 Yeet="*res://Globals/Yeet.gd"
+LazyRPCs="*res://Globals/LazyRPCs.gd"
 
 [editor_plugins]
 

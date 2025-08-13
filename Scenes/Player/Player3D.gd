@@ -137,6 +137,7 @@ func receive_input(move: Vector3):
     input_vector = move
 
 func take_damage(damage: int):
+    LazyRPCs.pop.rpc(global_position, damage, max(health, 0) / max_health) 
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     health -= damage
 

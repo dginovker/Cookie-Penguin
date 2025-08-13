@@ -24,8 +24,6 @@ var max_health: float = -1.0
 @onready var aggro_area: Area3D = $AggressionArea
 @onready var healthbar := $HealthBar
 
-const DAMAGE_TEXT := preload("res://Scenes/Uncommon/DamageText/DamageText3D.tscn")
-
 func _enter_tree():
     $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
     $MultiplayerSynchronizer.update_visibility()
@@ -152,21 +150,10 @@ func take_damage(amount):
     if health < 0:
         return
 
-    _spawn_damage_text.rpc(amount) # show on all peers
+    LazyRPCs.pop.rpc(global_position, amount, max(health, 0) / max_health) # show on all peers
 
     health -= amount
     if health < 0:
         var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
         loot_spawner.spawn_from_drop_table(global_position, drop_table)
         queue_free()
-
-@rpc("any_peer", "call_local", "unreliable")
-func _spawn_damage_text(amount: int):
-    if !is_inside_tree():
-        # We ded!
-        return
-
-    var dt := DAMAGE_TEXT.instantiate()
-    # put it above the mob’s head; tweak Y to your model height
-    get_tree().get_first_node_in_group("damage_texts").add_child(dt)
-    dt.pop(global_position, amount, float(health) / max_health)
