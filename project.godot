@@ -24,6 +24,11 @@ LootbagManager="*res://Globals/LootbagManager.gd"
 Yeet="*res://Globals/Yeet.gd"
 LazyRPCs="*res://Globals/LazyRPCs.gd"
 
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [editor_plugins]
 
 enabled=PackedStringArray()

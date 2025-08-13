@@ -1,5 +1,19 @@
 extends Node
 
+# This is all the stuff I cba to put in it's own autoload
+# meow meow
+
+func _ready():
+    get_window().content_scale_size = Vector2i(648, 648) # square base helps portrait/landscape
+    _apply_scale()
+    get_window().size_changed.connect(_apply_scale)
+
+func _apply_scale():
+    get_window().content_scale_factor = max(
+        get_window().size.y / 648.0,                  # design height
+        DisplayServer.screen_get_dpi() / 160.0         # DPI floor (~Android dp baseline)
+    )
+   
 const MOB_LAYER = 2
 const PLAYER_LAYER = 4
 
