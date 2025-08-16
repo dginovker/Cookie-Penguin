@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=9 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
-[ext_resource type="Script" uid="uid://b63fbf70oysji" path="res://Scenes/hud/h_split_container.gd" id="2_j7wy3"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
@@ -25,55 +24,62 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4welq")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
+[node name="RootSplit" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_j7wy3")
 
-[node name="chat_VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
-layout_mode = 2
+[node name="Left" type="VBoxContainer" parent="RootSplit"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.8
+anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 alignment = 2
 
-[node name="chatdisplay_RichTextLabel" type="RichTextLabel" parent="HSplitContainer/chat_VBoxContainer"]
+[node name="chatdisplay_RichTextLabel" type="RichTextLabel" parent="RootSplit/Left"]
 unique_name_in_owner = true
 layout_mode = 2
 fit_content = true
 scroll_following = true
 
-[node name="chatinput_LineEdit" type="LineEdit" parent="HSplitContainer/chat_VBoxContainer"]
+[node name="chatinput_LineEdit" type="LineEdit" parent="RootSplit/Left"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="right_Panel" type="VBoxContainer" parent="HSplitContainer"]
-layout_mode = 2
+[node name="Right" type="Control" parent="RootSplit"]
+layout_mode = 1
+anchor_left = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 3
-alignment = 1
 
-[node name="ItemsContainer" type="PanelContainer" parent="HSplitContainer/right_Panel"]
+[node name="ItemsContainer" type="PanelContainer" parent="RootSplit/Right"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.7
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_4mb1w")
 
-[node name="vbox" type="VBoxContainer" parent="HSplitContainer/right_Panel/ItemsContainer"]
+[node name="vbox" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer"]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="hp_TextureProgressBar" type="ProgressBar" parent="HSplitContainer/right_Panel/ItemsContainer/vbox"]
+[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/ItemsContainer/vbox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
 show_percentage = false
 
-[node name="hp_HealthText" type="Label" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/hp_TextureProgressBar"]
+[node name="hp_HealthText" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/hp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -84,177 +90,181 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InventoryManager" type="VBoxContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox"]
+[node name="InventoryManager" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("3_vjapc")
 
-[node name="GearVBoxContainer" type="VBoxContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager"]
+[node name="GearVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
 layout_mode = 2
 
-[node name="GearGridContainer" type="GridContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/GearVBoxContainer"]
+[node name="GearGridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Weapon" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="Weapon" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Armor" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="Armor" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Ring" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="Ring" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Sigil" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="Sigil" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="BackpackVBoxContainer" type="VBoxContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager"]
+[node name="BackpackVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
+[node name="Label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 
-[node name="BackpackGridContainer" type="GridContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
+[node name="BackpackGridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Slot1" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot1" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot2" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot2" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot3" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot3" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot4" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot4" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot5" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot5" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot6" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot6" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot7" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot7" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot8" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Slot8" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="LootVBoxContainer" type="VBoxContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager"]
+[node name="LootVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
+[node name="Label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Slot1" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot1" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot2" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot2" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot3" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot3" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot4" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot4" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot5" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot5" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot6" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot6" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot7" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot7" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot8" type="TextureButton" parent="HSplitContainer/right_Panel/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot8" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ButtonsContainer" type="PanelContainer" parent="HSplitContainer/right_Panel"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
+[node name="ButtonsContainer" type="Control" parent="RootSplit/Right"]
+layout_mode = 1
+anchor_top = 0.7
+anchor_right = 1.0
+anchor_bottom = 0.8
 size_flags_vertical = 10
 size_flags_stretch_ratio = 0.1
 
-[node name="HideButton" type="TextureButton" parent="HSplitContainer/right_Panel/ButtonsContainer"]
+[node name="HideButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+offset_right = 230.4
+offset_bottom = 64.8
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 texture_normal = ExtResource("4_4mb1w")
 texture_pressed = ExtResource("4_4mb1w")
 stretch_mode = 0
 
-[node name="HideLabel" type="Label" parent="HSplitContainer/right_Panel/ButtonsContainer/HideButton"]
+[node name="HideLabel" type="Label" parent="RootSplit/Right/ButtonsContainer/HideButton"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -267,13 +277,16 @@ label_settings = SubResource("LabelSettings_4mb1w")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="JoystickSlot" type="Control" parent="HSplitContainer/right_Panel"]
+[node name="JoystickSlot" type="Control" parent="RootSplit/Right"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
 
-[node name="JoystickNode" type="Control" parent="HSplitContainer/right_Panel/JoystickSlot"]
+[node name="JoystickNode" type="Control" parent="RootSplit/Right/JoystickSlot"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -286,7 +299,7 @@ action_right = "right"
 action_up = "up"
 action_down = "down"
 
-[node name="Base" type="TextureRect" parent="HSplitContainer/right_Panel/JoystickSlot/JoystickNode"]
+[node name="Base" type="TextureRect" parent="RootSplit/Right/JoystickSlot/JoystickNode"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -298,7 +311,7 @@ texture = ExtResource("5_j7wy3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Tip" type="TextureRect" parent="HSplitContainer/right_Panel/JoystickSlot/JoystickNode/Base"]
+[node name="Tip" type="TextureRect" parent="RootSplit/Right/JoystickSlot/JoystickNode/Base"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1

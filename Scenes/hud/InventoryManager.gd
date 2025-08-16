@@ -1,5 +1,13 @@
-extends Control
+extends VBoxContainer
 class_name InventoryManager
+
+@onready var items_panel: PanelContainer = $"../.."          # Right/ItemsContainer
+@onready var items_vbox: VBoxContainer   = $".."
+@onready var grids := [
+    $"GearVBoxContainer/GearGridContainer",
+    $"BackpackVBoxContainer/BackpackGridContainer",
+    $"LootVBoxContainer/GridContainer",
+]
 
 @onready var loot_container = $LootVBoxContainer/GridContainer
 @onready var gear_slots = $GearVBoxContainer/GearGridContainer.get_children()
@@ -8,94 +16,92 @@ class_name InventoryManager
 
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 var dragging_item = null
-var current_lootbag_id: int = -1
+var current_lootbag_id := -1
+
+const PAD_Y := 8  # cheap buffer so we don’t fight VBox/labels
 
 func _ready():
-    for i in range(gear_slots.size()):
-        var slot = gear_slots[i]
-        slot.set_meta("container_type", ItemLocation.Type.PLAYER_GEAR)
-        slot.set_meta("slot_index", i)
-        slot.gui_input.connect(_on_slot_input.bind(slot))
+    for g in grids: g.size_flags_vertical = 0
+    for i in gear_slots.size():     _wire(gear_slots[i], ItemLocation.Type.PLAYER_GEAR, i)
+    for i in backpack_slots.size(): _wire(backpack_slots[i], ItemLocation.Type.PLAYER_BACKPACK, i)
+    for i in loot_slots.size():     _wire(loot_slots[i], ItemLocation.Type.LOOTBAG, i)
+    hide_loot_bag()  # hide the WHOLE section, not just buttons
 
-    for i in range(backpack_slots.size()):
-        var slot = backpack_slots[i]
-        slot.set_meta("container_type", ItemLocation.Type.PLAYER_BACKPACK)
-        slot.set_meta("slot_index", i)
-        slot.gui_input.connect(_on_slot_input.bind(slot))
-
-    # Loot slots: lootbag_id will be set in show_loot_bag
-    for i in range(loot_slots.size()):
-        var slot = loot_slots[i]
-        slot.set_meta("container_type", ItemLocation.Type.LOOTBAG)
-        slot.set_meta("slot_index", i)
-        slot.gui_input.connect(_on_slot_input.bind(slot))
-    hide_loot_bag()
-
-    resized.connect(_layout)
+    resized.connect(_request_layout)
+    items_panel.resized.connect(_request_layout)
+    get_viewport().size_changed.connect(_request_layout)
+    for g in grids: g.resized.connect(_request_layout)
     call_deferred("_layout")
-    
-func _layout():
-    var grids := [$GearVBoxContainer/GearGridContainer, $BackpackVBoxContainer/BackpackGridContainer, $LootVBoxContainer/GridContainer]
-    var v_sep := get_theme_constant("separation", "VBoxContainer")
-    var hsep := {}; var vsep := {}
-    for g in grids:
-        hsep[g] = g.get_theme_constant("h_separation", "GridContainer")
-        vsep[g] = g.get_theme_constant("v_separation", "GridContainer")
 
-    var rows := {}
+func _wire(b: TextureButton, t, i):
+    b.set_meta("container_type", t)
+    b.set_meta("slot_index", i)
+    b.gui_input.connect(_on_slot_input.bind(b))
+
+func _request_layout(): call_deferred("_layout")
+
+func _panel_content_size() -> Vector2:
+    var vp := get_viewport_rect().size
+    var right := items_panel.get_parent() as Control
+    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (items_panel.anchor_right - items_panel.anchor_left)   # 20% × ItemsContainer’s width fraction (here 1.0)
+    var outer_h := vp.y * (items_panel.anchor_bottom - items_panel.anchor_top)                                              # 70% height in your scene
+    var sb := items_panel.get_theme_stylebox("panel", "PanelContainer")
+    return Vector2(
+        outer_w - sb.get_margin(SIDE_LEFT) - sb.get_margin(SIDE_RIGHT),
+        outer_h - sb.get_margin(SIDE_TOP)  - sb.get_margin(SIDE_BOTTOM)
+    )
+
+func _layout():
+    # kill any ratcheted mins so ancestors can’t overrule anchors
+    items_panel.custom_minimum_size = Vector2.ZERO
+    items_panel.get_parent().custom_minimum_size = Vector2.ZERO
+
+    var content := _panel_content_size()
+    var cols := 4
+
     var total_rows := 0
     for g in grids:
         var vis = g.get_children().filter(func(c): return c.visible).size()
-        rows[g] = int(ceil(float(vis) / float(g.columns)))
-        total_rows += rows[g]
+        total_rows += int(ceil(float(vis)/cols))
+    if total_rows == 0: return
 
-    var non_grid_h := 0
-    for slot in get_children():
-        if slot is VBoxContainer:
-            for n in slot.get_children():
-                if n is GridContainer: continue
-                non_grid_h += n.size.y
-        else:
-            non_grid_h += slot.size.y
+    var hsep = grids[0].get_theme_constant("h_separation", "GridContainer")
+    var vbox_sep := items_vbox.get_theme_constant("separation", "VBoxContainer")
+    var hp_h = %hp_TextureProgressBar.get_combined_minimum_size().y
 
-    var active_grids := grids.filter(func(g): return rows[g] > 0)
-    var sep_count = max(active_grids.size() - 1, 0)
-    var available_h = size.y - non_grid_h - v_sep * sep_count
-    var sep_sum := 0
-    for g in active_grids: sep_sum += vsep[g] * max(rows[g] - 1, 0)
-    var s_h := int((available_h - sep_sum) / max(total_rows, 1))
+    var cw := int((content.x - hsep*(cols-1)) / cols)
+    var ch := int((content.y - hp_h - vbox_sep - PAD_Y) / total_rows)
+
+    var s = max(1, min(cw, ch))  # single scalar; keeps within 20%×70% box in all aspect ratios
 
     for g in grids:
-        if rows[g] == 0: continue
-        var s_w := int((g.size.x - hsep[g] * (g.columns - 1)) / g.columns)
-        var s = max(1, min(s_w, s_h))
         for b in g.get_children():
             if b is TextureButton and b.visible: b.custom_minimum_size = Vector2(s, s)
 
-    
+    queue_sort()
+
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     current_lootbag_id = lootbag_id
-    var loot_buttons = loot_container.get_children()
-        
-    # Configure all 8 slots
-    for i in range(loot_buttons.size()):
-        var button: TextureButton = loot_buttons[i]
-        button.set_meta("lootbag_id", lootbag_id)
-        button.visible = true
-        
+    $LootVBoxContainer.visible = true
+    var bs = loot_container.get_children()
+    for i in bs.size():
+        var b: TextureButton = bs[i]
+        b.set_meta("lootbag_id", lootbag_id)
+        b.visible = true
         if i < loot_items.size():
-            # Slot has an item
-            var item: ItemInstance = loot_items[i]
-            button.texture_normal = item.get_texture()
-            button.set_meta("uuid", item.uuid)
+            var it: ItemInstance = loot_items[i]
+            b.texture_normal = it.get_texture()
+            b.set_meta("uuid", it.uuid)
         else:
-            button.texture_normal = empty_slot_texture
-            button.remove_meta("uuid")
+            b.texture_normal = empty_slot_texture
+            b.remove_meta("uuid")
+    _request_layout()
 
 func hide_loot_bag():
     current_lootbag_id = -1
-    for button in loot_container.get_children():
-        button.visible = false
+    $LootVBoxContainer.visible = false
+    _request_layout()
+
 
 func _on_slot_input(event: InputEvent, slot):
     if not event is InputEventMouseButton or event.button_index != MOUSE_BUTTON_LEFT:
