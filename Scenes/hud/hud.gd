@@ -38,7 +38,7 @@ func _input(event):
     if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER and not chat_input.has_focus():
         chat_input.grab_focus()
         get_viewport().set_input_as_handled()
-        
+
 func _hide_button_pressed():
     items_container.visible = !items_container.visible
     hide_label.text = "Hide" if items_container.visible else "Show"

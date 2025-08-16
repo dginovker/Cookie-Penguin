@@ -15,7 +15,7 @@ func update_location(world_position: Vector3):
     var cam = get_viewport().get_camera_3d()
     if not cam:
         return
-        
+
     # Project to screen (viewport) coordinates
     var screen_pos: Vector2 = cam.unproject_position(world_position)
 

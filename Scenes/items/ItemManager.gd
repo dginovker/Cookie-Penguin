@@ -9,7 +9,7 @@ func spawn_item(item: ItemInstance) -> void:
     assert(!items.has(item.uuid), "Server is trying to add item " + str(item) + ", but that uuid already exists")
     items[item.uuid] = item
     # Todo - Assert there's no 2 items at the same location
-    
+
 func swap_item(item_uuid: String, target_location: ItemLocation) -> bool:
     assert(multiplayer.is_server())
     var og_item: ItemInstance = items[item_uuid]
@@ -18,24 +18,24 @@ func swap_item(item_uuid: String, target_location: ItemLocation) -> bool:
     og_item.location = target_location
     # Todo - Assert there's no 2 items in the same location
     return true
-    
+
 @rpc("any_peer", "call_local", "reliable")
 func request_move_item(item_uuid: String, new_location_string: String):
     assert(multiplayer.is_server())
     var new_location: ItemLocation = ItemLocation.from_string(new_location_string)
     var requested_item: ItemInstance = items[item_uuid]
     var original_location = requested_item.location
-    
+
     # Validate if we can move the item
     if original_location.type != ItemLocation.Type.LOOTBAG and original_location.owner_id != new_location.owner_id:
         print("Player doesn't have permission to move item from ", original_location)
         return
-    
+
     if not swap_item(item_uuid, new_location):
         print("Failed to move ", item_uuid, " to ", new_location)
         return
     #print("Move from ", original_location, " to ", new_location, "success")
-    
+
     if original_location.type == ItemLocation.Type.LOOTBAG:
         # Notify all viewers of the lootbag
         var lootbag: LootBag = LootbagManager.lootbags[original_location.owner_id]
@@ -88,4 +88,3 @@ func get_container_items(container_type: ItemLocation.Type, owner_id: int) -> Ar
         if item.location.type == container_type and item.location.owner_id == owner_id:
             container_items.append(item)
     return container_items
-    

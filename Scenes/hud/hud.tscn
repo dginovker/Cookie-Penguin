@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=10 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
+[ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
-[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="9_l0dsp"]
+[ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/virtual_joystick/textures/joystick_base_outline.png" id="5_j7wy3"]
+[ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/virtual_joystick/textures/joystick_tip_arrows.png" id="6_ro43y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
 content_margin_top = 5.0
@@ -268,19 +270,52 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/right_Panel"]
-custom_minimum_size = Vector2(250, 250)
+custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 10
 size_flags_stretch_ratio = 0.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ekdxc")
 
-[node name="Walking" parent="HBoxContainer/right_Panel/PanelContainer" instance=ExtResource("9_l0dsp")]
-custom_minimum_size = Vector2(250, 250)
+[node name="Walking" type="Control" parent="HBoxContainer/right_Panel/PanelContainer"]
 layout_mode = 2
+script = ExtResource("4_1ym45")
 action_left = "left"
 action_right = "right"
 action_up = "up"
 action_down = "down"
+
+[node name="Base" type="TextureRect" parent="HBoxContainer/right_Panel/PanelContainer/Walking"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(100, 100)
+mouse_force_pass_scroll_events = false
+texture = ExtResource("5_j7wy3")
+stretch_mode = 5
+
+[node name="Tip" type="TextureRect" parent="HBoxContainer/right_Panel/PanelContainer/Walking/Base"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 50)
+texture = ExtResource("6_ro43y")
+stretch_mode = 5
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="HBoxContainer/right_Panel/PanelContainer"]
