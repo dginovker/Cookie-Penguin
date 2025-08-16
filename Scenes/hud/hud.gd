@@ -19,7 +19,8 @@ func _ready():
     _layout()
 
 func _layout():
-    _joystick_slot.custom_minimum_size = Vector2.ONE * int(clampf(min(get_viewport_rect().size.x, get_viewport_rect().size.y) * 0.18, 160.0, 320.0))
+    pass
+    #_joystick_slot.custom_minimum_size = Vector2.ONE * int(clampf(min(get_viewport_rect().size.x, get_viewport_rect().size.y) * 0.18, 160.0, 320.0))
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)

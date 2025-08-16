@@ -268,9 +268,9 @@ vertical_alignment = 1
 
 [node name="JoystickSlot" type="Control" parent="HBoxContainer/right_Panel"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
-size_flags_stretch_ratio = 0.0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
 
 [node name="JoystickNode" type="Control" parent="HBoxContainer/right_Panel/JoystickSlot"]
 layout_mode = 1
@@ -294,6 +294,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_force_pass_scroll_events = false
 texture = ExtResource("5_j7wy3")
+expand_mode = 1
 stretch_mode = 5
 
 [node name="Tip" type="TextureRect" parent="HBoxContainer/right_Panel/JoystickSlot/JoystickNode/Base"]
@@ -309,6 +310,6 @@ offset_right = 50.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(50, 52)
+pivot_offset = Vector2(50, 50)
 texture = ExtResource("6_ro43y")
 stretch_mode = 5
