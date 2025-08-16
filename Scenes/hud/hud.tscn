@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=9 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
@@ -14,9 +14,6 @@ bg_color = Color(0.497172, 0.475126, 0.392239, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_4mb1w"]
 font_size = 32
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ekdxc"]
-draw_center = false
 
 [node name="HUD_control" type="Control" groups=["hud"]]
 layout_mode = 3
@@ -269,39 +266,37 @@ label_settings = SubResource("LabelSettings_4mb1w")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/right_Panel"]
+[node name="JoystickSlot" type="Control" parent="HBoxContainer/right_Panel"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 size_flags_stretch_ratio = 0.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ekdxc")
 
-[node name="Walking" type="Control" parent="HBoxContainer/right_Panel/PanelContainer"]
-layout_mode = 2
+[node name="JoystickNode" type="Control" parent="HBoxContainer/right_Panel/JoystickSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4_1ym45")
 action_left = "left"
 action_right = "right"
 action_up = "up"
 action_down = "down"
 
-[node name="Base" type="TextureRect" parent="HBoxContainer/right_Panel/PanelContainer/Walking"]
+[node name="Base" type="TextureRect" parent="HBoxContainer/right_Panel/JoystickSlot/JoystickNode"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(100, 100)
 mouse_force_pass_scroll_events = false
 texture = ExtResource("5_j7wy3")
 stretch_mode = 5
 
-[node name="Tip" type="TextureRect" parent="HBoxContainer/right_Panel/PanelContainer/Walking/Base"]
+[node name="Tip" type="TextureRect" parent="HBoxContainer/right_Panel/JoystickSlot/JoystickNode/Base"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -314,8 +309,6 @@ offset_right = 50.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(50, 50)
+pivot_offset = Vector2(50, 52)
 texture = ExtResource("6_ro43y")
 stretch_mode = 5
-
-[node name="TouchScreenButton" type="TouchScreenButton" parent="HBoxContainer/right_Panel/PanelContainer"]

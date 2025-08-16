@@ -75,8 +75,30 @@ func _ready() -> void:
 
     if visibility_mode == Visibility_mode.WHEN_TOUCHED:
         hide()
-
+ 
+    print("The base position is .... ",$Base.position)
     _reset()
+    print("The base position now .... ",$Base.position)
+
+    # 1) Print the ancestor chain and classes (reveals any Containers)
+    var p := self as Node
+    while p:
+        print("Ancestor:", p.name, " class:", p.get_class())
+        p = p.get_parent()
+
+    # 2) Watch layout changes on Base
+    _base.item_rect_changed.connect(_on_base_item_rect_changed)
+
+    # 3) Delay caching defaults until after layout settles
+    await get_tree().process_frame
+    await get_tree().process_frame
+    _base_default_position = _base.position
+    _tip_default_position = _tip.position
+    print("Defaults after layout:", _base_default_position, _tip_default_position)
+
+func _on_base_item_rect_changed() -> void:
+    print("Base item_rect_changed -> pos:", _base.position, " size:", _base.size)
+
 
 func _input(event: InputEvent) -> void:
     if event is InputEventScreenTouch:
@@ -169,6 +191,7 @@ func _reset():
     _touch_index = -1
     _tip.modulate = _default_color
     _base.position = _base_default_position
+    print("moving position to ", _base_default_position)
     _tip.position = _tip_default_position
     # Release actions
     if use_input_actions:

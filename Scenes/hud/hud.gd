@@ -9,11 +9,17 @@ extends Control
 @onready var items_container: PanelContainer = %ItemsContainer
 @onready var hide_button: TextureButton = %HideButton
 @onready var hide_label: Label = %HideLabel
+@onready var _joystick_slot := %JoystickSlot
 
 func _ready():
     add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
     hide_button.pressed.connect(_hide_button_pressed)
+    get_viewport().size_changed.connect(_layout)
+    _layout()
+
+func _layout():
+    _joystick_slot.custom_minimum_size = Vector2.ONE * int(clampf(min(get_viewport_rect().size.x, get_viewport_rect().size.y) * 0.18, 160.0, 320.0))
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
