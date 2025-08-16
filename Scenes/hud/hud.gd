@@ -40,10 +40,5 @@ func _input(event):
         get_viewport().set_input_as_handled()
 
 func _hide_button_pressed():
-    print("pressed")
-    if hide_label.text == "Hide":
-        items_container.self_modulate.a = 0
-        hide_label.text = "Show"
-    else:
-        items_container.self_modulate.a = 255
-        hide_label.text = "Hide"
+    items_container.visible = !items_container.visible
+    hide_label.text = "Hide" if hide_label.text == "Show" else "Show"
