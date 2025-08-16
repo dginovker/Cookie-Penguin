@@ -30,6 +30,48 @@ func _ready():
         slot.set_meta("slot_index", i)
         slot.gui_input.connect(_on_slot_input.bind(slot))
     hide_loot_bag()
+
+    resized.connect(_layout)
+    call_deferred("_layout")
+    
+func _layout():
+    var grids := [$GearVBoxContainer/GearGridContainer, $BackpackVBoxContainer/BackpackGridContainer, $LootVBoxContainer/GridContainer]
+    var v_sep := get_theme_constant("separation", "VBoxContainer")
+    var hsep := {}; var vsep := {}
+    for g in grids:
+        hsep[g] = g.get_theme_constant("h_separation", "GridContainer")
+        vsep[g] = g.get_theme_constant("v_separation", "GridContainer")
+
+    var rows := {}
+    var total_rows := 0
+    for g in grids:
+        var vis = g.get_children().filter(func(c): return c.visible).size()
+        rows[g] = int(ceil(float(vis) / float(g.columns)))
+        total_rows += rows[g]
+
+    var non_grid_h := 0
+    for slot in get_children():
+        if slot is VBoxContainer:
+            for n in slot.get_children():
+                if n is GridContainer: continue
+                non_grid_h += n.size.y
+        else:
+            non_grid_h += slot.size.y
+
+    var active_grids := grids.filter(func(g): return rows[g] > 0)
+    var sep_count = max(active_grids.size() - 1, 0)
+    var available_h = size.y - non_grid_h - v_sep * sep_count
+    var sep_sum := 0
+    for g in active_grids: sep_sum += vsep[g] * max(rows[g] - 1, 0)
+    var s_h := int((available_h - sep_sum) / max(total_rows, 1))
+
+    for g in grids:
+        if rows[g] == 0: continue
+        var s_w := int((g.size.x - hsep[g] * (g.columns - 1)) / g.columns)
+        var s = max(1, min(s_w, s_h))
+        for b in g.get_children():
+            if b is TextureButton and b.visible: b.custom_minimum_size = Vector2(s, s)
+
     
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     current_lootbag_id = lootbag_id
