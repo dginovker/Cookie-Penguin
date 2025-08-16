@@ -298,18 +298,16 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Tip" type="TextureRect" parent="HBoxContainer/right_Panel/JoystickSlot/JoystickNode/Base"]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(50, 50)
+pivot_offset = Vector2(56.5, 33.5)
 texture = ExtResource("6_ro43y")
+expand_mode = 1
 stretch_mode = 5
