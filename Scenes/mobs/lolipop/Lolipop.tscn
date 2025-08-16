@@ -28,6 +28,7 @@ collision_layer = 2
 script = ExtResource("1_atepr")
 speed = 1.0
 shoot_cooldown = 0.7
+xp_given = 10
 bullet_name = "tier_1_bullet.png"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]

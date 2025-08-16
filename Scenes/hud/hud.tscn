@@ -1,6 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=11 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
+[ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
+[ext_resource type="StyleBox" uid="uid://dquuk44cufsqs" path="res://Scenes/hud/XPbar.tres" id="3_l0dsp"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
@@ -73,13 +75,39 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
+[node name="level_label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 0"
+
 [node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/ItemsContainer/vbox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
+theme_override_styles/fill = ExtResource("2_ro43y")
+value = 60.0
 show_percentage = false
 
 [node name="hp_HealthText" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/hp_TextureProgressBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/ItemsContainer/vbox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+theme_override_styles/fill = ExtResource("3_l0dsp")
+value = 30.0
+show_percentage = false
+
+[node name="xp_XpText" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/xp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15

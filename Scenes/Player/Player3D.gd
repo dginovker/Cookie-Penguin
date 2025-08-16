@@ -7,7 +7,8 @@ extends CharacterBody3D
 @onready var healthbar := $HealthBar
 
 @export var speed := 6
-@export var max_health = 99.0
+@export var max_health := 99.0
+@export var xp := 0
 
 var health = 100.0
 var input_vector := Vector3.ZERO
@@ -59,7 +60,6 @@ func setup_hud():
 func _setup_camera():
     $Camera3D.make_current()
 
-
 var last_input_direction = Vector3.ZERO
 func _physics_process(delta):
     # Only server processes movement and shooting
@@ -97,14 +97,14 @@ func _physics_process(delta):
 func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)
     healthbar.update_location(global_position)
-
     
-    # Only the owning client handles input
+    # Only the owning client handles input and hud stuff
     if not is_multiplayer_authority():
         return
         
     if hud_instance:
         hud_instance.update_health(health, max_health)
+        hud_instance.update_xp(xp)
 
     var v2 := Input.get_vector("left", "right", "up", "down")
     var local_input := Vector3(v2.x, 0.0, v2.y)
@@ -137,7 +137,7 @@ func receive_input(move: Vector3):
     input_vector = move
 
 func take_damage(damage: int):
-    LazyRPCs.pop.rpc(global_position, damage, max(health, 0) / max_health) 
+    LazyRPCs.pop_damage.rpc(global_position, damage, max(health, 0) / max_health) 
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     health -= damage
 

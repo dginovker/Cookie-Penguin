@@ -1,8 +1,11 @@
 class_name HUD
 extends Control
 
+@onready var level_label = %level_label
 @onready var health_bar = %hp_TextureProgressBar
 @onready var health_text = %hp_HealthText
+@onready var xp_bar = %xp_TextureProgressBar
+@onready var xp_text = %xp_XpText
 @onready var chat_display = %chatdisplay_RichTextLabel
 @onready var chat_input = %chatinput_LineEdit
 @onready var inventory_manager: InventoryManager = %InventoryManager
@@ -21,10 +24,17 @@ func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
 func hide_loot_bag():
     inventory_manager.hide_loot_bag()
 
-func update_health(current_health: int, max_health: int):
+func update_health(current_health: float, max_health: float):
     health_bar.max_value = max_health
     health_bar.value = current_health
     health_text.text = "%d/%d" % [current_health, max_health]
+
+func update_xp(xp: int):
+    var level := LevelsMath.get_level(xp)
+    level_label.text = "Level " + str(level)
+    xp_bar.value = xp
+    xp_bar.max_value = LevelsMath.xp_for_level(level + 1)
+    xp_text.text = "%d/%d" % [xp, LevelsMath.xp_for_level(level + 1)]
 
 func add_chat_message(player_name: String, message: String):
     chat_display.append_text("[color=yellow]%s:[/color] %s\n" % [player_name, message])

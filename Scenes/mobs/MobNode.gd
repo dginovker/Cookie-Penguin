@@ -6,13 +6,14 @@ extends CharacterBody3D
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var health: float = 100.0
+@export var xp_given: int = 5
 @export var drop_table: Dictionary[String, float] = {
     "health_potion": 1,
     "tier_0_sword": 0.5
 }
 @export var bullet_name = 'tier_0_bullet.png'
 
-var players_in_range = []
+var players_in_range: Array[Player3D] = [] # Players we shoot and give xp to on death
 var wander_direction = Vector3.ZERO
 var wander_timer = 0.0
 var shoot_timer = 0.0
@@ -150,10 +151,17 @@ func take_damage(amount):
     if health < 0:
         return
 
-    LazyRPCs.pop.rpc(global_position, amount, max(health, 0) / max_health) # show on all peers
+    LazyRPCs.pop_damage.rpc(global_position, amount, max(health, 0) / max_health) # show on all peers
 
     health -= amount
     if health < 0:
-        var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
-        loot_spawner.spawn_from_drop_table(global_position, drop_table)
-        queue_free()
+        _die()
+
+func _die() -> void:
+    var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
+    loot_spawner.spawn_from_drop_table(global_position, drop_table)
+
+    for player: Player3D in players_in_range:
+        LazyRPCs.pop_xp.rpc(player.global_position, xp_given)
+        player.xp += xp_given
+    queue_free()
