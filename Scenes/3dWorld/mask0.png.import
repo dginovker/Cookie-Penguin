@@ -2,31 +2,30 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mp7agt5p56h1"
-path.s3tc="res://.godot/imported/sand.png-a1d30af751a072445a5d5d2af8e6236a.s3tc.ctex"
+uid="uid://ujd37qctf5k1"
+path="res://.godot/imported/mask0.png-c84708faff17316e358c1fbe3393f586.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/3dWorld/sand.png"
-dest_files=["res://.godot/imported/sand.png-a1d30af751a072445a5d5d2af8e6236a.s3tc.ctex"]
+source_file="res://Scenes/3dWorld/mask0.png"
+dest_files=["res://.godot/imported/mask0.png-c84708faff17316e358c1fbe3393f586.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=0
+compress/channel_pack=1
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=0
+roughness/mode=1
 roughness/src_normal=""
-process/fix_alpha_border=true
+process/fix_alpha_border=false
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false

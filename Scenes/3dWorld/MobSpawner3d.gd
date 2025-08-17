@@ -18,6 +18,7 @@ func _enter_tree() -> void:
     spawn_function = _spawn_player_custom
 
 func _ready():
+    return
     if not multiplayer.is_server():
         return
 
