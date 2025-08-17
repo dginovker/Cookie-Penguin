@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://f5tk13xsoscg"]
 
-[ext_resource type="PackedScene" uid="uid://cryp8mruwlu44" path="res://Scenes/3dWorld/WorldGround.tscn" id="1_bfqi2"]
+[ext_resource type="PackedScene" uid="uid://cryp8mruwlu44" path="res://Scenes/3dWorld/MapStuff/WorldGround.tscn" id="1_bfqi2"]
 [ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
 [ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/Player/PlayerSpawner3D.gd" id="4_utcp4"]
 [ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]

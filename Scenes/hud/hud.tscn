@@ -74,6 +74,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4mb1w")
 
 [node name="InvenVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
 unique_name_in_owner = true
+visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -279,7 +280,6 @@ stretch_mode = 5
 
 [node name="StatsVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
 unique_name_in_owner = true
-visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -300,6 +300,14 @@ text = "Attack: 0"
 [node name="Life" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Life: 0"
+
+[node name="Debug Header" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "Debug"
+
+[node name="Position" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "Position: "
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
 layout_mode = 1

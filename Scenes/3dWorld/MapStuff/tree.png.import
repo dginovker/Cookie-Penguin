@@ -2,30 +2,31 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ujd37qctf5k1"
-path="res://.godot/imported/mask0.png-c84708faff17316e358c1fbe3393f586.ctex"
+uid="uid://cwdncw0558ggr"
+path.s3tc="res://.godot/imported/tree.png-7cfc6b7b490d1baf79ce07249d749290.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
-source_file="res://Scenes/3dWorld/mask0.png"
-dest_files=["res://.godot/imported/mask0.png-c84708faff17316e358c1fbe3393f586.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/tree.png"
+dest_files=["res://.godot/imported/tree.png-7cfc6b7b490d1baf79ce07249d749290.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=1
+compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=1
+roughness/mode=0
 roughness/src_normal=""
-process/fix_alpha_border=false
+process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false

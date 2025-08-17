@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwdncw0558ggr"
-path.s3tc="res://.godot/imported/tree.png-bbc0321aa397dfa9af8c9f5048e5f3e8.s3tc.ctex"
+uid="uid://5xvha578vlau"
+path.s3tc="res://.godot/imported/rock.png-72f38fe1759b849c743ffcd55755fd99.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Scenes/3dWorld/tree.png"
-dest_files=["res://.godot/imported/tree.png-bbc0321aa397dfa9af8c9f5048e5f3e8.s3tc.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/rock.png"
+dest_files=["res://.godot/imported/rock.png-72f38fe1759b849c743ffcd55755fd99.s3tc.ctex"]
 
 [params]
 

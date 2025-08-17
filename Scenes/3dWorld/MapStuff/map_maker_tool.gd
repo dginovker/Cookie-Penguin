@@ -4,10 +4,10 @@ extends Node
 @export var bake_now := false:
     set(_v): bake()
 
-@export var source_path = "res://Scenes/3dWorld/terrain_index.png"
-@export var mask0_path  = "res://Scenes/3dWorld/mask0.png"   # RGB carries layers 0..2
-@export var mask1_path  = "res://Scenes/3dWorld/mask1.png"   # RGB carries layers 3..5
-@export var liquid_path = "res://Scenes/3dWorld/liquid.png"  # L8
+@export var source_path = "res://Scenes/3dWorld/MapStuff/terrain_index.png"
+@export var mask0_path  = "res://Scenes/3dWorld/MapStuff/mask0.png"   # RGB carries layers 0..2
+@export var mask1_path  = "res://Scenes/3dWorld/MapStuff/mask1.png"   # RGB carries layers 3..5
+@export var liquid_path = "res://Scenes/3dWorld/MapStuff/liquid.png"  # L8
 @export var tolerance := 0.04
 
 @export var palette := PackedColorArray([

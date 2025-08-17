@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1ochdh03tm0b"
-path="res://.godot/imported/terrain_index.png-61c7aaa15debae10aa7fcd82745f9d40.ctex"
+uid="uid://cwlsek0dtn4xq"
+path="res://.godot/imported/liquid.png-851b2809b224f2c39cdc87c023ff31be.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/3dWorld/terrain_index.png"
-dest_files=["res://.godot/imported/terrain_index.png-61c7aaa15debae10aa7fcd82745f9d40.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/liquid.png"
+dest_files=["res://.godot/imported/liquid.png-851b2809b224f2c39cdc87c023ff31be.ctex"]
 
 [params]
 
@@ -25,10 +25,10 @@ mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
-process/fix_alpha_border=true
+process/fix_alpha_border=false
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

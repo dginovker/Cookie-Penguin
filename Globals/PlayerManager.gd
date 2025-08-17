@@ -18,7 +18,7 @@ func spawn_player(id):
         # Spawn the server player
         var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
         players[id] = player_spawner.spawn(id)
-        players[id].global_position = Vector3(200, 2, 200)
+        players[id].global_position = Vector3(238, 2, 198)
 
 func despawn_player(id):
     assert(multiplayer.is_server())

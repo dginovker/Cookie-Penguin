@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbdcujijqfsg4"
-path="res://.godot/imported/mask1.png-0b9ca1ef614e746ade3fae578570c065.ctex"
+uid="uid://ujd37qctf5k1"
+path="res://.godot/imported/mask0.png-2b3b8611605905b53b57a2bf5543c73a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/3dWorld/mask1.png"
-dest_files=["res://.godot/imported/mask1.png-0b9ca1ef614e746ade3fae578570c065.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/mask0.png"
+dest_files=["res://.godot/imported/mask0.png-2b3b8611605905b53b57a2bf5543c73a.ctex"]
 
 [params]
 
@@ -20,10 +20,10 @@ compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
-compress/channel_pack=0
+compress/channel_pack=1
 mipmaps/generate=false
 mipmaps/limit=-1
-roughness/mode=0
+roughness/mode=1
 roughness/src_normal=""
 process/fix_alpha_border=false
 process/premult_alpha=false

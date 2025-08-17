@@ -33,6 +33,7 @@ func _process(_delta: float) -> void:
     # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler. 
     # Yeah. I win ALL the arguments with myself in the shower.
     update_stats(int(player.xp), player.speed, player.attack, int(player.max_health))
+    _update_debug()
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
@@ -97,3 +98,6 @@ func _stats_button_pressed():
         _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
         %InvenVbox.visible = false
         %StatsVbox.visible = true
+        
+func _update_debug():
+    $RootSplit/Right/TopRightContainer/StatsVbox/Position.text = "Position: " + str(Vector3i(player.global_position))
