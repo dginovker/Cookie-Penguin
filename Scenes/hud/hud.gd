@@ -1,6 +1,8 @@
 class_name HUD
 extends Control
 
+var player: Player3D # the player this HUD is for
+
 @onready var level_label = %level_label
 @onready var health_bar = %hp_TextureProgressBar
 @onready var health_text = %hp_HealthText
@@ -26,6 +28,12 @@ func _ready():
     inven_button.pressed.connect(_inven_button_pressed)
     stats_button.pressed.connect(_stats_button_pressed)
 
+func _process(_delta: float) -> void:
+    # Boohoo, inefficient?
+    # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler. 
+    # Yeah. I win ALL the arguments with myself in the shower.
+    update_stats(int(player.xp), player.speed, player.attack, int(player.max_health))
+
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
 
@@ -44,6 +52,13 @@ func update_xp(xp: int):
     xp_bar.max_value = LevelsMath.xp_for_level(level + 1)
     xp_text.text = "%d/%d" % [xp, LevelsMath.xp_for_level(level + 1)]
 
+func update_stats(xp: int, speed: int, attack: int, life: int):
+    var statsbox := %StatsVbox
+    (statsbox.get_node("Fighting") as Label).text = "Fighting Level: " + str(LevelsMath.get_level(xp))
+    (statsbox.get_node("Speed") as Label).text = "Speed: " + str(speed)
+    (statsbox.get_node("Attack") as Label).text = "Attack: " + str(attack)
+    (statsbox.get_node("Life") as Label).text = "Life: " + str(life)
+
 func add_chat_message(player_name: String, message: String):
     chat_display.append_text("[color=yellow]%s:[/color] %s\n" % [player_name, message])
 
@@ -60,14 +75,11 @@ func _input(event):
 const FOCUS_COLOR := Color("414141")
 const UNFOCUS_COLOR := Color("666666")
 func _inven_button_pressed():
-    print("inven button pressed. Is color: ", _inv_panel_stylebox.bg_color)
     if _inv_panel_stylebox.bg_color.is_equal_approx(FOCUS_COLOR):
-        print("was focused, hiding")
         # Inven was already focused, make the topright panel disappear
         %TopRightContainer.visible = false
         _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
     else:
-        print("Wasn't focused, opening")
         %TopRightContainer.visible = true
         _stats_panel_stylebox.bg_color = UNFOCUS_COLOR
         _inv_panel_stylebox.bg_color = FOCUS_COLOR
@@ -75,7 +87,6 @@ func _inven_button_pressed():
         %InvenVbox.visible = true
     
 func _stats_button_pressed():
-    print("Quack")
     if _stats_panel_stylebox.bg_color.is_equal_approx(FOCUS_COLOR):
         # Inven was already focused, make the topright panel disappear
         %TopRightContainer.visible = false

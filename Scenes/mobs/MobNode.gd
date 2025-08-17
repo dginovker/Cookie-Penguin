@@ -83,7 +83,14 @@ func shoot_at_player(player):
     to_player.y = 0
     var bullet_direction = to_player.normalized()
     var bullet_pos = global_position
-    var bullet_type: BulletData = BulletData.new(bullet_name, bullet_pos, bullet_direction, Yeet.PLAYER_LAYER)
+    var bullet_type: BulletData = BulletData.new(
+            BulletData.get_bullet_damage(bullet_name),
+            BulletData.get_bullet_speed(bullet_name),
+            bullet_name,
+            bullet_pos,
+            bullet_direction,
+            Yeet.PLAYER_LAYER
+        )
     get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 
 func _wander(delta):
@@ -164,6 +171,7 @@ func _die() -> void:
     for player: Player3D in players_in_range:
         if LevelsMath.get_level(player.xp) < LevelsMath.get_level(player.xp + xp_given):
             LazyRPCs.pop_level.rpc(player.get_path())
+            player.level_up()
         else:
             # Looks ugly to give both xp and level up message at the same timeasd
             LazyRPCs.pop_xp.rpc(player.get_path(), xp_given)        

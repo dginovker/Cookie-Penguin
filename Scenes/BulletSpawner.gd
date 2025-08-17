@@ -4,9 +4,9 @@ class_name BulletSpawner
 func _ready():
     spawn_function = spawn_bullet_custom
 
-func spawn_bullet_custom(bullet_str: String):
-    var bullet_data: BulletData = BulletData.from_string(bullet_str)
-    assert(bullet_data != null, "The bullet made from " + bullet_str + " was null!")
+func spawn_bullet_custom(bullet_dict: Dictionary):
+    var bullet_data: BulletData = BulletData.from_dict(bullet_dict)
+    assert(bullet_data != null, "The bullet made from " + str(bullet_dict) + " was null!")
 
     # Create the appropriate bullet scene
     var bullet_scene = load("res://Scenes/bullet/Bullet.tscn")
@@ -22,4 +22,4 @@ func spawn_bullet(bullet_type: BulletData):
     if not multiplayer.is_server():
         return
     
-    spawn(bullet_type.to_string())
+    spawn(bullet_type.to_dict())

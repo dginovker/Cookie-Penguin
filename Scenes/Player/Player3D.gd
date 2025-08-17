@@ -6,8 +6,9 @@ extends CharacterBody3D
 @onready var autofire_area = $AutofireArea3D
 @onready var healthbar := $HealthBar
 
+@export var attack := 0
 @export var speed := 6
-@export var max_health := 99.0
+@export var max_health := 100.0
 @export var xp := 0
 
 var health = 100.0
@@ -56,6 +57,7 @@ func setup_hud():
     hud_instance = hud_scene.instantiate()
     ui_layer.add_child(hud_instance)
     hud_instance.update_health(health, max_health)
+    hud_instance.player = self
 
 func _setup_camera():
     $Camera3D.make_current()
@@ -91,7 +93,17 @@ func _physics_process(delta):
         bullet_pos.y = 2
         var aim_direction: Vector3 = (_get_nearest_mob().global_position - global_position).normalized() 
         aim_direction.y = 0
-        bulletspawner.spawn_bullet(BulletData.new(WeaponHelper.get_bullet_name(peer_id), bullet_pos, aim_direction, Yeet.MOB_LAYER))
+        var bullet_name := WeaponHelper.get_bullet_name(peer_id)
+        bulletspawner.spawn_bullet(
+            BulletData.new(
+                attack + BulletData.get_bullet_damage(bullet_name),
+                BulletData.get_bullet_speed(bullet_name),
+                bullet_name,
+                bullet_pos,
+                aim_direction,
+                Yeet.MOB_LAYER
+            )
+        )
         fire_cooldown = WeaponHelper.get_cooldown(peer_id)
 
 func _process(delta):
@@ -126,6 +138,12 @@ func _process(delta):
     # Rotate camera around y axis
     var camera_vector = Vector2(Input.get_action_strength("clockwise"), Input.get_action_strength("counter_clockwise")).normalized()
     $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
+
+func level_up():
+    assert(is_multiplayer_authority())
+    speed += 1
+    attack += 1
+    max_health += 5
 
 # TODO - Could I possibly replace this with MultiplayerSync?
 @rpc("any_peer", "call_local", "unreliable")

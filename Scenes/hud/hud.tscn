@@ -285,9 +285,21 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="level_label" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+[node name="Fighting" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
-text = "I'm a stats panel"
+text = "Fighting Level: 0"
+
+[node name="Speed" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "Speed: 0"
+
+[node name="Attack" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "Attack: 0"
+
+[node name="Life" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "Life: 0"
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
 layout_mode = 1
