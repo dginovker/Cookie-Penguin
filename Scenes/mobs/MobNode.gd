@@ -58,7 +58,7 @@ func _physics_process(delta):
 
     shoot_timer -= delta
     pause_timer -= delta
-    velocity.y -= 1000
+    global_position.y = 0.01 # TODO test if this is required and remove if we can just set it at spawn
 
     var target_player: Player3D = _get_nearest_player()
     if target_player:
