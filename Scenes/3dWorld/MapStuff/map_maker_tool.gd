@@ -1,3 +1,4 @@
+# MapBake.gd
 @tool
 extends Node
 
@@ -5,75 +6,77 @@ extends Node
     set(_v): bake()
 
 var source_path  = "res://Scenes/3dWorld/MapStuff/terrain_index.png"
-var mask0_path   = "res://Scenes/3dWorld/MapStuff/mask0.png"
-var mask1_path   = "res://Scenes/3dWorld/MapStuff/mask1.png"
-var liquids_path = "res://Scenes/3dWorld/MapStuff/liquids.png"
+var out_dir      = "res://Scenes/3dWorld/MapStuff"
 
-# byte tolerance per channel (0..255). 0 = exact; bump to 2–4 if your editor nudges colors.
-var tol8 := 0
+var ppm := 1.0            # pixels per meter in your painted map
+var tol8 := 0             # 0..4 if your editor nudges channel values
 
-# terrain palette (0..5 -> mask0.rgb/mask1.rgb)
-var palette := PackedColorArray([
-    Color.html("#96F06E"), # 0 grass
-    Color.html("#FFFFBE"), # 1 sand
-    Color.html("#4BAF00"), # 2 forest
-    Color.html("#4C4C4C"), # 3 plateau
-    Color.html("#FFFFFF"), # 4 ice
-    Color.html("#4E4E4E")  # 5 unused (for now)
+# up to 9 layers; order matters (0..8)
+var layer_names := PackedStringArray([
+    "grass","sand","forest","plateau","ice","desolate","shallow","deep","lava"
+])
+var layer_colors := PackedColorArray([
+    Color.html("#96F06E"),
+    Color.html("#FFFFBE"),
+    Color.html("#4BAF00"),
+    Color.html("#4C4C4C"),
+    Color.html("#FFFFFF"),
+    Color.html("#4E4E4E"),
+    Color.html("#6EC8FA"),
+    Color.html("#143DA5"),
+    Color.html("#FFA500")
 ])
 
-# liquids (exact swatches in terrain_index.png)
-var shallow_col := Color.html("#6EC8FA")
-var deep_col    := Color.html("#143DA5")
-var lava_col    := Color.html("#FFA500")
+func _mask_path(i:int)->String: return out_dir + "/mask%d.png" % i
+func _tres_path()->String: return out_dir + "/TerrainMask.tres"
 
-func _to_rgb8(c: Color) -> Vector3i:
-    return Vector3i(int(round(c.r*255.0)), int(round(c.g*255.0)), int(round(c.b*255.0)))
-
-func _eq_rgb8(a: Vector3i, b: Vector3i, t: int) -> bool:
-    return abs(a.x-b.x) <= t && abs(a.y-b.y) <= t && abs(a.z-b.z) <= t
+func _rgb8(c:Color)->Vector3i: return Vector3i(int(round(c.r*255.0)), int(round(c.g*255.0)), int(round(c.b*255.0)))
+func _eq(a:Vector3i,b:Vector3i,t:int)->bool: return abs(a.x-b.x)<=t && abs(a.y-b.y)<=t && abs(a.z-b.z)<=t
 
 func bake():
-    var tex := load(source_path) as Texture2D
-    var img := tex.get_image(); img.convert(Image.FORMAT_RGBA8)
+    var img := (load(source_path) as Texture2D).get_image(); img.convert(Image.FORMAT_RGBA8)
     var w = img.get_width(); var h = img.get_height()
 
-    var m0 := Image.create(w,h,false,Image.FORMAT_RGBA8); m0.fill(Color(0,0,0,1))
-    var m1 := Image.create(w,h,false,Image.FORMAT_RGBA8); m1.fill(Color(0,0,0,1))
-    var li := Image.create(w,h,false,Image.FORMAT_RGB8);  li.fill(Color(0,0,0,1))
+    var masks := [
+        Image.create(w,h,false,Image.FORMAT_RGBA8),
+        Image.create(w,h,false,Image.FORMAT_RGBA8),
+        Image.create(w,h,false,Image.FORMAT_RGBA8)
+    ]
+    for m in masks: m.fill(Color(0,0,0,1))
 
-    var p8 : Array = []
-    for p in palette: p8.append(_to_rgb8(p))
-    var sh8 = _to_rgb8(shallow_col)
-    var dp8 = _to_rgb8(deep_col)
-    var lv8 = _to_rgb8(lava_col)
+    var pal8:Array = []; for c in layer_colors: pal8.append(_rgb8(c))
 
     for y in h:
         for x in w:
-            var v := _to_rgb8(img.get_pixel(x,y))
-
-            if _eq_rgb8(v, sh8, tol8): li.set_pixel(x,y, Color(1,0,0)); continue
-            if _eq_rgb8(v, dp8, tol8): li.set_pixel(x,y, Color(0,1,0)); continue
-            if _eq_rgb8(v, lv8, tol8): li.set_pixel(x,y, Color(0,0,1)); continue
-
-            var best = 1e12; var idx = 0
-            for i in p8.size():
-                var pv: Vector3i = p8[i]
-                var d = (v.x-pv.x)*(v.x-pv.x) + (v.y-pv.y)*(v.y-pv.y) + (v.z-pv.z)*(v.z-pv.z)
+            var v := _rgb8(img.get_pixel(x,y))
+            var best := 1e12; var idx := 0
+            for i in pal8.size():
+                var p:Vector3i = pal8[i]
+                var d = (v.x-p.x)*(v.x-p.x) + (v.y-p.y)*(v.y-p.y) + (v.z-p.z)*(v.z-p.z)
                 if d < best: best = d; idx = i
+            if !_eq(v, pal8[idx], tol8): continue
 
-            if idx < 3:
-                var p0 = m0.get_pixel(x,y)
-                if idx == 0: p0.r = 1.0
-                elif idx == 1: p0.g = 1.0
-                else: p0.b = 1.0
-                m0.set_pixel(x,y, p0)
-            else:
-                var p1 = m1.get_pixel(x,y)
-                if idx == 3: p1.r = 1.0
-                elif idx == 4: p1.g = 1.0
-                else: p1.b = 1.0
-                m1.set_pixel(x,y, p1)
+            var mi = idx / 3          # which mask image (0,1,2)
+            var ch = idx % 3          # which channel   (R,G,B)
+            var px = masks[mi].get_pixel(x,y)
+            if ch==0: px.r=1.0
+            elif ch==1: px.g=1.0
+            else: px.b=1.0
+            masks[mi].set_pixel(x,y, px)
 
-    m0.save_png(mask0_path); m1.save_png(mask1_path); li.save_png(liquids_path)
+    # write PNGs for materials
+    for i in 3: masks[i].save_png(_mask_path(i))
+
+    # build ImageTextures directly; no importer race
+    var T0 := ImageTexture.create_from_image(masks[0])
+    var T1 := ImageTexture.create_from_image(masks[1])
+    var T2 := ImageTexture.create_from_image(masks[2])
+
+    # write a shared resource for gameplay sampling
+    var tm := TerrainMask.new()
+    tm.ppm = ppm
+    tm.origin = Vector2.ZERO     # you set this per-scene once, see below
+    tm.mask0 = T0; tm.mask1 = T1; tm.mask2 = T2
+    tm.layer_names = layer_names
+    ResourceSaver.save(tm, _tres_path())
     print("baked")

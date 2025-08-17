@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vkvt7m0uqp61"
-path.s3tc="res://.godot/imported/mask1.png-54db372cdd13e4014369d975b37b1a2a.s3tc.ctex"
+uid="uid://dorphu7s1xdgl"
+path.s3tc="res://.godot/imported/mask2.png-679d68922ca04dab39be74535fdd5bab.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Scenes/3dWorld/MapStuff/mask1.png"
-dest_files=["res://.godot/imported/mask1.png-54db372cdd13e4014369d975b37b1a2a.s3tc.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/mask2.png"
+dest_files=["res://.godot/imported/mask2.png-679d68922ca04dab39be74535fdd5bab.s3tc.ctex"]
 
 [params]
 
