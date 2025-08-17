@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c28adshno1b2m"
-path="res://.godot/imported/LeftButton.png-b9f38ead51b8fb852e8602e5182d3482.ctex"
+uid="uid://by23u3v8os63f"
+path="res://.godot/imported/backpack-svgrepo-com.png-a586ed066091066c50b6339f1661c53a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/hud/LeftButton.png"
-dest_files=["res://.godot/imported/LeftButton.png-b9f38ead51b8fb852e8602e5182d3482.ctex"]
+source_file="res://Scenes/hud/backpack-svgrepo-com.png"
+dest_files=["res://.godot/imported/backpack-svgrepo-com.png-a586ed066091066c50b6339f1661c53a.ctex"]
 
 [params]
 

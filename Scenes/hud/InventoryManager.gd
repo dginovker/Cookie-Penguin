@@ -1,7 +1,7 @@
 extends VBoxContainer
 class_name InventoryManager
 
-@onready var items_panel: PanelContainer = $"../.."          # Right/ItemsContainer
+@onready var items_panel: PanelContainer = $"../.."          # Right/TopRightContainer
 @onready var items_vbox: VBoxContainer   = $".."
 @onready var grids := [
     $"GearVBoxContainer/GearGridContainer",
@@ -43,7 +43,7 @@ func _request_layout(): call_deferred("_layout")
 func _panel_content_size() -> Vector2:
     var vp := get_viewport_rect().size
     var right := items_panel.get_parent() as Control
-    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (items_panel.anchor_right - items_panel.anchor_left)   # 20% × ItemsContainer’s width fraction (here 1.0)
+    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (items_panel.anchor_right - items_panel.anchor_left)   # 20% × TopRightContainer’s width fraction (here 1.0)
     var outer_h := vp.y * (items_panel.anchor_bottom - items_panel.anchor_top)                                              # 70% height in your scene
     var sb := items_panel.get_theme_stylebox("panel", "PanelContainer")
     return Vector2(

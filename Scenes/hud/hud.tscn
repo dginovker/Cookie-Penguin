@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=14 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -7,15 +7,18 @@
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/virtual_joystick/textures/joystick_base_outline.png" id="5_j7wy3"]
+[ext_resource type="StyleBox" uid="uid://d8nma1hhk2b8" path="res://Scenes/hud/ButtonPanel.tres" id="6_ove2u"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/virtual_joystick/textures/joystick_tip_arrows.png" id="6_ro43y"]
+[ext_resource type="Texture2D" uid="uid://c4pjae0a7ex80" path="res://Scenes/hud/levels.png" id="7_3t415"]
+[ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
 content_margin_top = 5.0
 content_margin_bottom = 20.0
 bg_color = Color(0.497172, 0.475126, 0.392239, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_4mb1w"]
-font_size = 32
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3t415"]
+bg_color = Color(0.2549, 0.2549, 0.2549, 1)
 
 [node name="HUD_control" type="Control" groups=["hud"]]
 layout_mode = 3
@@ -60,7 +63,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 
-[node name="ItemsContainer" type="PanelContainer" parent="RootSplit/Right"]
+[node name="TopRightContainer" type="PanelContainer" parent="RootSplit/Right"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -69,18 +72,19 @@ anchor_bottom = 0.7
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_4mb1w")
 
-[node name="vbox" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer"]
+[node name="InvenVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
+unique_name_in_owner = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="level_label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox"]
+[node name="level_label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Level: 0"
 
-[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/ItemsContainer/vbox"]
+[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
@@ -88,7 +92,7 @@ theme_override_styles/fill = ExtResource("2_ro43y")
 value = 60.0
 show_percentage = false
 
-[node name="hp_HealthText" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/hp_TextureProgressBar"]
+[node name="hp_HealthText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/hp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -99,7 +103,7 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/ItemsContainer/vbox"]
+[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
@@ -107,7 +111,7 @@ theme_override_styles/fill = ExtResource("3_l0dsp")
 value = 30.0
 show_percentage = false
 
-[node name="xp_XpText" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/xp_TextureProgressBar"]
+[node name="xp_XpText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/xp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -118,163 +122,176 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InventoryManager" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox"]
+[node name="InventoryManager" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("3_vjapc")
 
-[node name="GearVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
+[node name="GearVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
 layout_mode = 2
 
-[node name="GearGridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-columns = 4
-
-[node name="Weapon" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Armor" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Ring" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Sigil" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="BackpackVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
-layout_mode = 2
-
-[node name="BackpackGridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer"]
+[node name="GearGridContainer" type="GridContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Slot1" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Weapon" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot2" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Armor" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot3" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Ring" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot4" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
+[node name="Sigil" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot5" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Slot6" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Slot7" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Slot8" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="LootVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager"]
+[node name="BackpackVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
+[node name="Label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer"]
+[node name="BackpackGridContainer" type="GridContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Slot1" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot1" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot2" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot2" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot3" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot3" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot4" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot4" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot5" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot5" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot6" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot6" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot7" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot7" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Slot8" type="TextureButton" parent="RootSplit/Right/ItemsContainer/vbox/InventoryManager/LootVBoxContainer/GridContainer"]
+[node name="Slot8" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer/BackpackGridContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ButtonsContainer" type="Control" parent="RootSplit/Right"]
+[node name="LootVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 4
+
+[node name="Slot1" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot2" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot3" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot4" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot5" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot6" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot7" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Slot8" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer/GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StatsVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
+unique_name_in_owner = true
+visible = false
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="level_label" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+layout_mode = 2
+text = "I'm a stats panel"
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
 layout_mode = 1
+anchors_preset = -1
 anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 0.8
@@ -282,22 +299,13 @@ grow_horizontal = 2
 size_flags_vertical = 10
 size_flags_stretch_ratio = 0.1
 
-[node name="HideButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer"]
+[node name="InvenButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsContainer"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
-texture_normal = ExtResource("4_4mb1w")
-texture_pressed = ExtResource("4_4mb1w")
-ignore_texture_size = true
-stretch_mode = 0
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3t415")
 
-[node name="HideLabel" type="Label" parent="RootSplit/Right/ButtonsContainer/HideButton"]
+[node name="InvenButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer/InvenButtonPanel"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -305,10 +313,31 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Hide"
-label_settings = SubResource("LabelSettings_4mb1w")
-horizontal_alignment = 1
-vertical_alignment = 1
+size_flags_horizontal = 3
+texture_normal = ExtResource("8_ove2u")
+texture_pressed = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StatsButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("6_ove2u")
+
+[node name="StatsButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer/StatsButtonPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("7_3t415")
+texture_pressed = ExtResource("4_4mb1w")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="JoystickSlot" type="Control" parent="RootSplit/Right"]
 unique_name_in_owner = true

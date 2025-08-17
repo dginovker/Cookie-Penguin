@@ -9,14 +9,22 @@ extends Control
 @onready var chat_display = %chatdisplay_RichTextLabel
 @onready var chat_input = %chatinput_LineEdit
 @onready var inventory_manager: InventoryManager = %InventoryManager
-@onready var items_container: PanelContainer = %ItemsContainer
-@onready var hide_button: TextureButton = %HideButton
-@onready var hide_label: Label = %HideLabel
+@onready var items_container: PanelContainer = %TopRightContainer
+@onready var inven_button: TextureButton = %InvenButton
+@onready var inven_button_panel: Panel = %InvenButtonPanel
+@onready var stats_button: TextureButton = %StatsButton
+@onready var stats_button_panel: Panel = %StatsButtonPanel
+
+var _inv_panel_stylebox: StyleBoxFlat
+var _stats_panel_stylebox: StyleBoxFlat
 
 func _ready():
-    add_to_group("hud")
     chat_input.text_submitted.connect(_on_chat_submitted)
-    hide_button.pressed.connect(_hide_button_pressed)
+    
+    _inv_panel_stylebox = inven_button_panel.get_theme_stylebox("panel")
+    _stats_panel_stylebox = stats_button_panel.get_theme_stylebox("panel")
+    inven_button.pressed.connect(_inven_button_pressed)
+    stats_button.pressed.connect(_stats_button_pressed)
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
@@ -49,6 +57,32 @@ func _input(event):
         chat_input.grab_focus()
         get_viewport().set_input_as_handled()
 
-func _hide_button_pressed():
-    items_container.visible = !items_container.visible
-    hide_label.text = "Hide" if hide_label.text == "Show" else "Show"
+const FOCUS_COLOR := Color("414141")
+const UNFOCUS_COLOR := Color("666666")
+func _inven_button_pressed():
+    print("inven button pressed. Is color: ", _inv_panel_stylebox.bg_color)
+    if _inv_panel_stylebox.bg_color.is_equal_approx(FOCUS_COLOR):
+        print("was focused, hiding")
+        # Inven was already focused, make the topright panel disappear
+        %TopRightContainer.visible = false
+        _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
+    else:
+        print("Wasn't focused, opening")
+        %TopRightContainer.visible = true
+        _stats_panel_stylebox.bg_color = UNFOCUS_COLOR
+        _inv_panel_stylebox.bg_color = FOCUS_COLOR
+        %StatsVbox.visible = false
+        %InvenVbox.visible = true
+    
+func _stats_button_pressed():
+    print("Quack")
+    if _stats_panel_stylebox.bg_color.is_equal_approx(FOCUS_COLOR):
+        # Inven was already focused, make the topright panel disappear
+        %TopRightContainer.visible = false
+        _stats_panel_stylebox.bg_color = UNFOCUS_COLOR
+    else:
+        %TopRightContainer.visible = true
+        _stats_panel_stylebox.bg_color = FOCUS_COLOR
+        _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
+        %InvenVbox.visible = false
+        %StatsVbox.visible = true

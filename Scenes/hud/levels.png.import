@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqsn82arv0bpr"
-path="res://.godot/imported/LeftButtonPressed.png-17b366aa41c771f9dc7065d9d19bc7a1.ctex"
+uid="uid://c4pjae0a7ex80"
+path="res://.godot/imported/levels.png-58fde46dd30510ae11e2290351776b6e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/hud/LeftButtonPressed.png"
-dest_files=["res://.godot/imported/LeftButtonPressed.png-17b366aa41c771f9dc7065d9d19bc7a1.ctex"]
+source_file="res://Scenes/hud/levels.png"
+dest_files=["res://.godot/imported/levels.png-58fde46dd30510ae11e2290351776b6e.ctex"]
 
 [params]
 
