@@ -7,7 +7,7 @@ extends CharacterBody3D
 @onready var healthbar := $HealthBar
 
 @export var attack := 0
-@export var speed := 6
+@export var speed := 30.5
 @export var max_health := 100.0
 @export var xp := 0
 
