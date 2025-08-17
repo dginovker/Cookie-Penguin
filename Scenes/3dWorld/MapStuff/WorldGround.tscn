@@ -1,14 +1,18 @@
-[gd_scene load_steps=14 format=3 uid="uid://cryp8mruwlu44"]
+[gd_scene load_steps=18 format=3 uid="uid://cryp8mruwlu44"]
 
 [ext_resource type="Shader" uid="uid://b1th5lxhjq71m" path="res://Scenes/3dWorld/MapStuff/ground6_layers.gdshader" id="1_yme6d"]
-[ext_resource type="Texture2D" uid="uid://cwlsek0dtn4xq" path="res://Scenes/3dWorld/MapStuff/liquid.png" id="2_hcau4"]
 [ext_resource type="Texture2D" uid="uid://ujd37qctf5k1" path="res://Scenes/3dWorld/MapStuff/mask0.png" id="3_5q6v3"]
 [ext_resource type="Texture2D" uid="uid://bbdcujijqfsg4" path="res://Scenes/3dWorld/MapStuff/mask1.png" id="4_u2lvf"]
 [ext_resource type="Texture2D" uid="uid://d0d16afklm1ka" path="res://Scenes/3dWorld/MapStuff/grass.png" id="5_u2lvf"]
+[ext_resource type="Texture2D" uid="uid://ds4ujrse16lbr" path="res://Scenes/3dWorld/MapStuff/forest.png" id="6_w2cpr"]
 [ext_resource type="Texture2D" uid="uid://mp7agt5p56h1" path="res://Scenes/3dWorld/MapStuff/sand.png" id="6_w5y2v"]
-[ext_resource type="Texture2D" uid="uid://5xvha578vlau" path="res://Scenes/3dWorld/MapStuff/rock.png" id="7_u3uen"]
+[ext_resource type="Texture2D" uid="uid://c5a0roq3hp5vl" path="res://Scenes/3dWorld/MapStuff/rock_plateau.png" id="7_eh3eq"]
+[ext_resource type="Texture2D" uid="uid://b11psdduxp0r1" path="res://Scenes/3dWorld/MapStuff/ice_plateau.png" id="8_2xtj8"]
+[ext_resource type="Texture2D" uid="uid://dkrnqte75620k" path="res://Scenes/3dWorld/MapStuff/liquids.png" id="8_pjrrj"]
 [ext_resource type="Shader" uid="uid://8wefxkplyx0k" path="res://Scenes/3dWorld/MapStuff/liquidshader.gdshader" id="8_w5y2v"]
+[ext_resource type="Texture2D" uid="uid://c17r6iejgmq0k" path="res://Scenes/3dWorld/MapStuff/deep_water.png" id="9_866xo"]
 [ext_resource type="Texture2D" uid="uid://cbtgdhosmthao" path="res://Scenes/3dWorld/MapStuff/water.png" id="9_if25e"]
+[ext_resource type="Texture2D" uid="uid://cqqqjb3k6ktg" path="res://Scenes/3dWorld/MapStuff/lava.png" id="10_w2cpr"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tcky0"]
 size = Vector2(256, 256)
@@ -18,17 +22,17 @@ render_priority = 0
 shader = ExtResource("1_yme6d")
 shader_parameter/t0 = ExtResource("5_u2lvf")
 shader_parameter/t1 = ExtResource("6_w5y2v")
-shader_parameter/t2 = ExtResource("7_u3uen")
+shader_parameter/t2 = ExtResource("6_w2cpr")
+shader_parameter/t3 = ExtResource("7_eh3eq")
+shader_parameter/t4 = ExtResource("8_2xtj8")
 shader_parameter/mask0 = ExtResource("3_5q6v3")
 shader_parameter/mask1 = ExtResource("4_u2lvf")
-shader_parameter/liquid_mask = ExtResource("2_hcau4")
+shader_parameter/mask_liquids = ExtResource("8_pjrrj")
 shader_parameter/tiling0 = Vector3(1, 1, 1)
 shader_parameter/tiling1 = Vector3(1, 1, 1)
 shader_parameter/detail_tiling = 8.0
 shader_parameter/map_origin = Vector2(0, 0)
 shader_parameter/ppm = 1.0
-shader_parameter/mask_soften = 0.0
-shader_parameter/cutout = 1.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_u3uen"]
 size = Vector2(256, 256)
@@ -36,12 +40,18 @@ size = Vector2(256, 256)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ypbem"]
 render_priority = 0
 shader = ExtResource("8_w5y2v")
-shader_parameter/water_tex = ExtResource("9_if25e")
-shader_parameter/liquid_mask = ExtResource("2_hcau4")
+shader_parameter/tex_shallow = ExtResource("9_if25e")
+shader_parameter/tex_deep = ExtResource("9_866xo")
+shader_parameter/tex_lava = ExtResource("10_w2cpr")
+shader_parameter/mask_liquids = ExtResource("8_pjrrj")
 shader_parameter/map_origin = Vector2(0, 0)
 shader_parameter/ppm = 1.0
-shader_parameter/water_tiling = 1.0
-shader_parameter/scroll = Vector2(-1.375, 0.03)
+shader_parameter/tile_shallow = 1.0
+shader_parameter/tile_deep = 1.0
+shader_parameter/tile_lava = 1.0
+shader_parameter/scroll_shallow = Vector2(0.05, 0.03)
+shader_parameter/scroll_deep = Vector2(0.03, 0.02)
+shader_parameter/scroll_lava = Vector2(0.07, 0.05)
 shader_parameter/shore_tint_color = Vector3(0.45, 0.75, 0.95)
 shader_parameter/shore_tint_strength = 0.35
 shader_parameter/shore_edge = 0.08

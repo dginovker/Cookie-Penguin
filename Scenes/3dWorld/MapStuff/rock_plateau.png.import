@@ -2,30 +2,31 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwlsek0dtn4xq"
-path="res://.godot/imported/liquid.png-851b2809b224f2c39cdc87c023ff31be.ctex"
+uid="uid://c5a0roq3hp5vl"
+path.s3tc="res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
-source_file="res://Scenes/3dWorld/MapStuff/liquid.png"
-dest_files=["res://.godot/imported/liquid.png-851b2809b224f2c39cdc87c023ff31be.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/rock_plateau.png"
+dest_files=["res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
-process/fix_alpha_border=false
+process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false

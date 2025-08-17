@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c17r6iejgmq0k"
-path.s3tc="res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.s3tc.ctex"
+uid="uid://dkrnqte75620k"
+path.s3tc="res://.godot/imported/liquids.png-a83f90a18481223051facad0fdd10756.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Scenes/3dWorld/MapStuff/deep_water.png"
-dest_files=["res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.s3tc.ctex"]
+source_file="res://Scenes/3dWorld/MapStuff/liquids.png"
+dest_files=["res://.godot/imported/liquids.png-a83f90a18481223051facad0fdd10756.s3tc.ctex"]
 
 [params]
 
