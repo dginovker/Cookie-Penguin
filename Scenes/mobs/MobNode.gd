@@ -151,7 +151,7 @@ func take_damage(amount):
     if health < 0:
         return
 
-    LazyRPCs.pop_damage.rpc(global_position, amount, max(health, 0) / max_health) # show on all peers
+    LazyRPCs.pop_damage.rpc(get_path(), amount, max(health, 0) / max_health) # show on all peers
 
     health -= amount
     if health < 0:
@@ -162,6 +162,10 @@ func _die() -> void:
     loot_spawner.spawn_from_drop_table(global_position, drop_table)
 
     for player: Player3D in players_in_range:
-        LazyRPCs.pop_xp.rpc(player.global_position, xp_given)
+        if LevelsMath.get_level(player.xp) < LevelsMath.get_level(player.xp + xp_given):
+            LazyRPCs.pop_level.rpc(player.get_path())
+        else:
+            # Looks ugly to give both xp and level up message at the same time
+            LazyRPCs.pop_xp.rpc(player.get_path(), xp_given)        
         player.xp += xp_given
     queue_free()

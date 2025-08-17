@@ -7,13 +7,28 @@ extends Node
 const POP_TEXT := preload("res://Scenes/Uncommon/PopText/PopText.tscn")
 
 @rpc("any_peer", "call_local", "unreliable")
-func pop_damage(world_pos: Vector3, amount: int, hp_percent: float):
+func pop_damage(path: NodePath, amount: int, hp_percent: float):
+    var node := get_node_or_null(path)
+    if not node:
+        return
     var text = POP_TEXT.instantiate()
     get_tree().get_first_node_in_group("pop_texts").add_child(text)
-    text.pop_damage(world_pos, "-" + str(amount), hp_percent)
+    text.pop_damage(node, "-" + str(amount), hp_percent)
 
 @rpc("any_peer", "call_local", "unreliable")
-func pop_xp(world_pos: Vector3, xp: int):
+func pop_xp(path: NodePath, xp: int):
+    var node := get_node_or_null(path)
+    if not node:
+        return
     var text = POP_TEXT.instantiate()
     get_tree().get_first_node_in_group("pop_texts").add_child(text)
-    text.pop_xp(world_pos, "+" + str(xp) + " XP")
+    text.pop_xp(node, "+" + str(xp) + " XP")
+
+@rpc("any_peer", "call_local", "unreliable")
+func pop_level(path: NodePath):
+    var node := get_node_or_null(path)
+    if not node:
+        return
+    var text = POP_TEXT.instantiate()
+    get_tree().get_first_node_in_group("pop_texts").add_child(text)
+    text.pop_level(node)
