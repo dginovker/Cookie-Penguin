@@ -1,20 +1,24 @@
 extends Node3D
 
-# This code basically makes any sprite that is lower down on the screen
-# render ABOVE any sprite that visually appears higher on the screen
-
 @export var sprite: SpriteBase3D
+const SHADER = preload("res://Scenes/Player/cutwaist3d.gdshader")
+var sm := ShaderMaterial.new()
+
+func _ready():
+    sm.shader = SHADER
+    sprite.material_override = sm
+    _bind_tex()
 
 func _process(_delta):
-    var camera = get_viewport().get_camera_3d()
-    if camera == null:
-        return
+    if sprite is AnimatedSprite3D:
+        _bind_tex()
 
-    # Convert world position to screen position
-    var screen_pos = camera.unproject_position(global_transform.origin)
-    # Usually I could just set render_priority to screen_pos.y, but the render server doesn't have that large range..
-    
-    var screen_height = get_viewport().size.y
-    var y_normalized = clamp(screen_pos.y / screen_height, 0.0, 1.0)
-    var priority = int(lerp(RenderingServer.MATERIAL_RENDER_PRIORITY_MIN, RenderingServer.MATERIAL_RENDER_PRIORITY_MAX, y_normalized))
-    sprite.render_priority = priority
+    var cam = get_viewport().get_camera_3d()
+    var screen_pos = cam.unproject_position(global_transform.origin)
+    var y = clamp(screen_pos.y / get_viewport().size.y, 0.0, 1.0)
+    sprite.render_priority = int(lerp(RenderingServer.MATERIAL_RENDER_PRIORITY_MIN, RenderingServer.MATERIAL_RENDER_PRIORITY_MAX, y))
+
+func _bind_tex():
+    sm.set_shader_parameter("sprite_tex",
+        sprite.texture if sprite is Sprite3D
+        else sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame))

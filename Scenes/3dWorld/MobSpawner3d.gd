@@ -51,8 +51,8 @@ func _bake_positions(layers: PackedInt32Array, y: float)->Array[Vector3]:
                     idx = k
             for L in layers:
                 if idx == L:
-                    var wx = terrain.origin.x + (xx + 0.5) / terrain.ppm
-                    var wz = terrain.origin.y + (yy + 0.5) / terrain.ppm
+                    var wx = terrain.origin.x + (xx + 0.5)
+                    var wz = terrain.origin.y + (yy + 0.5)
                     out.append(Vector3(wx, y, wz))
                     break
     return out

@@ -11,7 +11,7 @@ Game Quirks:
 The world is 3D, and my Camera is a top-down view with rotation -90, 0, 0. The camera is rotated by changing the rotation y value.
 For the UI, the Project Settings->Stretch->Mode is set to "canvas_items" and Project Settings->Stretch->Aspect is set to "Expand"
 If using Shaders, remember Godot 4's Shader language renamed quite a few identifiers, like WORLD_MATRIX to MODEL_MATRIX, WORLD_NORMAL_MATRIX to MODEL_NORMAL_MATRIX, CAMERA_MATRIX to INV_VIEW_MATRIX, INV_CAMERA_MATRIX to VIEW_MATRIX, etc
-
+World uses splatmask PNGs (mask0/1/2; RGB layers; 1 px = 1 m) aligned by map_origin on a single XZ PlaneMesh; shaders sample world XZ via MODEL_MATRIX with per-meter tiling and overlay water, and gameplay (spawns, deep-water block, collisions) must read these same masks.
 
 Style guidelines:
 Do not write defensive code (don't do any null checks). Write code as concise as possible with sane variable names. Do not declare variables when one-liners suffice.

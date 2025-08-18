@@ -23,6 +23,17 @@ var mobs_in_range: Array[Node3D] = []
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
 var hud_instance: HUD
 
+# Water stuff. Todo: Clean it up
+@export var terrain: TerrainMask
+@export var shallow_idx := 6
+@export var deep_idx := 7
+@export var sink_depth := 0.4     # meters (waist)
+@export var sink_smooth := 10.0   # lerp speed
+@export var deep_threshold := 0.5 # 0..1 cutoff
+
+var sink_y := 0.0
+
+
 func _enter_tree() -> void:
     if get_multiplayer().is_server():
         $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
@@ -68,22 +79,7 @@ func _physics_process(delta):
     if not multiplayer.is_server():
         return
 
-    velocity = Vector3(input_vector.x * speed, -100, input_vector.z * speed)
-
-    # Direction and raycast update
-    var dir := Vector3(input_vector.x, 0, input_vector.z)
-    if dir.length() > 0.01:
-        last_input_direction = dir.normalized()
-    $HeadRayCast3D.target_position = Vector3(input_vector.x, 0, input_vector.z)
-    $HeadRayCast3D.force_raycast_update()
-
-    # Climb logic
-    if is_on_floor() and is_on_wall() and not $HeadRayCast3D.is_colliding():
-        global_translate(Vector3.UP * 1.1)
-        
-    global_position.y = 2
-    #floor_snap_length = 1.1
-    #apply_floor_snap() # Without this, running against a wall you can't climb up makes you go megaspastic
+    velocity = Vector3(input_vector.x * speed, 0, input_vector.z * speed)
     move_and_slide()
 
     # Handle shooting
@@ -110,6 +106,16 @@ func _physics_process(delta):
 func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)
     healthbar.update_location(global_position)
+    
+    # compute shallow weight at current XZ
+    var xz = Vector2(global_position.x, global_position.z)
+    var ws = terrain.weight_at_idx(xz, shallow_idx)
+    var target_sink = -sink_depth * clamp(ws, 0.0, 1.0)
+    sink_y += (target_sink - sink_y) * min(1.0, delta * sink_smooth)
+
+    # offset visuals only
+    animated_sprite.position.y = sink_y
+
     
     # Only the owning client handles input and hud stuff
     if not is_multiplayer_authority():

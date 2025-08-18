@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=12 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/Player/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
+[ext_resource type="Resource" uid="uid://bij340rnp055b" path="res://Scenes/3dWorld/MapStuff/TerrainMask.tres" id="2_gqm3a"]
 [ext_resource type="Texture2D" uid="uid://cqv2gr4x48o1o" path="res://Scenes/Player/walk2.png" id="3_ggayc"]
 [ext_resource type="Texture2D" uid="uid://db0m4e286ui22" path="res://Scenes/Player/walk1.png" id="3_hkfi6"]
 [ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="6_2n8pm"]
@@ -62,9 +63,10 @@ radius = 1.0
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 collision_layer = 4
 script = ExtResource("1_awgpe")
+terrain = ExtResource("2_gqm3a")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." node_paths=PackedStringArray("sprite")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+transform = Transform3D(1.2, 0, 0, 0, -5.24537e-08, 1.2, 0, -1.2, -5.24537e-08, 0, 0, 0)
 billboard = 1
 texture_filter = 4
 sprite_frames = SubResource("SpriteFrames_uq6qx")
