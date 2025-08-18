@@ -14,8 +14,11 @@ func _ready():
     else:
         # We are the server
         PlayerManager.start_listening()
-        peer.create_server(10000)
-
+        var err: Error = peer.create_server(10000)
+        if err != OK:
+            push_error("create_server failed: %s" % error_string(err))
+            return
+            
         multiplayer.multiplayer_peer = peer # Todo - Test what happens if I remove this then document it
     
         await get_tree().process_frame # Wait a frame so we don't change scenes during _ready
