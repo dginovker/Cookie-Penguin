@@ -14,4 +14,4 @@ If using Shaders, remember Godot 4's Shader language renamed quite a few identif
 
 
 Style guidelines:
-Do not write defensive code (don't do any null checks). Write code as concise as possible (do not declare variables when one-liners suffice).
+Do not write defensive code (don't do any null checks). Write code as concise as possible with sane variable names. Do not declare variables when one-liners suffice.

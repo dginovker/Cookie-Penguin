@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=15 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/virtual_joystick/textures/joystick_base_outline.png" id="5_j7wy3"]
+[ext_resource type="Script" uid="uid://dgn5evp2qtnjn" path="res://Scenes/hud/fps.gd" id="6_jnh4k"]
 [ext_resource type="StyleBox" uid="uid://d8nma1hhk2b8" path="res://Scenes/hud/ButtonPanel.tres" id="6_ove2u"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/virtual_joystick/textures/joystick_tip_arrows.png" id="6_ro43y"]
 [ext_resource type="Texture2D" uid="uid://c4pjae0a7ex80" path="res://Scenes/hud/levels.png" id="7_3t415"]
@@ -308,6 +309,11 @@ text = "Debug"
 [node name="Position" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Position: "
+
+[node name="FPS" type="Control" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+script = ExtResource("6_jnh4k")
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
 layout_mode = 1
