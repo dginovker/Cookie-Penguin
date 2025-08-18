@@ -23,16 +23,7 @@ var mobs_in_range: Array[Node3D] = []
 var hud_scene = preload("res://Scenes/hud/hud.tscn")
 var hud_instance: HUD
 
-# Water stuff. Todo: Clean it up
 @export var terrain: TerrainMask
-@export var shallow_idx := 6
-@export var deep_idx := 7
-@export var sink_depth := 0.4     # meters (waist)
-@export var sink_smooth := 10.0   # lerp speed
-@export var deep_threshold := 0.5 # 0..1 cutoff
-
-var sink_y := 0.0
-
 
 func _enter_tree() -> void:
     if get_multiplayer().is_server():
@@ -106,17 +97,10 @@ func _physics_process(delta):
 func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)
     healthbar.update_location(global_position)
-    
-    # compute shallow weight at current XZ
-    var xz = Vector2(global_position.x, global_position.z)
-    var ws = terrain.weight_at_idx(xz, shallow_idx)
-    var target_sink = -sink_depth * clamp(ws, 0.0, 1.0)
-    sink_y += (target_sink - sink_y) * min(1.0, delta * sink_smooth)
 
-    # offset visuals only
-    animated_sprite.position.y = sink_y
-
-    
+    if terrain.is_in(global_position, TerrainDefs.Type.SHALLOW):
+        print("Wsplash")
+        
     # Only the owning client handles input and hud stuff
     if not is_multiplayer_authority():
         return
