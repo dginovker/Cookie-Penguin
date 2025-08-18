@@ -27,7 +27,7 @@ void vertex(){ WP = (MODEL_MATRIX * vec4(VERTEX,1.0)).xyz; }
 
 vec2 mu(sampler2D m){
     vec2 ts = vec2(textureSize(m,0));
-    return ((WP.xz - map_origin) / ts) + (0.5/ts); // ppm=1, center-sample
+    return ((WP.xz - map_origin) / ts) + (0.1/ts); // ppm=1, center-sample
 }
 vec2 uv(float rpt){ return fract((WP.xz - map_origin) * rpt); } // repeats/meter
 

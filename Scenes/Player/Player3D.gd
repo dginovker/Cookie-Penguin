@@ -1,7 +1,7 @@
 class_name Player3D
 extends CharacterBody3D
 
-@onready var animated_sprite = $AnimatedSprite3D
+@onready var animated_sprite = $AnimatedSprite3D as Sprite3DHelper
 @onready var multiplayer_sync = $MultiplayerSynchronizer
 @onready var autofire_area = $AutofireArea3D
 @onready var healthbar := $HealthBar
@@ -98,9 +98,8 @@ func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)
     healthbar.update_location(global_position)
 
-    if terrain.is_in(global_position, TerrainDefs.Type.SHALLOW):
-        print("Wsplash")
-        
+    animated_sprite.waste_cut = terrain.is_in(global_position, TerrainDefs.Type.SHALLOW, 1)
+    
     # Only the owning client handles input and hud stuff
     if not is_multiplayer_authority():
         return

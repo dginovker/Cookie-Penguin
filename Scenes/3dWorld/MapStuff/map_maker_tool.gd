@@ -63,7 +63,6 @@ func bake():
     var T2 := ImageTexture.create_from_image(masks[2])
 
     var tm := TerrainMask.new()
-    tm.origin = Vector2.ZERO
     tm.mask0 = T0; tm.mask1 = T1; tm.mask2 = T2
     var res := ResourceSaver.save(tm, _tres_path())
     print("baked: ", res)

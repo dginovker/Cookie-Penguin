@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://cryp8mruwlu44"]
 
 [ext_resource type="Shader" uid="uid://b1th5lxhjq71m" path="res://Scenes/3dWorld/MapStuff/ground9_layers.gdshader" id="1_yme6d"]
-[ext_resource type="Texture2D" uid="uid://c6ak3uw2u11oi" path="res://Scenes/3dWorld/MapStuff/mask0.png" id="2_pjrrj"]
-[ext_resource type="Texture2D" uid="uid://vkvt7m0uqp61" path="res://Scenes/3dWorld/MapStuff/mask1.png" id="3_eh3eq"]
-[ext_resource type="Texture2D" uid="uid://dorphu7s1xdgl" path="res://Scenes/3dWorld/MapStuff/mask2.png" id="4_2xtj8"]
+[ext_resource type="Texture2D" uid="uid://w26q0bf08yhi" path="res://Scenes/3dWorld/MapStuff/mask0.png" id="2_pjrrj"]
+[ext_resource type="Texture2D" uid="uid://booquxjlyhaf0" path="res://Scenes/3dWorld/MapStuff/mask1.png" id="3_eh3eq"]
+[ext_resource type="Texture2D" uid="uid://dsfqtxgpfunx4" path="res://Scenes/3dWorld/MapStuff/mask2.png" id="4_2xtj8"]
 [ext_resource type="Texture2D" uid="uid://d0d16afklm1ka" path="res://Scenes/3dWorld/MapStuff/grass.png" id="5_u2lvf"]
 [ext_resource type="Texture2D" uid="uid://ds4ujrse16lbr" path="res://Scenes/3dWorld/MapStuff/forest.png" id="6_w2cpr"]
 [ext_resource type="Texture2D" uid="uid://mp7agt5p56h1" path="res://Scenes/3dWorld/MapStuff/sand.png" id="6_w5y2v"]
