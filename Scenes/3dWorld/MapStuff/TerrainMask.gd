@@ -10,14 +10,13 @@ extends Resource
 @export var layer_names := PackedStringArray()
 
 func _img(t:Texture2D)->Image: return t.get_image()
-func _px(img:Image, u:Vector2)->Vector2i:
-    var s = Vector2(img.get_width(), img.get_height())
-    var p = ((u - origin) * ppm)
+func _px(u:Vector2)->Vector2i:
+    var p = (u - origin) * ppm
     return Vector2i(int(p.x), int(p.y))
 
 func weights_at(xz:Vector2)->PackedFloat32Array:
     var i0=_img(mask0); var i1=_img(mask1); var i2=_img(mask2)
-    var p=_px(i0, xz)
+    var p=_px(xz)
     var a=i0.get_pixelv(p); var b=i1.get_pixelv(p); var c=i2.get_pixelv(p)
     return PackedFloat32Array([a.r,a.g,a.b,b.r,b.g,b.b,c.r,c.g,c.b])
 

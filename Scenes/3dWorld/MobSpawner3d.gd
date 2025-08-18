@@ -1,70 +1,83 @@
 extends MultiplayerSpawner
 
 @export var spawn_timer: Timer
-@export var easylands_gridmap: GridMap
-@export var midlands_gridmap: GridMap
+@export var terrain: TerrainMask      # the .tres you saved from your baker
+@export var spawn_height := 1.01      # vertical offset above ground
 
-var easylands_tiles: Array[Vector3i] = []
-var easyland_mobs: Array[String] = ["spikey_square"]
-var midlands_tiles: Array[Vector3i] = []
-var midland_mobs: Array[String] = ["lolipop"]
+# choose which mask-layer indices are valid for each region (exclude liquid indices)
+var easy_layers := PackedInt32Array([0, 1])       # e.g., grass, sand
+var mid_layers  := PackedInt32Array([2, 3, 4, 5]) # e.g., forest, plateau, ice, desolate
 
-var mob_resources: Dictionary[String, Resource] = {
+var easy_mobs := Array(["spikey_square"])
+var mid_mobs  := Array(["lolipop"])
+
+var min_distance := 8.0        # meters to keep away from players/other mobs
+var stride_px := 1             # sample every N mask pixels (1 = every pixel)
+
+var easy_positions: Array[Vector3] = []
+var mid_positions:  Array[Vector3] = []
+
+var mob_resources := {
     "spikey_square": preload("res://Scenes/mobs/spikeysquare3d/SpikeySquare3D.tscn"),
-    "lolipop": preload("res://Scenes/mobs/lolipop/Lolipop.tscn")
+    "lolipop":       preload("res://Scenes/mobs/lolipop/Lolipop.tscn"),
 }
 
-func _enter_tree() -> void:
-    spawn_function = _spawn_player_custom
+func _enter_tree(): spawn_function = _spawn_player_custom
 
 func _ready():
-    return
-    if not multiplayer.is_server():
-        return
+    if !multiplayer.is_server(): return
 
-    # One-time setup
-    easylands_tiles = easylands_gridmap.get_used_cells()
-    midlands_tiles = midlands_gridmap.get_used_cells()
+    easy_positions = _bake_positions(easy_layers, 1)
+    mid_positions  = _bake_positions(mid_layers,  1)
 
-    spawn_timer.timeout.connect(_on_SpawnTimer_timeout)
+    spawn_timer.timeout.connect(_on_spawn_timer)
 
-func _spawn_player_custom(data: Variant) -> Node:
-    # data = [Vector3 (pos), String (mob name)]
+func _bake_positions(layers: PackedInt32Array, y: float)->Array[Vector3]:
+    var i0 = terrain.mask0.get_image()
+    var i1 = terrain.mask1.get_image()
+    var i2 = terrain.mask2.get_image()
+    var w = i0.get_width(); var h = i0.get_height()
+    var out: Array[Vector3] = []
+    for yy in range(0, h, stride_px):
+        for xx in range(0, w, stride_px):
+            var a = i0.get_pixel(xx, yy)
+            var b = i1.get_pixel(xx, yy)
+            var c = i2.get_pixel(xx, yy)
+            var wts = [a.r, a.g, a.b, b.r, b.g, b.b, c.r, c.g, c.b]
+            var idx = 0; var best = wts[0]
+            for k in range(1,9):
+                if wts[k] > best:
+                    best = wts[k]
+                    idx = k
+            for L in layers:
+                if idx == L:
+                    var wx = terrain.origin.x + (xx + 0.5) / terrain.ppm
+                    var wz = terrain.origin.y + (yy + 0.5) / terrain.ppm
+                    out.append(Vector3(wx, y, wz))
+                    break
+    return out
+
+func _on_spawn_timer():
+    if !multiplayer.is_server(): return
+    _try_spawn(easy_positions, easy_mobs)
+    _try_spawn(mid_positions,  mid_mobs)
+
+func _try_spawn(positions: Array[Vector3], mobs: Array):
+    var pos = positions.pick_random()
+    if _clear(pos):
+        spawn([pos, mobs.pick_random()])
+
+func _spawn_player_custom(data: Variant)->Node:
     var mob = mob_resources[(data[1] as String)].instantiate()
     mob.position = data[0] as Vector3
     mob.add_to_group("mobs")
     mob.set_multiplayer_authority(1)
     return mob
 
-func _on_SpawnTimer_timeout():
-    if not multiplayer.is_server():
-        return
-
-    _try_spawn(easylands_tiles, easyland_mobs)
-    _try_spawn(midlands_tiles, midland_mobs)
-
-func _try_spawn(tiles: Array[Vector3i], mobs: Array[String]):
-    assert(!tiles.is_empty())
-    assert(!mobs.is_empty())
-
-    var tile: Vector3i = tiles.pick_random()
-    var world_pos = Vector3(tile.x, tile.y, tile.z) + Vector3(0.5, 1.01, 0.5)
-
-    if _is_spawn_area_clear(world_pos):
-        spawn([world_pos, mobs.pick_random()])
-
-func _is_spawn_area_clear(pos: Vector3) -> bool:
-    var tile_size = 1
-    var min_distance = tile_size * 8
-
-    # Check players
-    for player in get_tree().get_nodes_in_group("players"):
-        if pos.distance_to(player.global_position) < min_distance:
-            return false
-
-    # Check mobs
-    for mob in get_tree().get_nodes_in_group("mobs"):
-        if pos.distance_to(mob.global_position) < min_distance:
-            return false
-
+func _clear(pos: Vector3)->bool:
+    var d = min_distance
+    for p in get_tree().get_nodes_in_group("players"):
+        if pos.distance_to(p.global_position) < d: return false
+    for m in get_tree().get_nodes_in_group("mobs"):
+        if pos.distance_to(m.global_position) < d: return false
     return true
