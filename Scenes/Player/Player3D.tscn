@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=14 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/Player/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
@@ -59,6 +59,16 @@ properties/6/replication_mode = 2
 [sub_resource type="SphereShape3D" id="SphereShape3D_brba3"]
 radius = 1.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gqm3a"]
+shading_mode = 0
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_gqm3a"]
+inner_radius = 0.007
+outer_radius = 0.041
+rings = 12
+ring_segments = 3
+
 [node name="CharacterBody3D" type="CharacterBody3D" groups=["players"]]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 collision_layer = 4
@@ -85,10 +95,6 @@ size = 10.0
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_2sntp")
 
-[node name="HeadRayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(0.16, 0, 0, 0, 0.16, 0, 0, 0, 0.16, 0, 0.395, 0)
-target_position = Vector3(1, 0, 0)
-
 [node name="AutofireArea3D" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 2
@@ -99,3 +105,7 @@ debug_color = Color(0.620153, 0.472236, 0.668747, 0.42)
 
 [node name="HealthBar" parent="." instance=ExtResource("6_2n8pm")]
 y_offset_px = 50
+
+[node name="GlobalPositionHelper" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_gqm3a")
+mesh = SubResource("TorusMesh_gqm3a")

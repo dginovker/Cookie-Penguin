@@ -7,7 +7,7 @@ extends CharacterBody3D
 @onready var healthbar := $HealthBar
 
 @export var attack := 0
-@export var speed := 30.5
+@export var speed := 3.5
 @export var max_health := 100.0
 @export var xp := 0
 
@@ -65,7 +65,7 @@ func _setup_camera():
     $Camera3D.make_current()
 
 var last_input_direction = Vector3.ZERO
-func _physics_process(delta):
+func _physics_process(delta):    
     # Only server processes movement and shooting
     if not multiplayer.is_server():
         return
