@@ -5,12 +5,13 @@ var peer: WebSocketMultiplayerPeer
 func _ready():
     peer = WebSocketMultiplayerPeer.new()
     
-    if OS.get_name() == "Web" || OS.has_feature("client"):
+    if OS.get_name() == "Web" || true:
         # Join the server
         print("Joining as Websocket Client..")
-        #peer.create_client("ws://127.0.0.1:10000") # Test Local!!
-        peer.create_client("wss://duck.openredsoftware.com/pinkdragon") # Real server!asdw        
+        peer.create_client("ws://127.0.0.1:10000") # Test Local!!
+        #peer.create_client("wss://duck.openredsoftware.com/pinkdragon") # Real server!asdw        
         multiplayer.multiplayer_peer = peer
+        get_window().title = "Client"
     else:
         # We are the server
         PlayerManager.start_listening()
@@ -26,4 +27,5 @@ func _ready():
         var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
         get_tree().root.add_child(game_scene)
         PlayerManager.spawn_player(1)
+        get_window().title = "Server"
         queue_free()  # remove the main menu

@@ -10,8 +10,8 @@ extends CharacterBody3D
 @export var speed := 3.5
 @export var max_health := 100.0
 @export var xp := 0
+@export var health = 100.0
 
-var health = 100.0
 var input_vector := Vector3.ZERO
 
 var peer_id := -1 # Gets set in PlayerSpawner

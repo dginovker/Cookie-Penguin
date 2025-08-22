@@ -32,6 +32,13 @@ func _ready():
 
     spawn_timer.timeout.connect(_on_spawn_timer)
 
+func _spawn_mob_custom(data: Variant)->Node:
+    var mob: Node3D = mob_resources[(data[1] as String)].instantiate()
+    mob.position = data[0] as Vector3
+    mob.add_to_group("mobs")
+    mob.set_multiplayer_authority(1)
+    return mob
+
 func _bake_positions(layers: PackedInt32Array)->Array[Vector3]:
     var i0 = terrain.mask0.get_image()
     var i1 = terrain.mask1.get_image()
@@ -64,17 +71,10 @@ func _on_spawn_timer():
 
 func _try_spawn(positions: Array[Vector3], mobs: Array):
     var pos = positions.pick_random()
-    if _clear(pos):
+    if _is_clear(pos):
         spawn([pos, mobs.pick_random()])
 
-func _spawn_mob_custom(data: Variant)->Node:
-    var mob = mob_resources[(data[1] as String)].instantiate()
-    mob.position = data[0] as Vector3
-    mob.add_to_group("mobs")
-    mob.set_multiplayer_authority(1)
-    return mob
-
-func _clear(pos: Vector3)->bool:
+func _is_clear(pos: Vector3)->bool:
     var d = min_distance
     for p in get_tree().get_nodes_in_group("players"):
         if pos.distance_to(p.global_position) < d: return false

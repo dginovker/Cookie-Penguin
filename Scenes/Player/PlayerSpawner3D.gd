@@ -15,7 +15,7 @@ func _spawn_player_custom(data: Variant) -> Node:
     p.peer_id = peer_id
     p.position = Vector3.ZERO
 
-    p.set_multiplayer_authority(peer_id)	
+    p.set_multiplayer_authority(peer_id)
     p.get_node("MultiplayerSynchronizer").set_multiplayer_authority(1)
     
     PlayerManager.players[peer_id] = p

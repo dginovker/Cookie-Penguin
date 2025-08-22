@@ -6,6 +6,7 @@ extends CharacterBody3D
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
 @export var health: float = 100.0
+@export var max_health: float = -1.0
 @export var xp_given: int = 5
 @export var drop_table: Dictionary[String, float] = {
     "health_potion": 1,
@@ -20,7 +21,6 @@ var shoot_timer = 0.0
 var wander_center: Vector3
 var is_paused = false
 var pause_timer = 0.0
-var max_health: float = -1.0
 
 @onready var aggro_area: Area3D = $AggressionArea
 @onready var healthbar := $HealthBar
