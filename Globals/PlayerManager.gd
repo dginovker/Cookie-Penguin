@@ -16,9 +16,7 @@ func spawn_player(id):
         print("Called the RPC")
     else:
         # Spawn the server player
-        var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
-        players[id] = player_spawner.spawn(id)
-        players[id].global_position = Vector3(238, 0.01, 198)
+        _spawn_player_for_real(1)
 
 func despawn_player(id):
     assert(multiplayer.is_server())
@@ -40,13 +38,16 @@ func load_scene_on_client():
 @rpc("any_peer", "call_remote", "reliable")
 func client_loaded_scene():
     assert(multiplayer.is_server())
-    var id = multiplayer.get_remote_sender_id()
+    var id := multiplayer.get_remote_sender_id()
     print("Client ", id, " says they loaded the scene, giving them visibilty of our syncronizers...")
     map_players[id] = true
     await get_tree().process_frame
     for mob in get_tree().get_nodes_in_group("mobs"):
         var sync = mob.get_node("MultiplayerSynchronizer")
         sync.update_visibility()
+    _spawn_player_for_real(id)
 
+func _spawn_player_for_real(id: int):
     var player_spawner: PlayerSpawner3D = get_tree().get_first_node_in_group("player_spawner")
     players[id] = player_spawner.spawn(id)
+    players[id].global_position = Vector3(238, 0.01, 198)
