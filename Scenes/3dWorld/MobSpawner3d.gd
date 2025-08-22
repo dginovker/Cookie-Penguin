@@ -22,17 +22,17 @@ var mob_resources := {
     "lolipop":       preload("res://Scenes/mobs/lolipop/Lolipop.tscn"),
 }
 
-func _enter_tree(): spawn_function = _spawn_player_custom
+func _enter_tree(): spawn_function = _spawn_mob_custom
 
 func _ready():
     if !multiplayer.is_server(): return
 
-    easy_positions = _bake_positions(easy_layers, 1)
-    mid_positions  = _bake_positions(mid_layers,  1)
+    easy_positions = _bake_positions(easy_layers)
+    mid_positions  = _bake_positions(mid_layers)
 
     spawn_timer.timeout.connect(_on_spawn_timer)
 
-func _bake_positions(layers: PackedInt32Array, y: float)->Array[Vector3]:
+func _bake_positions(layers: PackedInt32Array)->Array[Vector3]:
     var i0 = terrain.mask0.get_image()
     var i1 = terrain.mask1.get_image()
     var i2 = terrain.mask2.get_image()
@@ -51,9 +51,9 @@ func _bake_positions(layers: PackedInt32Array, y: float)->Array[Vector3]:
                     idx = k
             for L in layers:
                 if idx == L:
-                    var wx = xx + 0.5
-                    var wz = yy + 0.5
-                    out.append(Vector3(wx, y, wz))
+                    var spawn_x = xx + 0.5
+                    var spawn_z = yy + 0.5
+                    out.append(Vector3(spawn_x, 0.01, spawn_z))
                     break
     return out
 
@@ -67,7 +67,7 @@ func _try_spawn(positions: Array[Vector3], mobs: Array):
     if _clear(pos):
         spawn([pos, mobs.pick_random()])
 
-func _spawn_player_custom(data: Variant)->Node:
+func _spawn_mob_custom(data: Variant)->Node:
     var mob = mob_resources[(data[1] as String)].instantiate()
     mob.position = data[0] as Vector3
     mob.add_to_group("mobs")

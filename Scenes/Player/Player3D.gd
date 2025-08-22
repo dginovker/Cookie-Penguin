@@ -135,7 +135,6 @@ func level_up():
     attack += 1
     max_health += 5
 
-# TODO - Could I possibly replace this with MultiplayerSync?
 @rpc("any_peer", "call_local", "unreliable")
 func receive_input(move: Vector3):
     # Only server processes input
