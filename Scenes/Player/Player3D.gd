@@ -98,7 +98,7 @@ func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)
     healthbar.update_location(global_position)
 
-    animated_sprite.waste_cut = terrain.is_in(global_position, TerrainDefs.Type.SHALLOW, 1)
+    animated_sprite.waste_cut = terrain.is_in(global_position, TerrainDefs.Type.SHALLOW, 1) or terrain.is_in(global_position, TerrainDefs.Type.LAVA, 1)
     
     # Only the owning client handles input and hud stuff
     if not is_multiplayer_authority():
