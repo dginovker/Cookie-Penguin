@@ -27,7 +27,7 @@ func _process(delta: float) -> void:
 
     var s := _seq
     _sent[s] = Time.get_ticks_msec()
-    ping.rpc(1, s)
+    ping.rpc_id(1, s)
     _seq = (_seq + 1) % SEQ_MOD
     ping_ms.append(_rtt_ms)
 
