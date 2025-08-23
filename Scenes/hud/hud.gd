@@ -22,7 +22,7 @@ var _stats_panel_stylebox: StyleBoxFlat
 
 func _ready():
     chat_input.text_submitted.connect(_on_chat_submitted)
-    
+
     _inv_panel_stylebox = inven_button_panel.get_theme_stylebox("panel")
     _stats_panel_stylebox = stats_button_panel.get_theme_stylebox("panel")
     inven_button.pressed.connect(_inven_button_pressed)
@@ -30,7 +30,7 @@ func _ready():
 
 func _process(_delta: float) -> void:
     # Boohoo, inefficient?
-    # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler. 
+    # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler.
     # Yeah. I win ALL the arguments with myself in the shower.
     update_stats(int(player.xp), int(player.speed*2), player.attack, int(player.max_health))
     _update_debug()
@@ -86,7 +86,7 @@ func _inven_button_pressed():
         _inv_panel_stylebox.bg_color = FOCUS_COLOR
         %StatsVbox.visible = false
         %InvenVbox.visible = true
-    
+
 func _stats_button_pressed():
     if _stats_panel_stylebox.bg_color.is_equal_approx(FOCUS_COLOR):
         # Inven was already focused, make the topright panel disappear
@@ -98,6 +98,6 @@ func _stats_button_pressed():
         _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
         %InvenVbox.visible = false
         %StatsVbox.visible = true
-        
+
 func _update_debug():
     $RootSplit/Right/TopRightContainer/StatsVbox/Position.text = "Position: " + str(Vector3i(player.global_position))

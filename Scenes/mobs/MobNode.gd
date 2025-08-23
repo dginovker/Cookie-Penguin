@@ -173,6 +173,6 @@ func _die() -> void:
             player.level_up()
         else:
             # Looks ugly to give both xp and level up message at the same timeasd
-            LazyRPCs.pop_xp.rpc(player.get_path(), xp_given)        
+            LazyRPCs.pop_xp.rpc(player.get_path(), xp_given)
         player.xp += xp_given
     queue_free()
