@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=16 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -11,6 +11,7 @@
 [ext_resource type="StyleBox" uid="uid://d8nma1hhk2b8" path="res://Scenes/hud/ButtonPanel.tres" id="6_ove2u"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/virtual_joystick/textures/joystick_tip_arrows.png" id="6_ro43y"]
 [ext_resource type="Texture2D" uid="uid://c4pjae0a7ex80" path="res://Scenes/hud/levels.png" id="7_3t415"]
+[ext_resource type="Script" uid="uid://brgosfyth4e5c" path="res://Scenes/hud/nerdstats.gd" id="7_c7x75"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
@@ -310,10 +311,23 @@ text = "Debug"
 layout_mode = 2
 text = "Position: "
 
-[node name="FPS" type="Control" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
+[node name="NerdStats" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 script = ExtResource("6_jnh4k")
+
+[node name="Fps" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
+layout_mode = 2
+text = "FPS"
+
+[node name="Ping" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
+layout_mode = 2
+text = "Ping"
+
+[node name="Grapf" type="Control" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+script = ExtResource("7_c7x75")
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
 layout_mode = 1

@@ -1,49 +1,57 @@
 extends Control
 
-const SECONDS: float = 60.0
+const SECONDS := 60.0
+const SEQ_MOD := 256
 
-var t: float = 0.0
+var t := 0.0
 var times := PackedFloat32Array()
 var fps := Array()
+var ping_ms := Array()
+
+var _seq := 0
+var _sent := PackedInt64Array()
+var _rtt_ms := 0
+
+@onready var fps_label := $Fps
+@onready var ping_label := $Ping
+@onready var graph := $Grapf
 
 func _ready() -> void:
+    _sent.resize(SEQ_MOD)
     set_process(true)
 
 func _process(delta: float) -> void:
     t += delta
     times.append(t)
     fps.append(int(1.0 / delta))
-    var cut: float = t - SECONDS
-    var i: int = 0
+
+    var s := _seq
+    _sent[s] = Time.get_ticks_msec()
+    ping.rpc(1, s)
+    _seq = (_seq + 1) % SEQ_MOD
+    ping_ms.append(_rtt_ms)
+
+    var cut := t - SECONDS
+    var i := 0
     while i < times.size() and times[i] < cut: i += 1
     if i > 0:
         times = times.slice(i)
         fps = fps.slice(i)
-    if len(times) % 10 == 0:
-        queue_redraw()
+        ping_ms = ping_ms.slice(i)
 
-func _draw() -> void:
-    var r := Rect2(Vector2.ZERO, size)
-    draw_rect(r, Color(0, 0, 0, 0.5))
-    if fps.size() < 2: return
+    if times.size() % 10 == 0:
+        graph.set_data(times, fps, ping_ms, t)
+        fps_label.text = " %d FPS   min: %d" % [
+            fps.back(), fps.min()
+        ]
+        ping_label.text = " ping: %d ms   max: %d ms" % [
+            int(_rtt_ms), int(ping_ms.max())
+        ]
 
-    var left_time := t - SECONDS
+@rpc("any_peer", "call_local") # server echo; requires same node path on server
+func ping(s: int) -> void:
+    rpc_id(multiplayer.get_remote_sender_id(), "pong", s)
 
-    var pts := PackedVector2Array()
-    for j in fps.size():
-        var x := ((times[j] - left_time) / SECONDS) * r.size.x
-        var y = r.size.y - clamp(fps[j] / 200.0, 0.0, 1.0) * r.size.y
-        pts.append(Vector2(x, y))
-    draw_polyline(pts, Color(1, 1, 0), 2.0, true)  # yellow
-
-    var f := get_theme_default_font()
-    var fs := get_theme_default_font_size()
-    draw_string(
-        f,
-        Vector2(8, 8 + f.get_height(fs)),
-        str(fps[fps.size() - 1], " FPS   min: ", fps.min()),
-        HORIZONTAL_ALIGNMENT_LEFT,
-        -1.0,
-        fs,
-        Color.WHITE
-    )
+@rpc("any_peer", "call_local") # client receives; computes RTT
+func pong(s: int) -> void:
+    _rtt_ms = Time.get_ticks_msec() - _sent[s]
