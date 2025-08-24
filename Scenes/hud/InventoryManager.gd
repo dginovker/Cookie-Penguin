@@ -120,7 +120,7 @@ func stop_drag():
         if Rect2(slot.global_position, slot.size).has_point(mouse_pos):
             target_slot = slot
             break
-    print("Found destination slot ", target_slot)
+    #print("Found destination slot ", target_slot)
     if target_slot:
         var container_type = target_slot.get_meta("container_type")
         var slot_index = target_slot.get_meta("slot_index")
@@ -151,7 +151,7 @@ func _process(_delta):
         dragging_item.global_position = get_global_mouse_position() - Vector2(20, 20)
 
 func update_backpack(items: Array[ItemInstance]):
-    print("HUD: Updating backpack to have ", items)
+    #print("HUD: Updating backpack to have ", items)
     # Clear backpack slots first
     for slot in backpack_slots:
         slot.texture_normal = empty_slot_texture
@@ -165,7 +165,7 @@ func update_backpack(items: Array[ItemInstance]):
         slot.set_meta("uuid", item.uuid)
 
 func update_gear(items: Array[ItemInstance]):
-    print("Updating gear to have ", items)
+    #print("Updating gear to have ", items)
     # Clear gear slots first
     for slot in gear_slots:
         (%WeaponSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/weapon_slot.png")
