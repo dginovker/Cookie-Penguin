@@ -1,6 +1,11 @@
-1. Fix lootbag despawn in multiplayer race condition
-2. Record hit sounds
-3. Add gear slot icons
-4. Show item stats while you're dragging an item
-5. Make it so dragging into overworld drops the item
-6. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
+> First 5 seconds improvements <
+1. Test on mobile
+2. Get Chongho's kids to playtest again
+
+> First 60 seconds improvements <
+1. Record hit sounds
+2. Improve item stats UI panel
+
+> Networking improvements <
+1. Make disconnecting work
+2. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..

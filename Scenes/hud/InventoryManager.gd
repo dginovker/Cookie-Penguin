@@ -17,6 +17,10 @@ class_name InventoryManager
 @onready var backpack_slots  = $BackpackVBoxContainer/BackpackGridContainer.get_children()
 @onready var loot_slots      = $LootVBoxContainer/GridContainer.get_children()
 
+@onready var item_tooltip_panel = %ItemTooltipPanel
+@onready var item_tooltip_title = %ItemToolTipTitle
+@onready var item_tooltip_text = %ItemToolTipText
+
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 var current_lootbag_id := -1
 
@@ -113,17 +117,23 @@ func _on_slot_input(event: InputEvent, slot: TextureButton):
     if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
         return
 
-    if event.pressed:
-        if slot.has_meta("uuid"):
-            drag_origin_slot = slot
-            drag_origin_rect = slot.get_global_rect()
-            drag_item_uuid = slot.get_meta("uuid")
-            drag_item_texture = slot.texture_normal
-            drag_start_pos = get_global_mouse_position()
+    if event.pressed and slot.has_meta("uuid"):
+        _start_drag(slot)
     else:
         _finish_drag()
 
+func _start_drag(slot: TextureButton):
+    item_tooltip_panel.visible = true
+    item_tooltip_title.text = ItemManager.items[slot.get_meta("uuid")].item_type
+    item_tooltip_text.text = ItemManager.items[slot.get_meta("uuid")].item_description()
+    drag_origin_slot = slot
+    drag_origin_rect = slot.get_global_rect()
+    drag_item_uuid = slot.get_meta("uuid")
+    drag_item_texture = slot.texture_normal
+    drag_start_pos = get_global_mouse_position()
+
 func _finish_drag():
+    item_tooltip_panel.visible = false
     if drag_origin_slot == null:
         return
 

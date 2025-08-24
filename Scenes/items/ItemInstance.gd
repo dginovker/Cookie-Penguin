@@ -30,6 +30,22 @@ func get_texture() -> Texture2D:
     assert(false, "Didn't find the texture for " + item_type)
     return null
 
+func item_description() -> String:
+    if item_type == "health_potion":
+        return "Heals 100 health.\n\nDouble-click to use."
+    if item_type == "tier_0_sword":
+        return _weapon_desc()
+    if item_type == "tier_1_sword":
+        return _weapon_desc()
+    if item_type == "tier_2_sword":
+        return _weapon_desc()
+    assert(false, "Wtf is this item?")
+    return "Idk what this item is."
+
+func _weapon_desc() -> String:
+    var bullet: String = WeaponHelper.get_bullet_name_for_weapon(self)
+    return "Cooldown: " + str(WeaponHelper.get_item_cooldown(self)) + "\nDamage: " + str(BulletData.get_bullet_damage(bullet)) + "\nBullet Speed: " + str(BulletData.get_bullet_speed(bullet))
+
 static func from_dict(item_data: Dictionary) -> ItemInstance:
     var item = ItemInstance.new()
     item.uuid = item_data.uuid

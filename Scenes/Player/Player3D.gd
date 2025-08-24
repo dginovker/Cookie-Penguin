@@ -81,7 +81,7 @@ func _physics_process(delta):
         bullet_pos.y = 2
         var aim_direction: Vector3 = (_get_nearest_mob().global_position - global_position).normalized()
         aim_direction.y = 0
-        var bullet_name := WeaponHelper.get_bullet_name(peer_id)
+        var bullet_name := WeaponHelper.get_bullet_name_for_player(peer_id)
         bulletspawner.spawn_bullet(
             BulletData.new(
                 attack + BulletData.get_bullet_damage(bullet_name),
@@ -92,7 +92,7 @@ func _physics_process(delta):
                 Yeet.MOB_LAYER
             )
         )
-        fire_cooldown = WeaponHelper.get_cooldown(peer_id)
+        fire_cooldown = WeaponHelper.get_cooldown_for_player(peer_id)
 
 func _process(delta):
     healthbar.update_health(max(health, 0) / max_health)

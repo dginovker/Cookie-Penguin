@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=21 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -17,6 +17,9 @@
 [ext_resource type="Texture2D" uid="uid://be2iti6vu6pwe" path="res://Scenes/hud/slot_icons/armor_slot.png" id="7_ftse4"]
 [ext_resource type="Texture2D" uid="uid://c5pgmxde1i3d4" path="res://Scenes/hud/slot_icons/ring_slot.png" id="8_er4v8"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3ovpy"]
+font_size = 18
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
 content_margin_top = 5.0
@@ -43,22 +46,57 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Left" type="VBoxContainer" parent="RootSplit"]
+[node name="Left" type="Control" parent="RootSplit"]
 layout_mode = 1
-anchors_preset = -1
 anchor_right = 0.8
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
-alignment = 2
 
-[node name="chatdisplay_RichTextLabel" type="RichTextLabel" parent="RootSplit/Left"]
+[node name="ItemTooltipPanel" type="PanelContainer" parent="RootSplit/Left"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(80, 60)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_top = 0.1
+anchor_right = 0.99
+anchor_bottom = 0.6
+grow_horizontal = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RootSplit/Left/ItemTooltipPanel"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ItemToolTipTitle" type="Label" parent="RootSplit/Left/ItemTooltipPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Item Name"
+label_settings = SubResource("LabelSettings_3ovpy")
+
+[node name="ItemToolTipText" type="Label" parent="RootSplit/Left/ItemTooltipPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Item Stats"
+
+[node name="Chat" type="VBoxContainer" parent="RootSplit/Left"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="chatdisplay_RichTextLabel" type="RichTextLabel" parent="RootSplit/Left/Chat"]
 unique_name_in_owner = true
 layout_mode = 2
 fit_content = true
 scroll_following = true
 
-[node name="chatinput_LineEdit" type="LineEdit" parent="RootSplit/Left"]
+[node name="chatinput_LineEdit" type="LineEdit" parent="RootSplit/Left/Chat"]
 unique_name_in_owner = true
 layout_mode = 2
 
