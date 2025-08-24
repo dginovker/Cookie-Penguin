@@ -84,6 +84,35 @@ func update_player_gear(item_data: Array[Dictionary]):
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.inventory_manager.update_gear(item_instances)
 
+@rpc("any_peer", "call_local")
+func activate(uuid: String):
+    assert(multiplayer.is_server())
+    assert(ItemManager.items.has(uuid), "Trying to activate an item that doesn't exist")
+    var item: ItemInstance = ItemManager.items[uuid]
+    assert(item.location.owner_id == multiplayer.get_remote_sender_id() or item.location.type == ItemLocation.Type.LOOTBAG)
+    var player: Player3D = PlayerManager.players[multiplayer.get_remote_sender_id()]
+    print("yay")
+    if item.item_type == "health_potion":
+        ItemManager.items.erase(uuid)
+        if item.location.type == ItemLocation.Type.LOOTBAG:
+            LootbagTracker.lootbags[item.location.owner_id].broadcast_lootbag_update()
+        else:
+            ItemManager.request_item_sync(multiplayer.get_remote_sender_id())
+        player.health = min(player.health + 100, player.max_health)
+        return
+    if ItemManager.items[uuid].item_type == "tier_0_sword":
+        # Todo - equip
+        return
+    if ItemManager.items[uuid].item_type == "tier_1_sword":
+        # Todo - equip
+        return
+    if ItemManager.items[uuid].item_type == "tier_2_sword":
+        # Todo - equip
+        return
+    print("No activation for ", ItemManager.items[uuid].item_type)
+
+
+
 func get_item_at(location: ItemLocation) -> ItemInstance:
     # Todo - This function is extremely inefficient.
     # We need to have an indexing system that maps location -> item

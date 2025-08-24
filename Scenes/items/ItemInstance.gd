@@ -10,6 +10,7 @@ func _init(type: String = "", loc: ItemLocation = null):
     item_type = type
     location = loc
 
+
 # Helpers
 
 func get_texture() -> Texture2D:

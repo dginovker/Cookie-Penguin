@@ -117,6 +117,10 @@ func _on_slot_input(event: InputEvent, slot: TextureButton):
     if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
         return
 
+    if event.double_click and slot.has_meta("uuid"):
+        ItemManager.activate.rpc_id(1, slot.get_meta("uuid"))
+        return
+
     if event.pressed and slot.has_meta("uuid"):
         _start_drag(slot)
     else:
