@@ -26,10 +26,9 @@ func _ready():
             # If we were over the land...
             global_position.y = result.position.y
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
     if len(ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)) == 0:
         queue_free()
-
 
 func _on_player_entered(body):
     if body is not Player3D:

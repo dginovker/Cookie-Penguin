@@ -14,4 +14,8 @@ If using Shaders, remember Godot 4's Shader language renamed quite a few identif
 World uses splatmask PNGs (mask0/1/2; RGB layers; 1 px = 1 m) aligned by map_origin on a single XZ PlaneMesh; shaders sample world XZ via MODEL_MATRIX with per-meter tiling and overlay water, and gameplay (spawns, deep-water block, collisions) must read these same masks.
 
 Style guidelines:
-Do not write defensive code (don't do any null checks). Write code as concise as possible with sane variable names. Do not declare variables when one-liners suffice.
+* Do not write defensive code (don't do any null checks).
+* Write code as concise as possible, with descriptive variable names.
+* Do not declare variables when they only need to be used in one place.
+* Prefer one-liners.
+* If I give you code with comments, keep those comments in the output.
