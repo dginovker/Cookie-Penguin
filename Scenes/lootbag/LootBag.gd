@@ -1,5 +1,6 @@
 extends Area3D
 class_name LootBag
+# See LootSpawner for spawning a lootbag
 
 @export var lootbag_id: int
 var nearby_players: Array[int] = []
@@ -12,7 +13,7 @@ func _visibility_filter(other_p: int) -> bool:
     return PlayerManager.map_players.get(other_p, false)
 
 func _ready():
-    LootbagManager.lootbags[lootbag_id] = self
+    LootbagTracker.lootbags[lootbag_id] = self
     if multiplayer.is_server():
         body_entered.connect(_on_player_entered)
         body_exited.connect(_on_player_exited)
@@ -22,16 +23,16 @@ func _ready():
         query.exclude = [self]
         var result = get_world_3d().direct_space_state.intersect_ray(query)
         if result:
-            # If we were over the land...            
+            # If we were over the land...
             global_position.y = result.position.y
-    
+
 func _on_player_entered(body):
     if body is not Player3D:
         return
-    
+
     var player: Player3D = body
     nearby_players.append(player.get_multiplayer_authority())
-    
+
     # Send lootbag contents to player
     var items: Array[ItemInstance] = ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)
     var item_data: Array[Dictionary] = []
@@ -55,15 +56,15 @@ func send_lootbag_contents(item_data: Array[Dictionary]):
 func _on_player_exited(body):
     if body is not Player3D:
         return
-        
+
     var player: Player3D = body
     nearby_players.erase(player.get_multiplayer_authority())
     hide_lootbag_contents.rpc_id(player.get_multiplayer_authority())
-    
+
     if len(nearby_players) == 0 and visible == false:
         await get_tree().create_timer(60).timeout # Race condition tolerance
 
-@rpc("authority", "call_local") 
+@rpc("authority", "call_local")
 func hide_lootbag_contents():
     if multiplayer == null:
         # Bag despawned
@@ -72,7 +73,7 @@ func hide_lootbag_contents():
     hud.hide_loot_bag()
 
 func _exit_tree():
-    LootbagManager.lootbags.erase(lootbag_id)
+    LootbagTracker.lootbags.erase(lootbag_id)
 
 func broadcast_lootbag_update():
     for player_id in nearby_players:

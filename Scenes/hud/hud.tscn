@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=20 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -6,12 +6,16 @@
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
 [ext_resource type="Texture2D" uid="uid://dal4qldd5vh3d" path="res://Scenes/hud/empty_slot.png" id="4_4mb1w"]
+[ext_resource type="Texture2D" uid="uid://lsl3dfehqo24" path="res://Scenes/hud/slot_icons/weapon_slot.png" id="5_3ovpy"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/virtual_joystick/textures/joystick_base_outline.png" id="5_j7wy3"]
 [ext_resource type="Script" uid="uid://dgn5evp2qtnjn" path="res://Scenes/hud/fps.gd" id="6_jnh4k"]
 [ext_resource type="StyleBox" uid="uid://d8nma1hhk2b8" path="res://Scenes/hud/ButtonPanel.tres" id="6_ove2u"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/virtual_joystick/textures/joystick_tip_arrows.png" id="6_ro43y"]
+[ext_resource type="Texture2D" uid="uid://dhld61ry5v424" path="res://Scenes/hud/slot_icons/ice_barrage_slot.png" id="6_swaln"]
 [ext_resource type="Texture2D" uid="uid://c4pjae0a7ex80" path="res://Scenes/hud/levels.png" id="7_3t415"]
 [ext_resource type="Script" uid="uid://brgosfyth4e5c" path="res://Scenes/hud/nerdstats.gd" id="7_c7x75"]
+[ext_resource type="Texture2D" uid="uid://be2iti6vu6pwe" path="res://Scenes/hud/slot_icons/armor_slot.png" id="7_ftse4"]
+[ext_resource type="Texture2D" uid="uid://c5pgmxde1i3d4" path="res://Scenes/hud/slot_icons/ring_slot.png" id="8_er4v8"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
@@ -76,7 +80,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4mb1w")
 
 [node name="InvenVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
 unique_name_in_owner = true
-visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -138,27 +141,35 @@ layout_mode = 2
 size_flags_vertical = 3
 columns = 4
 
-[node name="Weapon" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="WeaponSlot" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
+texture_normal = ExtResource("5_3ovpy")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Armor" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="AbilitySlot" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
+texture_normal = ExtResource("6_swaln")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Ring" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="ArmorSlot" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
+texture_normal = ExtResource("7_ftse4")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Sigil" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+[node name="RingSlot" type="TextureButton" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/GearVBoxContainer/GearGridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
-texture_normal = ExtResource("4_4mb1w")
+texture_normal = ExtResource("8_er4v8")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -282,6 +293,7 @@ stretch_mode = 5
 
 [node name="StatsVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
 unique_name_in_owner = true
+visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3

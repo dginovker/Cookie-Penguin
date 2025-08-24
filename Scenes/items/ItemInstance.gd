@@ -47,6 +47,6 @@ func to_dict() -> Dictionary:
 
 func generate_uuid() -> String:
     return "%016x" % [randi()] + "%016x" % [randi()]
-    
+
 func _to_string() -> String:
     return str(to_dict())

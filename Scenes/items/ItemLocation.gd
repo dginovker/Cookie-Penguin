@@ -3,7 +3,7 @@ class_name ItemLocation
 
 enum Type {
     PLAYER_BACKPACK,
-    PLAYER_GEAR, 
+    PLAYER_GEAR,
     LOOTBAG,
     GROUND
 }
@@ -19,7 +19,7 @@ func _init(loc_type: Type, owner: int, slot_num: int):
 
 func _to_string() -> String:
     return "%s:%d:%d" % [Type.keys()[type], owner_id, slot]
-    
+
 static func from_string(location_str: String) -> ItemLocation:
     var parts = location_str.split(":")
     var type_enum = Type[parts[0]]

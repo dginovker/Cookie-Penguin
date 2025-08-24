@@ -38,7 +38,7 @@ func request_move_item(item_uuid: String, new_location_string: String):
 
     if original_location.type == ItemLocation.Type.LOOTBAG:
         # Notify all viewers of the lootbag
-        var lootbag: LootBag = LootbagManager.lootbags[original_location.owner_id]
+        var lootbag: LootBag = LootbagTracker.lootbags[original_location.owner_id]
         lootbag.broadcast_lootbag_update()
 
     if original_location.type == ItemLocation.Type.PLAYER_BACKPACK or new_location.type == ItemLocation.Type.PLAYER_BACKPACK:
@@ -46,6 +46,18 @@ func request_move_item(item_uuid: String, new_location_string: String):
 
     if original_location.type == ItemLocation.Type.PLAYER_GEAR or new_location.type == ItemLocation.Type.PLAYER_GEAR:
         request_item_sync(new_location.owner_id)
+
+@rpc("any_peer", "call_local")
+func request_spawn_lootbag(peer_id: int, item_uuid: String):
+    assert(multiplayer.is_server())
+    var loc: Vector3 = PlayerManager.players[peer_id].global_position
+    var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
+    var original_item: ItemInstance = items[item_uuid]
+    # Delete original item
+    items.erase(original_item.uuid)
+    # Spawn a new one
+    loot_spawner.spawn_from_item_list(loc, [original_item.item_type])
+    request_item_sync(peer_id)
 
 @rpc("any_peer", "call_local", "reliable")
 func request_item_sync(peer_id: int):

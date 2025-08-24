@@ -10,9 +10,9 @@ class_name InventoryManager
 ]
 
 @onready var loot_container = $LootVBoxContainer/GridContainer
-@onready var gear_slots = $GearVBoxContainer/GearGridContainer.get_children()
-@onready var backpack_slots = $BackpackVBoxContainer/BackpackGridContainer.get_children()
-@onready var loot_slots = $LootVBoxContainer/GridContainer.get_children()
+@onready var gear_slots := $GearVBoxContainer/GearGridContainer.get_children()
+@onready var backpack_slots := $BackpackVBoxContainer/BackpackGridContainer.get_children()
+@onready var loot_slots := $LootVBoxContainer/GridContainer.get_children()
 
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
 var dragging_item = null
@@ -52,11 +52,7 @@ func _panel_content_size() -> Vector2:
     )
 
 func _layout():
-    # kill any ratcheted mins so ancestors can’t overrule anchors
-    items_panel.custom_minimum_size = Vector2.ZERO
-    items_panel.get_parent().custom_minimum_size = Vector2.ZERO
-
-    var content := _panel_content_size()
+    var content: Vector2 = _panel_content_size()
     var cols := 4
 
     var total_rows := 0
@@ -102,7 +98,6 @@ func hide_loot_bag():
     $LootVBoxContainer.visible = false
     _request_layout()
 
-
 func _on_slot_input(event: InputEvent, slot):
     if not event is InputEventMouseButton or event.button_index != MOUSE_BUTTON_LEFT:
         return
@@ -118,7 +113,7 @@ func stop_drag():
     if not dragging_item:
         return
     var mouse_pos = get_global_mouse_position()
-    var target_slot = null
+    var target_slot: TextureButton = null
     for slot in gear_slots + backpack_slots + loot_slots:
         if slot == dragging_item:
             continue  # Skip the slot being dragged
@@ -138,9 +133,15 @@ func stop_drag():
             ItemLocation.Type.PLAYER_GEAR:
                 new_location = ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, player_id, slot_index)
             ItemLocation.Type.LOOTBAG:
+                if lootbag_id == null:
+                    print("Tried to drag item to a lootbag, but the lootbag wasn't there!")
+                    return
                 new_location = ItemLocation.new(ItemLocation.Type.LOOTBAG, lootbag_id, slot_index)
         print("Requesting move to ", new_location)
         ItemManager.request_move_item.rpc_id(1, dragging_item.get_meta("uuid"), new_location.to_string())
+    else:
+        # Spawn it as loot
+        ItemManager.request_spawn_lootbag.rpc_id(1, multiplayer.get_unique_id(), dragging_item.get_meta("uuid"))
     dragging_item.z_index = 0
     dragging_item.position = dragging_item.get_meta("original_position")
     dragging_item = null
@@ -151,25 +152,31 @@ func _process(_delta):
 
 func update_backpack(items: Array[ItemInstance]):
     print("HUD: Updating backpack to have ", items)
-    # Clear all slots first
+    # Clear backpack slots first
     for slot in backpack_slots:
         slot.texture_normal = empty_slot_texture
         slot.remove_meta("uuid")
-    
+
     # Place each item in its designated slot
     for item: ItemInstance in items:
         var slot_index = item.location.slot
         var slot = backpack_slots[slot_index]
         slot.texture_normal = item.get_texture()
         slot.set_meta("uuid", item.uuid)
-        
+
 func update_gear(items: Array[ItemInstance]):
     print("Updating gear to have ", items)
-    # Clear all slots first
+    # Clear gear slots first
     for slot in gear_slots:
-        slot.texture_normal = empty_slot_texture
-        slot.remove_meta("uuid")
-    
+        (%WeaponSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/weapon_slot.png")
+        %WeaponSlot.remove_meta("uuid")
+        (%AbilitySlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/ice_barrage_slot.png")
+        %AbilitySlot.remove_meta("uuid")
+        (%ArmorSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/armor_slot.png")
+        %ArmorSlot.remove_meta("uuid")
+        (%RingSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/ring_slot.png")
+        %RingSlot.remove_meta("uuid")
+
     # Place each item in its designated slot
     for item: ItemInstance in items:
         var slot_index = item.location.slot

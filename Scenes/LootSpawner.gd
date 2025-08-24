@@ -1,6 +1,13 @@
 extends MultiplayerSpawner
 class_name LootSpawner
 
+func spawn_from_item_list(global_pos: Vector3, dropped_items: Array[String]):
+    assert(multiplayer.is_server())
+    spawn({
+        "position": global_pos,
+        "items": dropped_items
+    })
+
 func spawn_from_drop_table(global_pos: Vector3, drop_table: Dictionary[String, float]):
     assert(multiplayer.is_server())
 
@@ -23,7 +30,7 @@ func _ready():
     spawn_function = _spawn_loot_custom
 
 func _spawn_loot_custom(spawn_data: Dictionary):
-    # { "position": Vector3, "items": Array[String] } 
+    # { "position": Vector3, "items": Array[String] }
     var loot_bag_scene = preload("res://Scenes/lootbag/LootBag.tscn")
     var loot_bag: LootBag = loot_bag_scene.instantiate()
     loot_bag.position = spawn_data.position
@@ -34,8 +41,5 @@ func _spawn_loot_custom(spawn_data: Dictionary):
         for i in range(len(spawn_data.items)):
             var item := ItemInstance.new(spawn_data.items[i], ItemLocation.new(ItemLocation.Type.LOOTBAG, loot_bag.lootbag_id, i))
             ItemManager.spawn_item(item)
-    
+
     return loot_bag
-
-
-    
