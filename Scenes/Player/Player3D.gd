@@ -1,8 +1,12 @@
 class_name Player3D
 extends CharacterBody3D
+"""
+Main player
+Inputs controlled by server via RPC
+Common variables like global_position, xp, health, etc are shared via MultiplayerSynchronizer
+"""
 
 @onready var animated_sprite = $AnimatedSprite3D as Sprite3DHelper
-@onready var multiplayer_sync = $MultiplayerSynchronizer
 @onready var autofire_area = $AutofireArea3D
 @onready var healthbar := $HealthBar
 

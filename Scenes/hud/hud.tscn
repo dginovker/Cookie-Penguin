@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=23 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://be2iti6vu6pwe" path="res://Scenes/hud/slot_icons/armor_slot.png" id="7_ftse4"]
 [ext_resource type="Texture2D" uid="uid://c5pgmxde1i3d4" path="res://Scenes/hud/slot_icons/ring_slot.png" id="8_er4v8"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
+[ext_resource type="Script" uid="uid://nkff1bp0nfpb" path="res://Scenes/hud/special_attack.gd" id="16_er4v8"]
 [ext_resource type="Texture2D" uid="uid://cs1nigow7tuti" path="res://Scenes/hud/ice_barrage_ability_icon.png" id="16_ftse4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3ovpy"]
@@ -437,22 +438,44 @@ texture_pressed = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="SpecialAttack" type="Control" parent="RootSplit/Right"]
+[node name="SpecialAttackButton" type="Button" parent="RootSplit/Right"]
 layout_mode = 1
+anchors_preset = -1
 anchor_top = 0.65
 anchor_right = 1.0
 anchor_bottom = 0.74
+focus_mode = 0
+script = ExtResource("16_er4v8")
 
-[node name="TextureButton" type="TextureButton" parent="RootSplit/Right/SpecialAttack"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.1
-anchor_right = 0.5
-anchor_bottom = 0.9
-grow_horizontal = 2
-grow_vertical = 2
+[node name="HBoxContainer" type="HBoxContainer" parent="RootSplit/Right/SpecialAttackButton"]
+layout_mode = 2
+offset_right = 230.4
+offset_bottom = 58.32
+mouse_filter = 2
+
+[node name="TextureButton" type="TextureButton" parent="RootSplit/Right/SpecialAttackButton/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
 texture_normal = ExtResource("16_ftse4")
 stretch_mode = 5
+
+[node name="Label" type="Label" parent="RootSplit/Right/SpecialAttackButton/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "SPECIAL ATTACK"
+
+[node name="Cooldown" type="ColorRect" parent="RootSplit/Right/SpecialAttackButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.054902, 0.054902, 0.054902, 0.568627)
 
 [node name="JoystickSlot" type="Control" parent="RootSplit/Right"]
 unique_name_in_owner = true
