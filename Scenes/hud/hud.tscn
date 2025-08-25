@@ -121,12 +121,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="level_label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
+[node name="NonInvenStuff" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="level_label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Level: 0"
 
-[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
+[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
@@ -134,7 +138,7 @@ theme_override_styles/fill = ExtResource("2_ro43y")
 value = 60.0
 show_percentage = false
 
-[node name="hp_HealthText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/hp_TextureProgressBar"]
+[node name="hp_HealthText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/hp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -145,7 +149,7 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
+[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
@@ -153,7 +157,7 @@ theme_override_styles/fill = ExtResource("3_l0dsp")
 value = 30.0
 show_percentage = false
 
-[node name="xp_XpText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/xp_TextureProgressBar"]
+[node name="xp_XpText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/xp_TextureProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -167,6 +171,7 @@ vertical_alignment = 1
 [node name="InventoryManager" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 10
 script = ExtResource("3_vjapc")
 
 [node name="GearVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
@@ -210,9 +215,6 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="BackpackVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer"]
 layout_mode = 2
 
 [node name="BackpackGridContainer" type="GridContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/BackpackVBoxContainer"]
@@ -269,9 +271,6 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="LootVBoxContainer" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer"]
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="RootSplit/Right/TopRightContainer/InvenVbox/InventoryManager/LootVBoxContainer"]
@@ -525,3 +524,8 @@ pivot_offset = Vector2(56.5, 33.5)
 texture = ExtResource("6_ro43y")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

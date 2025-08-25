@@ -4,8 +4,9 @@ class_name InventoryManager
 # Requires a top-level Control named "DragLayer" (not inside any Container) that fills the viewport.
 @onready var drag_layer: Control       = %DragLayer
 
-@onready var items_panel: PanelContainer = $"../.."          # Right/TopRightContainer
-@onready var items_vbox: VBoxContainer   = $".."
+@onready var top_right_container: PanelContainer = %"TopRightContainer"
+@onready var non_inven_stuff: VBoxContainer = %"NonInvenStuff"
+@onready var panel_vbox: VBoxContainer   = $".."
 @onready var grids := [
     $"GearVBoxContainer/GearGridContainer",
     $"BackpackVBoxContainer/BackpackGridContainer",
@@ -32,7 +33,6 @@ var drag_item_texture: Texture2D
 var drag_ghost: TextureRect
 var drag_start_pos: Vector2
 
-const PAD_Y := 8
 const DRAG_THRESHOLD := 6.0
 
 func _ready():
@@ -43,7 +43,6 @@ func _ready():
     hide_loot_bag()
 
     resized.connect(_request_layout)
-    items_panel.resized.connect(_request_layout)
     get_viewport().size_changed.connect(_request_layout)
     for g in grids: g.resized.connect(_request_layout)
     call_deferred("_layout")
@@ -57,37 +56,36 @@ func _request_layout(): call_deferred("_layout")
 
 func _panel_content_size() -> Vector2:
     var vp := get_viewport_rect().size
-    var right := items_panel.get_parent() as Control
-    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (items_panel.anchor_right - items_panel.anchor_left)
-    var outer_h := vp.y * (items_panel.anchor_bottom - items_panel.anchor_top)
-    var sb := items_panel.get_theme_stylebox("panel", "PanelContainer")
+    var right := top_right_container.get_parent() as Control
+    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (top_right_container.anchor_right - top_right_container.anchor_left)
+    var outer_h := vp.y * (top_right_container.anchor_bottom - top_right_container.anchor_top) - non_inven_stuff.size.y
     return Vector2(
-        outer_w - sb.get_margin(SIDE_LEFT) - sb.get_margin(SIDE_RIGHT),
-        outer_h - sb.get_margin(SIDE_TOP)  - sb.get_margin(SIDE_BOTTOM)
+        outer_w,
+        outer_h
     )
 
 func _layout():
-    var content: Vector2 = _panel_content_size()
-    var cols := 4
+    var panel_content: Vector2 = _panel_content_size()
+    var columns := 4
 
-    var total_rows := 0
-    for g in grids:
-        var vis = g.get_children().filter(func(c): return c.visible).size()
-        total_rows += int(ceil(float(vis)/cols))
-    if total_rows == 0: return
+    var total_grid_rows := 0
+    for grid in grids:
+        var visible_slots = grid.get_children().filter(func(c): return c.visible).size()
+        total_grid_rows += int(ceil(float(visible_slots) / columns))
 
-    var hsep = grids[0].get_theme_constant("h_separation", "GridContainer")
-    var vbox_sep := items_vbox.get_theme_constant("separation", "VBoxContainer")
-    var hp_h = %hp_TextureProgressBar.get_combined_minimum_size().y
+    var grid_h_spacing = grids[0].get_theme_constant("h_separation", "GridContainer")
+    var vbox_spacing := panel_vbox.get_theme_constant("separation", "VBoxContainer")
+    var hp_bar_height = %hp_TextureProgressBar.get_combined_minimum_size().y
 
-    var cw := int((content.x - hsep*(cols-1)) / cols)
-    var ch := int((content.y - hp_h - vbox_sep - PAD_Y) / total_rows)
+    var cell_width := int((panel_content.x - grid_h_spacing * (columns - 1)) / columns)
+    var cell_height := int((panel_content.y - hp_bar_height - vbox_spacing) / total_grid_rows)
 
-    var s = max(1, min(cw, ch))  # single scalar; keeps within 20%×70% box in all aspect ratios
+    var cell_size = max(1, min(cell_width, cell_height))  # keeps proportions consistent across aspect ratios
 
-    for g in grids:
-        for b in g.get_children():
-            if b is TextureButton and b.visible: b.custom_minimum_size = Vector2(s, s)
+    for grid in grids:
+        for button in grid.get_children():
+            if button is TextureButton and button.visible:
+                button.custom_minimum_size = Vector2(cell_size, cell_size)
 
     queue_sort()
 
