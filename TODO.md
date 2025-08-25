@@ -5,6 +5,8 @@
 > First 60 seconds improvements <
 1. Record hit sounds
 2. Improve item stats UI panel
+3. Add special attacks
+4. Make monsters drop a tier 1 sword
 
 > Networking improvements <
 1. Make disconnecting work

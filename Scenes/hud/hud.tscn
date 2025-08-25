@@ -1,7 +1,8 @@
-[gd_scene load_steps=21 format=3 uid="uid://gmxtnjlkyc3c"]
+[gd_scene load_steps=22 format=3 uid="uid://gmxtnjlkyc3c"]
 
 [ext_resource type="Script" uid="uid://da8om8m08runw" path="res://Scenes/hud/hud.gd" id="1_4welq"]
 [ext_resource type="StyleBox" uid="uid://fjh0rrabwhlq" path="res://Scenes/hud/healthbar.tres" id="2_ro43y"]
+[ext_resource type="StyleBox" uid="uid://vjq3lw67xgrg" path="res://Scenes/hud/hud_buttoncontainer_style.tres" id="2_swaln"]
 [ext_resource type="StyleBox" uid="uid://dquuk44cufsqs" path="res://Scenes/hud/XPbar.tres" id="3_l0dsp"]
 [ext_resource type="Script" uid="uid://smy4da0sbe75" path="res://Scenes/hud/InventoryManager.gd" id="3_vjapc"]
 [ext_resource type="Script" uid="uid://orwkncs1ran5" path="res://addons/virtual_joystick/virtual_joystick.gd" id="4_1ym45"]
@@ -17,14 +18,10 @@
 [ext_resource type="Texture2D" uid="uid://be2iti6vu6pwe" path="res://Scenes/hud/slot_icons/armor_slot.png" id="7_ftse4"]
 [ext_resource type="Texture2D" uid="uid://c5pgmxde1i3d4" path="res://Scenes/hud/slot_icons/ring_slot.png" id="8_er4v8"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
+[ext_resource type="Texture2D" uid="uid://cs1nigow7tuti" path="res://Scenes/hud/ice_barrage_ability_icon.png" id="16_ftse4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3ovpy"]
 font_size = 18
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mb1w"]
-content_margin_top = 5.0
-content_margin_bottom = 20.0
-bg_color = Color(0.497172, 0.475126, 0.392239, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3t415"]
 bg_color = Color(0.2549, 0.2549, 0.2549, 1)
@@ -112,9 +109,9 @@ unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.7
+anchor_bottom = 0.6
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_4mb1w")
+theme_override_styles/panel = ExtResource("2_swaln")
 
 [node name="InvenVbox" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer"]
 unique_name_in_owner = true
@@ -383,23 +380,30 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 script = ExtResource("7_c7x75")
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="RootSplit/Right"]
+[node name="ButtonsHbox" type="PanelContainer" parent="RootSplit/Right"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.7
+anchor_top = 0.6
 anchor_right = 1.0
-anchor_bottom = 0.8
-grow_horizontal = 2
+anchor_bottom = 0.65
+offset_top = 0.399994
+offset_right = -0.399963
+grow_vertical = 2
 size_flags_vertical = 10
 size_flags_stretch_ratio = 0.1
+theme_override_styles/panel = ExtResource("2_swaln")
 
-[node name="InvenButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="RootSplit/Right/ButtonsHbox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InvenButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsHbox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_3t415")
 
-[node name="InvenButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer/InvenButtonPanel"]
+[node name="InvenButton" type="TextureButton" parent="RootSplit/Right/ButtonsHbox/HBoxContainer/InvenButtonPanel"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -413,13 +417,13 @@ texture_pressed = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="StatsButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsContainer"]
+[node name="StatsButtonPanel" type="Panel" parent="RootSplit/Right/ButtonsHbox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("6_ove2u")
 
-[node name="StatsButton" type="TextureButton" parent="RootSplit/Right/ButtonsContainer/StatsButtonPanel"]
+[node name="StatsButton" type="TextureButton" parent="RootSplit/Right/ButtonsHbox/HBoxContainer/StatsButtonPanel"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -433,12 +437,29 @@ texture_pressed = ExtResource("4_4mb1w")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="SpecialAttack" type="Control" parent="RootSplit/Right"]
+layout_mode = 1
+anchor_top = 0.65
+anchor_right = 1.0
+anchor_bottom = 0.74
+
+[node name="TextureButton" type="TextureButton" parent="RootSplit/Right/SpecialAttack"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 0.5
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("16_ftse4")
+stretch_mode = 5
+
 [node name="JoystickSlot" type="Control" parent="RootSplit/Right"]
 unique_name_in_owner = true
 layout_mode = 1
-anchor_top = 0.8
+anchor_top = 0.77
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.97
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
 

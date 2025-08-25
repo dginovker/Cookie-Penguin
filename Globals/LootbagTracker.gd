@@ -9,7 +9,6 @@ func hide_lootbag_contents():
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.hide_loot_bag()
 
-
 @rpc("authority", "call_local", "reliable", 69)
 func send_lootbag_contents(lootbag_id: int, item_data: Array[Dictionary]):
     # Client update
