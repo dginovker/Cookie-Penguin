@@ -25,6 +25,9 @@ var mob_resources := {
 func _enter_tree(): spawn_function = _spawn_mob_custom
 
 func _ready():
+    despawned.connect(func(n): 
+        print("[DESPAWN signal] ", n.get_path(), " class=", n.get_class(), " auth=", n.get_multiplayer_authority()))
+
     if !multiplayer.is_server(): return
 
     easy_positions = _bake_positions(easy_layers)

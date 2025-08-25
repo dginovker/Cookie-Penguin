@@ -82,7 +82,6 @@ func _physics_process(delta):
     if _get_nearest_mob() != null and fire_cooldown <= 0:
         var bulletspawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
         var bullet_pos = global_position
-        bullet_pos.y = 2
         var aim_direction: Vector3 = (_get_nearest_mob().global_position - global_position).normalized()
         aim_direction.y = 0
         var bullet_name := WeaponHelper.get_bullet_name_for_player(peer_id)

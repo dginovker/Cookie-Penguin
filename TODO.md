@@ -13,5 +13,3 @@
 2. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
 
 > Bugs Lol <
-1. Lootbags aren't appearing on clients
-2. Player bullets seem to have higher Y

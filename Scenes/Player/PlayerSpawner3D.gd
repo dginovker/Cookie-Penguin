@@ -5,7 +5,9 @@ const PlayerScene := preload("res://Scenes/Player/Player3D.tscn")
 
 func _ready():
     spawn_function = _spawn_player_custom
-    
+    despawned.connect(func(n): 
+        print("[DESPAWN signal] ", n.get_path(), " class=", n.get_class(), " auth=", n.get_multiplayer_authority()))
+
 func _spawn_player_custom(data: Variant) -> Node:
     var peer_id = data as int
     print("Custom spawning player:", peer_id)

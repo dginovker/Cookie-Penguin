@@ -30,7 +30,7 @@ func pop_level(target_p: Node3D) -> void:
 
 func _process(_dt: float) -> void:
     var cam := get_viewport().get_camera_3d()
-    if target:
+    if target and target.is_inside_tree():
         _last_known_position = target.global_position
     if not _last_known_position:
         queue_free()
