@@ -100,10 +100,10 @@ func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
         if i < loot_items.size():
             var it: ItemInstance = loot_items[i]
             b.texture_normal = it.get_texture()
-            b.set_meta("uuid", it.uuid)
+            b.set_meta("item_instance", it)
         else:
             b.texture_normal = empty_slot_texture
-            b.remove_meta("uuid")
+            b.remove_meta("item_instance")
     _request_layout()
 
 func hide_loot_bag():
@@ -115,22 +115,23 @@ func _on_slot_input(event: InputEvent, slot: TextureButton):
     if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
         return
 
-    if event.double_click and slot.has_meta("uuid"):
-        ItemManager.activate.rpc_id(1, slot.get_meta("uuid"))
+    if event.double_click and slot.has_meta("item_instance"):
+        ItemManager.activate.rpc_id(1, (slot.get_meta("item_instance") as ItemInstance).uuid)
         return
 
-    if event.pressed and slot.has_meta("uuid"):
+    if event.pressed and slot.has_meta("item_instance"):
         _start_drag(slot)
     else:
         _finish_drag()
 
 func _start_drag(slot: TextureButton):
     item_tooltip_panel.visible = true
-    item_tooltip_title.text = ItemManager.items[slot.get_meta("uuid")].item_type
-    item_tooltip_text.text = ItemManager.items[slot.get_meta("uuid")].item_description()
+    var item: ItemInstance = slot.get_meta("item_instance")
+    item_tooltip_title.text = item.item_type
+    item_tooltip_text.text = item.item_description()
     drag_origin_slot = slot
     drag_origin_rect = slot.get_global_rect()
-    drag_item_uuid = slot.get_meta("uuid")
+    drag_item_uuid = item.uuid
     drag_item_texture = slot.texture_normal
     drag_start_pos = get_global_mouse_position()
 
@@ -207,26 +208,26 @@ func _process(_dt):
 func update_backpack(items: Array[ItemInstance]):
     for slot in backpack_slots:
         slot.texture_normal = empty_slot_texture
-        slot.remove_meta("uuid")
+        slot.remove_meta("item_instance")
 
     for item: ItemInstance in items:
         var slot_index = item.location.slot
         var slot = backpack_slots[slot_index]
         slot.texture_normal = item.get_texture()
-        slot.set_meta("uuid", item.uuid)
+        slot.set_meta("item_instance", item)
 
 func update_gear(items: Array[ItemInstance]):
     (%WeaponSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/weapon_slot.png")
-    %WeaponSlot.remove_meta("uuid")
+    %WeaponSlot.remove_meta("item_instance")
     (%AbilitySlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/ice_barrage_slot.png")
-    %AbilitySlot.remove_meta("uuid")
+    %AbilitySlot.remove_meta("item_instance")
     (%ArmorSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/armor_slot.png")
-    %ArmorSlot.remove_meta("uuid")
+    %ArmorSlot.remove_meta("item_instance")
     (%RingSlot as TextureButton).texture_normal = preload("res://Scenes/hud/slot_icons/ring_slot.png")
-    %RingSlot.remove_meta("uuid")
+    %RingSlot.remove_meta("item_instance")
 
     for item: ItemInstance in items:
         var slot_index = item.location.slot
         var slot = gear_slots[slot_index]
         slot.texture_normal = item.get_texture()
-        slot.set_meta("uuid", item.uuid)
+        slot.set_meta("item_instance", item)
