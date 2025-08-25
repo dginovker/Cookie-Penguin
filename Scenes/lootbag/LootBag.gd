@@ -27,7 +27,7 @@ func _ready():
             global_position.y = result.position.y
 
 func _process(_delta: float) -> void:
-    if len(ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)) == 0:
+    if multiplayer.is_server() and len(ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)) == 0:
         queue_free()
 
 func _on_player_entered(body):

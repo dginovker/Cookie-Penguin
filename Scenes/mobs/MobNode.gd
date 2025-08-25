@@ -164,6 +164,7 @@ func take_damage(amount):
         _die()
 
 func _die() -> void:
+    assert(multiplayer.is_server())
     var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
     loot_spawner.spawn_from_drop_table(global_position, drop_table)
 

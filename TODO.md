@@ -14,3 +14,4 @@
 
 > Bugs Lol <
 1. Lootbags aren't appearing on clients
+2. Player bullets seem to have higher Y
