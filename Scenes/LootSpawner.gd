@@ -28,8 +28,6 @@ func spawn_from_drop_table(global_pos: Vector3, drop_table: Dictionary[String, f
 
 func _ready():
     spawn_function = _spawn_loot_custom
-    despawned.connect(func(n): 
-        print("[DESPAWN signal] ", n.get_path(), " class=", n.get_class(), " auth=", n.get_multiplayer_authority()))
 
 func _spawn_loot_custom(spawn_data: Dictionary):
     # { "position": Vector3, "items": Array[String] }

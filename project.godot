@@ -23,6 +23,7 @@ WeaponHelper="*res://Scenes/items/WeaponHelper.gd"
 LootbagTracker="*res://Globals/LootbagTracker.gd"
 Yeet="*res://Globals/Yeet.gd"
 LazyRPCs="*res://Globals/LazyRPCs.gd"
+ReplicationProbe="*res://Globals/ReplicationProbe.gd"
 
 [display]
 

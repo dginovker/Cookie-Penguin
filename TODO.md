@@ -13,3 +13,4 @@
 2. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
 
 > Bugs Lol <
+1. Server FPS drops when client is connected for 8 hours

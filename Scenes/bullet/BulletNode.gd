@@ -40,7 +40,7 @@ func _physics_process(delta):
     if not is_inside_tree():
         return
     position += bullet_data.direction * bullet_data.speed * delta
-    if position.distance_to(bullet_data.start_position) > lifetime:
+    if multiplayer.is_server() and position.distance_to(bullet_data.start_position) > lifetime:
         queue_free()
 
 func _on_body_entered(body: Node3D):
@@ -61,4 +61,5 @@ func hit_target(target: Node3D):
         queue_free()
 
 func hit_wall(_wall):
+    assert(multiplayer.is_server())
     queue_free()
