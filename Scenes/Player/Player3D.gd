@@ -133,7 +133,7 @@ func _process(delta):
     $Camera3D.rotate_y((camera_vector.x - camera_vector.y) * delta * 1.5)
 
 func level_up():
-    assert(is_multiplayer_authority())
+    assert(multiplayer.is_server())
     speed += 1
     attack += 1
     max_health += 5
