@@ -34,6 +34,8 @@ func _tick(_dt, tick):
 func _apply_snapshot(snap: Dictionary):
     if multiplayer.is_server(): return
     for id: int in snap.players.keys():
+        if !snap_q.has(id):
+            continue
         snap_q[id].append({"tick": snap.tick, "snapshot": snap.players[id]})
 
 # Consume buffered snapshots each network tick with a one-packet offset; interpolator records automatically.
