@@ -1,30 +1,21 @@
 extends Node
 
-var peer: WebSocketMultiplayerPeer
+var is_client: bool
+const PORT: int = 10000
 
-func _ready():
-    peer = WebSocketMultiplayerPeer.new()
-    
-    if OS.get_name() == "Web":
+func _ready() -> void:
+    is_client = OS.get_name() == "Web" || true
+    if is_client:
         # Join the server
-        print("Joining as Websocket Client..")
-        peer.create_client("ws://127.0.0.1:10000") # Test Local!!
-        #peer.create_client("wss://duck.openredsoftware.com/pinkdragon") # Real server!asdw        
-        multiplayer.multiplayer_peer = peer
+        print("Joining as WebRTC Client..")
+        Net.start_client()
         get_window().title = "Client"
     else:
         # We are the server
         PlayerManager.start_listening()
-        var err: Error = peer.create_server(10000)
-        if err != OK:
-            push_error("create_server failed: %s" % error_string(err))
-            return
-            
-        multiplayer.multiplayer_peer = peer # Todo - Test what happens if I remove this then document it
-    
+        Net.start_server()
         await get_tree().process_frame # Wait a frame so we don't change scenes during _ready
-    
-        var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
+        var game_scene: Node = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
         get_tree().root.add_child(game_scene)
         PlayerManager.spawn_player(1)
         get_window().title = "Server"

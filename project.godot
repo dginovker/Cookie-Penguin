@@ -24,6 +24,7 @@ LootbagTracker="*res://Globals/LootbagTracker.gd"
 Yeet="*res://Globals/Yeet.gd"
 LazyRPCs="*res://Globals/LazyRPCs.gd"
 ReplicationProbe="*res://Globals/ReplicationProbe.gd"
+Net="*res://Globals/Net.gd"
 
 [display]
 
