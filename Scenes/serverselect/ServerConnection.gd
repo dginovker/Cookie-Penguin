@@ -1,11 +1,11 @@
 extends Node
 
-var is_client: bool
+var is_server: bool
 const PORT: int = 10000
 
 func _ready() -> void:
-    is_client = OS.get_name() == "Web" || true
-    if is_client:
+    is_server = OS.get_cmdline_args().has("--server") || false
+    if !is_server:
         # Join the server
         print("Joining as WebRTC Client..")
         Net.start_client()

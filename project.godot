@@ -58,6 +58,7 @@ loot_bags=""
 loot_manager=""
 pop_texts=""
 player_holder="The parent node for all Player nodes to be spawned under"
+WorldRootSceneMultiplayer=""
 
 [input]
 
@@ -125,6 +126,7 @@ pointing/emulate_mouse_from_touch=false
 [netfox]
 
 time/sync_to_physics=true
+time/tickrate=5
 
 [physics]
 
@@ -136,3 +138,4 @@ time/sync_to_physics=true
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/warnings/integer_division=0
