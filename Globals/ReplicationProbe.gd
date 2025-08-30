@@ -5,7 +5,11 @@ Useful for debugging the un-debuggables, like:
 # ReplicationProbe.gd — activate after the client is actually connected
 extends Node
 
+var disabled: bool = true
+
 func _ready():
+    if disabled:
+        return
     multiplayer.connected_to_server.connect(_activate)
     if multiplayer.has_multiplayer_peer() and not multiplayer.is_server(): _activate()
 
