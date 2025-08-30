@@ -30,7 +30,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     # WebSocket endpoint for signaling (used to start WebRTC connection)
-    location /pinkdragon_signal {
+    location /pinkdragon {
         proxy_pass http://localhost:10000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

@@ -25,6 +25,16 @@ Yeet="*res://Globals/Yeet.gd"
 LazyRPCs="*res://Globals/LazyRPCs.gd"
 ReplicationProbe="*res://Globals/ReplicationProbe.gd"
 Net="*res://Globals/Net.gd"
+NetSnapshotHub="*res://Globals/NetSnapshotHub.gd"
+NetworkTime="*res://addons/netfox/network-time.gd"
+NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
+NetworkRollback="*res://addons/netfox/rollback/network-rollback.gd"
+NetworkEvents="*res://addons/netfox/network-events.gd"
+NetworkPerformance="*res://addons/netfox/network-performance.gd"
+
+[debug]
+
+gdscript/warnings/integer_division=0
 
 [display]
 
@@ -33,7 +43,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/netfox.internals/plugin.cfg", "res://addons/netfox/plugin.cfg")
 
 [global_group]
 
@@ -46,8 +56,8 @@ bullet_spawner=""
 loot_spawners=""
 loot_bags=""
 loot_manager=""
-player_spawner=""
 pop_texts=""
+player_holder="The parent node for all Player nodes to be spawned under"
 
 [input]
 
@@ -111,6 +121,10 @@ pointing/emulate_mouse_from_touch=false
 3d_physics/layer_1="World"
 3d_physics/layer_2="Mobs"
 3d_physics/layer_3="Player"
+
+[netfox]
+
+time/sync_to_physics=true
 
 [physics]
 

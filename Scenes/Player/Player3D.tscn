@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=16 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/Player/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://db0m4e286ui22" path="res://Scenes/Player/walk1.png" id="3_hkfi6"]
 [ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="6_2n8pm"]
 [ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/Sprite3DHelper.gd" id="8_0ny3v"]
+[ext_resource type="Script" uid="uid://d1jp2ouxf7dc5" path="res://Scenes/Player/PlayerInput.gd" id="8_254wg"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="9_q1k55"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="10_ye1a3"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uq6qx"]
 animations = [{
@@ -33,29 +36,6 @@ animations = [{
 [sub_resource type="BoxShape3D" id="BoxShape3D_aeyrk"]
 size = Vector3(0.1, 1, 0.1)
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2sntp"]
-properties/0/path = NodePath(".:global_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:position")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:xp")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath(".:attack")
-properties/3/spawn = true
-properties/3/replication_mode = 2
-properties/4/path = NodePath(".:speed")
-properties/4/spawn = true
-properties/4/replication_mode = 2
-properties/5/path = NodePath(".:max_health")
-properties/5/spawn = true
-properties/5/replication_mode = 2
-properties/6/path = NodePath(".:health")
-properties/6/spawn = true
-properties/6/replication_mode = 2
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_brba3"]
 radius = 1.0
 
@@ -69,7 +49,7 @@ outer_radius = 0.041
 rings = 12
 ring_segments = 3
 
-[node name="CharacterBody3D" type="CharacterBody3D" groups=["players"]]
+[node name="Player_N" type="CharacterBody3D" groups=["players"]]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 collision_layer = 4
 script = ExtResource("1_awgpe")
@@ -92,9 +72,6 @@ shape = SubResource("BoxShape3D_aeyrk")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
 size = 10.0
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_2sntp")
-
 [node name="AutofireArea3D" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 2
@@ -109,3 +86,17 @@ y_offset_px = 50
 [node name="GlobalPositionHelper" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_gqm3a")
 mesh = SubResource("TorusMesh_gqm3a")
+
+[node name="Input" type="Node" parent="."]
+script = ExtResource("8_254wg")
+
+[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("9_q1k55")
+root = NodePath("..")
+enable_input_broadcast = false
+metadata/_custom_type_script = "uid://d350u8evihs1u"
+
+[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("10_ye1a3")
+root = NodePath("..")
+metadata/_custom_type_script = "uid://dour8fehaaugp"

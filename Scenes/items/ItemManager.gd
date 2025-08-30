@@ -90,7 +90,7 @@ func activate(uuid: String):
     assert(ItemManager.items.has(uuid), "Trying to activate an item that doesn't exist")
     var item: ItemInstance = ItemManager.items[uuid]
     assert(item.location.owner_id == multiplayer.get_remote_sender_id() or item.location.type == ItemLocation.Type.LOOTBAG)
-    var player: Player3D = PlayerManager.players[multiplayer.get_remote_sender_id()]
+    var player: Player3D = PlayerManager.players[multiplayer.get_remote_sender_id()].player
     print("yay")
     if item.item_type == "health_potion":
         ItemManager.items.erase(uuid)

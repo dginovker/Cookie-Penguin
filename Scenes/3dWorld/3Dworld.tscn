@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://f5tk13xsoscg"]
+[gd_scene load_steps=6 format=3 uid="uid://f5tk13xsoscg"]
 
 [ext_resource type="PackedScene" uid="uid://cryp8mruwlu44" path="res://Scenes/3dWorld/MapStuff/WorldGround.tscn" id="1_bfqi2"]
 [ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
 [ext_resource type="Resource" uid="uid://3cqk2c2utyuw" path="res://Scenes/3dWorld/MapStuff/TerrainMask.tres" id="3_5uwof"]
-[ext_resource type="Script" uid="uid://gwf0lqxeww8w" path="res://Scenes/Player/PlayerSpawner3D.gd" id="4_utcp4"]
 [ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 
@@ -28,11 +27,7 @@ terrain = ExtResource("3_5uwof")
 
 [node name="PopTexts" type="CanvasLayer" parent="Mobs" groups=["pop_texts"]]
 
-[node name="Players" type="Node" parent="."]
-
-[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="Players" groups=["player_spawner"]]
-spawn_path = NodePath("..")
-script = ExtResource("4_utcp4")
+[node name="Players" type="Node" parent="." groups=["player_holder"]]
 
 [node name="Bullets" type="Node" parent="."]
 

@@ -16,7 +16,9 @@ Game Quirks:
 
 Style guidelines:
 * Do not write defensive code (don't do any null checks).
+* Use asserts. For example, if a function is only expected to run on the server, start it with `assert(multiplayer.is_server())`
 * Write code as concise as possible, with camel_case variable names.
+* Type all variables with `var x: some_type = some_value` syntax. Type Dictionaries with `var x: Dictionary[some_type, some_type] = some_value` syntax.
 * Do not declare variables when they only need to be used in one place.
 * Prefer one-liners.
-* If I give you code with comments, keep those comments in the output.
+* If I give you code with comments, keep or improve those comments in  the output.

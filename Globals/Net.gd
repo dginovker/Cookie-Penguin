@@ -6,6 +6,7 @@ var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
 const URL: String = "ws://127.0.0.1:%d" % PORT
+#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false
@@ -23,14 +24,14 @@ func start_client() -> void:
     is_client = true
     rtc = WebRTCMultiplayerPeer.new()
     signal_mp = WebSocketMultiplayerPeer.new(); signal_mp.create_client(URL)
-    print("Done signalining start")
+    #print("Done signalining start")
 
 func _process(_dt: float) -> void:
     if signal_mp:
         signal_mp.poll()
         if is_client and signal_mp.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED and !ws_hello_sent:
             signal_mp.put_packet(JSON.stringify({ "type":"hello" }).to_utf8_buffer()); ws_hello_sent = true
-            print("Sent hello")
+            #print("Sent hello")
         while signal_mp.get_available_packet_count() > 0:
             var sender_id: int = signal_mp.get_packet_peer() # read sender first
             var raw: PackedByteArray = signal_mp.get_packet()
@@ -42,7 +43,7 @@ func _process(_dt: float) -> void:
 # ---------- Server signaling over WebSocketMultiplayerPeer ----------
 
 func _server_handle_signal(ws_id: int, msg: Dictionary) -> void:
-    print("Server got a signal: ", ws_id, msg)
+    #print("Server got a signal: ", ws_id, msg)
     match String(msg.get("type", "")):
         "hello":
             var peer_id: int = next_id; next_id += 1
@@ -76,14 +77,14 @@ func _server_handle_signal(ws_id: int, msg: Dictionary) -> void:
             pc2.add_ice_candidate(String(msg["mid"]), int(msg["index"]), String(msg["cand"]))
 
 func _sig_send(target_id: int, obj: Dictionary) -> void:
-    print("Sent signal to ", target_id, " of ", obj)
+    #print("Sent signal to ", target_id, " of ", obj)
     signal_mp.set_target_peer(target_id)
     signal_mp.put_packet(JSON.stringify(obj).to_utf8_buffer())
 
 # ---------- Client signaling over WebSocketMultiplayerPeer ----------
 
 func _client_handle_signal(msg: Dictionary) -> void:
-    print("Got a signal: ", msg)
+    #print("Got a signal: ", msg)
     match String(msg.get("type", "")):
         "assign_id":
             var my_id: int = int(msg["id"])

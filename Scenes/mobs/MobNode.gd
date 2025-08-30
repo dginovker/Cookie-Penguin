@@ -29,8 +29,11 @@ func _enter_tree():
     $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
     $MultiplayerSynchronizer.update_visibility()
 
-func _visibility_filter(other_p: int) -> bool:
-    return PlayerManager.map_players.get(other_p, false)
+func _visibility_filter(peer_id: int) -> bool:
+    var player_state: PlayerManager.PlayerState = PlayerManager.players.get(peer_id, null)
+    if not player_state:
+        return false
+    return player_state.in_map
 
 func _ready():
     # Server has authority over all mobs
