@@ -49,7 +49,7 @@ func _ready():
     await get_tree().process_frame
 
     # --- Netfox nodes are created *now*, when we're fully in-tree ---
-    rb.add_state(self, "transform")
+    rb.add_state(self, "global_transform")     # use global space everywhere
     rb.add_state(self, "velocity")
     rb.add_state(self, "health")
     rb.add_state(self, "xp")
@@ -58,18 +58,17 @@ func _ready():
     rb.add_state(self, "max_health")
     rb.add_state(self, "fire_cooldown")
     rb.add_input($Input, "movement")
-    # Probably a better way to do this, since we are on the server right now and the spawned_players list is assumed to be updated since both of these will be sent reliably..
     rb.add_visibility_filter(func(to_peer:int): return PlayerManager.players.has(to_peer) && PlayerManager.players[to_peer].spawned_players.has(peer_id))
 
-    ti.add_property(self, "global_transform")
-    ti.enable_recording = false  # snapshots arrive from server @10Hz; we push manually
-    ti.enabled = !multiplayer.is_server() # Don't interpolate on the server (causes bug where global position doesn't update)
+    ti.add_property(self, "global_transform")  # interpolate visuals only
+    ti.enable_recording = !multiplayer.is_server()   # client records per tick; server never writes display state
+    ti.enabled = !multiplayer.is_server()            # no interpolation on server
     ti.process_settings()
 
     # --- Ownership AFTER nodes exist, THEN tell Netfox authority changed ---
     set_multiplayer_authority(1)               # server owns state
     $Input.set_multiplayer_authority(peer_id)  # local player owns input
-    rb.process_settings()   # builds _property_cache and evaluates authority
+    rb.process_settings()
 
 func setup_hud():
     var ui_layer = get_viewport().get_node_or_null("UILayer")
