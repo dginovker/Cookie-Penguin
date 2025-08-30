@@ -64,6 +64,19 @@ var diff_ack_interval: int = 0
 ## bandwidth and reduce cheating risks.
 @export var enable_input_broadcast: bool = true
 
+# --- Visibility ---
+var _visibility_filters: Array[Callable] = []
+
+func add_visibility_filter(f: Callable) -> void: _visibility_filters.append(f)
+func remove_visibility_filter(f: Callable) -> void: _visibility_filters.erase(f)
+func clear_visibility_filters() -> void: _visibility_filters.clear()
+
+func _is_visible(to_peer: int) -> bool:
+    for f in _visibility_filters:
+        if not f.call(to_peer): return false
+    return true
+
+
 var _record_state_property_entries: Array[PropertyEntry] = []
 var _record_input_property_entries: Array[PropertyEntry] = []
 var _auth_state_property_entries: Array[PropertyEntry] = []
@@ -428,20 +441,23 @@ func _record_tick(tick: int) -> void:
 
             if not NetworkRollback.enable_diff_states:
                 # Broadcast new full state
-                _submit_full_state.rpc(full_state.as_dictionary(), tick)
+                for peer in multiplayer.get_peers():
+                    if _is_visible(peer): _submit_full_state.rpc_id(peer, full_state.as_dictionary(), tick)
 
                 NetworkPerformance.push_full_state_broadcast(full_state.as_dictionary())
                 NetworkPerformance.push_sent_state_broadcast(full_state.as_dictionary())
             elif full_state_interval > 0 and tick > _next_full_state_tick:
                 # Send full state so we can send deltas from there
                 _logger.trace("Broadcasting full state for tick %d", [tick])
-                _submit_full_state.rpc(full_state.as_dictionary(), tick)
+                for peer in multiplayer.get_peers():
+                    if _is_visible(peer): _submit_full_state.rpc_id(peer, full_state.as_dictionary(), tick)
                 _next_full_state_tick = tick + full_state_interval
 
                 NetworkPerformance.push_full_state_broadcast(full_state.as_dictionary())
                 NetworkPerformance.push_sent_state_broadcast(full_state.as_dictionary())
             else:
                 for peer in multiplayer.get_peers():
+                    if not _is_visible(peer): continue
                     NetworkPerformance.push_full_state(full_state.as_dictionary())
 
                     # Peer hasn't received a full state yet, can't send diffs
@@ -534,7 +550,8 @@ func _attempt_submit_inputs(inputs: Array[_PropertySnapshot], input_tick: int) -
 
     # TODO: Default to input broadcast in mesh network setups
     if enable_input_broadcast:
-        _submit_inputs.rpc(serialized_inputs, input_tick)
+        for peer in multiplayer.get_peers():
+            if _is_visible(peer): _submit_inputs.rpc_id(peer, serialized_inputs, input_tick)
     elif not multiplayer.is_server():
         _submit_inputs.rpc_id(1, serialized_inputs, input_tick)
 

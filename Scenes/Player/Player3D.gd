@@ -22,7 +22,6 @@ Player spawning and despawning is not maintained by a syncronizer, it's done by 
 
 var input_vector := Vector3.ZERO
 var peer_id := -1 # Gets set in PlayerSpawner
-var location: String = "%016x" % [randi()] # Which map we're in for syncing multiplayer stuff. Start with a random string to prevent lobby people syncing with eachother
 
 var fire_cooldown := 0.0
 var mobs_in_range: Array[Node3D] = []
@@ -59,6 +58,8 @@ func _ready():
     rb.add_state(self, "max_health")
     rb.add_state(self, "fire_cooldown")
     rb.add_input($Input, "movement")
+    # Probably a better way to do this, since we are on the server right now and the spawned_players list is assumed to be updated since both of these will be sent reliably..
+    rb.add_visibility_filter(func(to_peer:int): return PlayerManager.players.has(to_peer) && PlayerManager.players[to_peer].spawned_players.has(peer_id))
 
     ti.add_property(self, "global_transform")
     ti.enable_recording = false  # snapshots arrive from server @10Hz; we push manually
