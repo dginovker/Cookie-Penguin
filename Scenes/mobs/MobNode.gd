@@ -2,6 +2,8 @@ class_name MobNode
 extends CharacterBody3D
 # Spawn is managed by MobMultiplayerSpawner
 
+var mob_id: int = -1
+
 @export var speed = 2.0
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
@@ -14,6 +16,7 @@ extends CharacterBody3D
 }
 @export var bullet_name = 'tier_0_bullet.png'
 
+var mob_kind: String
 var players_in_range: Array[Player3D] = [] # Players we shoot and give xp to on death
 var wander_direction = Vector3.ZERO
 var wander_timer = 0.0
@@ -24,16 +27,6 @@ var pause_timer = 0.0
 
 @onready var aggro_area: Area3D = $AggressionArea
 @onready var healthbar := $HealthBar
-
-func _enter_tree():
-    $MultiplayerSynchronizer.add_visibility_filter(_visibility_filter)
-    $MultiplayerSynchronizer.update_visibility()
-
-func _visibility_filter(peer_id: int) -> bool:
-    var player_state: PlayerManager.PlayerState = PlayerManager.players.get(peer_id, null)
-    if not player_state:
-        return false
-    return player_state.in_map
 
 func _ready():
     # Server has authority over all mobs

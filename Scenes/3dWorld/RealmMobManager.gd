@@ -1,8 +1,12 @@
-extends MultiplayerSpawner
+# MobManager.gd (spawns mobs, but not actually a MultiplayerSpawner)
+extends Node
+class_name RealmMobManager
 
 @export var spawn_timer: Timer
 @export var terrain: TerrainMask      # the .tres you saved from your baker
-@export var spawn_height := 1.01      # vertical offset above ground
+@export var spawn_height := 0.01      # vertical offset above ground
+
+var spawned_mobs: Dictionary[int, MobNode]
 
 # choose which mask-layer indices are valid for each region (exclude liquid indices)
 var easy_layers := PackedInt32Array([0, 1])       # e.g., grass, sand
@@ -22,21 +26,25 @@ var mob_resources := {
     "lolipop":       preload("res://Scenes/mobs/lolipop/Lolipop.tscn"),
 }
 
-func _enter_tree(): spawn_function = _spawn_mob_custom
-
 func _ready():
     if !multiplayer.is_server(): return
-
+    assert(get_tree().get_first_node_in_group("mob_holder") != null)
     easy_positions = _bake_positions(easy_layers)
     mid_positions  = _bake_positions(mid_layers)
 
     spawn_timer.timeout.connect(_on_spawn_timer)
 
-func _spawn_mob_custom(data: Variant)->Node:
-    var mob: Node3D = mob_resources[(data[1] as String)].instantiate()
-    mob.position = data[0] as Vector3
-    mob.add_to_group("mobs")
+func spawn(pos: Vector3, kind: String) -> MobNode:
+    # Called locally
+    var mob: MobNode = (mob_resources[kind] as PackedScene).instantiate()
+    print(len(spawned_mobs))
+    mob.mob_id = len(spawned_mobs)
+    spawned_mobs[mob.mob_id] = mob
+    mob.mob_kind = kind
+    mob.name = "mob_%d" % mob.mob_id
     mob.set_multiplayer_authority(1)
+    get_tree().get_first_node_in_group("mob_holder").add_child(mob)
+    mob.global_position = Vector3(pos.x, spawn_height, pos.z)
     return mob
 
 func _bake_positions(layers: PackedInt32Array)->Array[Vector3]:
@@ -72,7 +80,7 @@ func _on_spawn_timer():
 func _try_spawn(positions: Array[Vector3], mobs: Array):
     var pos = positions.pick_random()
     if _is_clear(pos):
-        spawn([pos, mobs.pick_random()])
+        spawn(pos, mobs.pick_random())
 
 func _is_clear(pos: Vector3)->bool:
     var d = min_distance

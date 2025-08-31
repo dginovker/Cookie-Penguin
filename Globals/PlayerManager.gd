@@ -5,6 +5,7 @@ class PlayerState:
     var player: Player3D = null
     var in_map: bool = false # Whether the player is in the Map yet
     var spawned_players: Dictionary[int, bool] = {} # The other players we already told this client to spawn
+    var spawned_mobs: Dictionary[int, bool] = {} # The mobs we told this client to spawn
     
 var players: Dictionary[int, PlayerState] = {}
 const player_scene = preload("res://Scenes/Player/Player3D.tscn")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://j73v2fk3d7rr"]
+[gd_scene load_steps=6 format=3 uid="uid://j73v2fk3d7rr"]
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_mq7ec"]
 [ext_resource type="Texture2D" uid="uid://dl8elo62vgsm1" path="res://Scenes/mobs/spikeysquare3d/SpikeySquare.png" id="2_v51k2"]
@@ -8,20 +8,6 @@
 size = Vector3(1, 2, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dytcf"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ix0of"]
-properties/0/path = NodePath(".:global_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:velocity")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:health")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath(".:max_health")
-properties/3/spawn = true
-properties/3/replication_mode = 2
 
 [node name="SpikeySquare" type="CharacterBody3D" groups=["mobs"]]
 collision_layer = 2
@@ -44,8 +30,5 @@ collision_mask = 4
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AggressionArea"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_dytcf")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_ix0of")
 
 [node name="HealthBar" parent="." instance=ExtResource("3_gxp4u")]

@@ -47,7 +47,6 @@ enabled=PackedStringArray("res://addons/netfox.internals/plugin.cfg", "res://add
 
 [global_group]
 
-walls=""
 mobs="Group for enemy NPCs"
 players="Group for players (controlled by clients)"
 chat_manager=""
@@ -58,7 +57,8 @@ loot_bags=""
 loot_manager=""
 pop_texts=""
 player_holder="The parent node for all Player nodes to be spawned under"
-WorldRootSceneMultiplayer=""
+mob_holder=""
+realm_mob_manager=""
 
 [input]
 

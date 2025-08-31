@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://f5tk13xsoscg"]
 
 [ext_resource type="PackedScene" uid="uid://cryp8mruwlu44" path="res://Scenes/3dWorld/MapStuff/WorldGround.tscn" id="1_bfqi2"]
-[ext_resource type="Script" uid="uid://dotjbificfpm0" path="res://Scenes/3dWorld/MobSpawner3d.gd" id="3_4c81v"]
+[ext_resource type="Script" uid="uid://b5nma7kswga3l" path="res://Scenes/3dWorld/RealmMobManager.gd" id="2_utcp4"]
 [ext_resource type="Resource" uid="uid://3cqk2c2utyuw" path="res://Scenes/3dWorld/MapStuff/TerrainMask.tres" id="3_5uwof"]
 [ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
@@ -13,15 +13,14 @@
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 50, 0)
 
-[node name="Mobs" type="Node" parent="."]
+[node name="Mobs" type="Node" parent="." groups=["mob_holder"]]
 
 [node name="SpawnTimer" type="Timer" parent="Mobs"]
 wait_time = 0.1
 autostart = true
 
-[node name="MobMultiplayerSpawner" type="MultiplayerSpawner" parent="Mobs" node_paths=PackedStringArray("spawn_timer")]
-spawn_path = NodePath("..")
-script = ExtResource("3_4c81v")
+[node name="RealmMobManager" type="Node" parent="Mobs" node_paths=PackedStringArray("spawn_timer") groups=["realm_mob_manager"]]
+script = ExtResource("2_utcp4")
 spawn_timer = NodePath("../SpawnTimer")
 terrain = ExtResource("3_5uwof")
 
