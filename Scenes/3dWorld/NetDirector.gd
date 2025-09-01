@@ -19,7 +19,13 @@ func _tick(_dt: float, tick: int) -> void:
         snapshot.consume_update_mob_pos()
     if !multiplayer.is_server(): return
     _n += 1
-    spawns.maybe_spawn_all()                                       # reliable lifecycle first
+    
+    # I'd make this not happen every tick, but it quacks the interpolator and I cba debugging that
     snapshot.send_snapshot(tick)
-    stats.flush_stat_updates()    
+    
+    if _n % 2 == 0:
+        # We don't need these to happen -every- tick... :3
+        spawns.maybe_spawn_all()
+    if _n % 5 == 0:
+        stats.flush_stat_updates()
     

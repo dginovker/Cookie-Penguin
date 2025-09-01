@@ -1,5 +1,6 @@
 extends Control
 
+const UPDATE_INTERVAL = 1.0
 const SECONDS := 60.0
 const SEQ_MOD := 256
 
@@ -20,7 +21,13 @@ func _ready() -> void:
     _sent.resize(SEQ_MOD)
     set_process(true)
 
+var _timing_uwu := 0.0
 func _process(delta: float) -> void:
+    _timing_uwu -= delta
+    if _timing_uwu > 0:
+        return
+    _timing_uwu = UPDATE_INTERVAL
+    
     t += delta
     times.append(t)
     fps.append(int(1.0 / delta))
