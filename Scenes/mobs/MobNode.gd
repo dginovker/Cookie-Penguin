@@ -173,4 +173,7 @@ func _die() -> void:
             # Looks ugly to give both xp and level up message at the same timeasd
             LazyRPCs.pop_xp.rpc(player.get_path(), xp_given)
         player.xp += xp_given
+        var net_director: NetDirector = get_tree().get_first_node_in_group("realm_net_director")
+        net_director.stats.buffer_stat_update(player)
+
     queue_free()

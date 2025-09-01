@@ -44,7 +44,7 @@ script = ExtResource("6_5uwof")
 spawn_path = NodePath("..")
 script = ExtResource("7_qhyur")
 
-[node name="NetDirector" type="Node" parent="."]
+[node name="NetDirector" type="Node" parent="." groups=["realm_net_director"]]
 script = ExtResource("6_qhyur")
 
 [node name="PoseSnapshot" type="Node" parent="NetDirector"]

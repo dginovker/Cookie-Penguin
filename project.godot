@@ -58,6 +58,7 @@ pop_texts=""
 player_holder="The parent node for all Player nodes to be spawned under"
 mob_holder=""
 realm_mob_manager=""
+realm_net_director=""
 
 [input]
 

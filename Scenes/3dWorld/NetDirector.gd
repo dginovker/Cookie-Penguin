@@ -21,8 +21,8 @@ func _tick(_dt: float, tick: int) -> void:
     if !multiplayer.is_server(): return
     _n += 1
     spawns.maybe_spawn_all()                                       # reliable lifecycle first
-    if (_n % interval_ticks) == 0: snapshot.send_snapshot(tick)    # one atomic pose packet
-    stats.flush_on_change()                                        # reliable-on-change
+    if (_n % interval_ticks) == 0: snapshot.send_snapshot(tick)    # one atomic position packet
+    stats.flush_stat_updates()                                       # reliable-on-change
 
 func _client_tick() -> void:
     if multiplayer.is_server(): return

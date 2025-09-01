@@ -140,11 +140,15 @@ func level_up():
     speed += 1
     attack += 1
     max_health += 5
+    var net_director: NetDirector = get_tree().get_first_node_in_group("realm_net_director")
+    net_director.stats.buffer_stat_update(self)
 
 func take_damage(damage: int):
     LazyRPCs.pop_damage.rpc(get_path(), damage, max(health, 0) / max_health)
     assert(multiplayer.is_server(), "Client is somehow calculating their own damage")
     health -= damage
+    var net_director: NetDirector = get_tree().get_first_node_in_group("realm_net_director")
+    net_director.stats.buffer_stat_update(self)
 
 func _autofire_area_entered(body: Node3D) -> void:
     if not body.is_in_group("mobs"):
