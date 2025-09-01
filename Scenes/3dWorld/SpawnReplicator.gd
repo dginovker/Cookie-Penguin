@@ -44,3 +44,4 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mp: Dictionary[int, Di
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
     for mid in mp.keys():
         mm.spawn(mp[mid].pos, mp[mid].kind)
+        ($"../PoseSnapshot" as PoseSnapshot).q_mobs[mid] = []       # seed mob queue (critical)

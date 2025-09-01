@@ -1,5 +1,7 @@
 class_name MobNode
 extends CharacterBody3D
+# Spawn is managed by MobMultiplayerSpawner
+# Todo - add interpolation
 
 var mob_id: int = -1
 
@@ -26,28 +28,21 @@ var pause_timer = 0.0
 
 @onready var aggro_area: Area3D = $AggressionArea
 @onready var healthbar := $HealthBar
-@onready var ti: TickInterpolator = $TickInterpolator
 
 func _ready():
     # Server has authority over all mobs
     set_multiplayer_authority(1)  # 1 = server ID
 
     max_health = health
-    
-    if !multiplayer.is_server():
-        # enable interpolation
-        ti.enabled = true
-        ti.enable_recording = true
-        ti.record_first_state = true
-        ti.process_settings()
-
 
     # Only server runs mob logic
-    if multiplayer.is_server():
-        wander_center = global_position
-        _new_wander_direction()
-        aggro_area.body_entered.connect(_on_player_entered)
-        aggro_area.body_exited.connect(_on_player_exited)
+    if not is_multiplayer_authority():
+        return
+
+    wander_center = global_position
+    _new_wander_direction()
+    aggro_area.body_entered.connect(_on_player_entered)
+    aggro_area.body_exited.connect(_on_player_exited)
 
 func _process(_delta):
     healthbar.update_health(max(health, 0) / max_health)
