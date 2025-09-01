@@ -4,7 +4,7 @@ extends Node
 # We populate this with data the server sends, then apply it during the next Network tick
 var mob_data: Dictionary[int, Dictionary] = {}        # id -> {"pos": Vector3, "h": int}
 
-func send_snapshot(tick: int) -> void:
+func send_snapshot(_tick: int) -> void:
     assert(multiplayer.is_server())
     var pack := {"mobs": {}}
     for m: MobNode in get_tree().get_nodes_in_group("mobs"):
