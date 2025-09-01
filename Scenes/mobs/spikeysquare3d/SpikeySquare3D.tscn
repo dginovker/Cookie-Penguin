@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://j73v2fk3d7rr"]
+[gd_scene load_steps=8 format=3 uid="uid://j73v2fk3d7rr"]
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_mq7ec"]
 [ext_resource type="Texture2D" uid="uid://dl8elo62vgsm1" path="res://Scenes/mobs/spikeysquare3d/SpikeySquare.png" id="2_v51k2"]
 [ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="3_gxp4u"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_8643o"]
+[ext_resource type="Script" uid="uid://ciargaatwugra" path="res://Scenes/mobs/MovementInterpolator.gd" id="5_2cxim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)
@@ -37,4 +38,8 @@ shape = SubResource("SphereShape3D_dytcf")
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("4_8643o")
 root = NodePath("..")
+enable_recording = false
 metadata/_custom_type_script = "uid://dour8fehaaugp"
+
+[node name="MovementInterpolator" type="Node" parent="."]
+script = ExtResource("5_2cxim")

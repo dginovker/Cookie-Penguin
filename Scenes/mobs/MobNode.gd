@@ -1,7 +1,6 @@
+# Base Mob code (AKA NPCs)
 class_name MobNode
 extends CharacterBody3D
-# Spawn is managed by MobMultiplayerSpawner
-# Todo - add interpolation
 
 var mob_id: int = -1
 
@@ -36,13 +35,11 @@ func _ready():
     max_health = health
 
     # Only server runs mob logic
-    if not is_multiplayer_authority():
-        return
-
-    wander_center = global_position
-    _new_wander_direction()
-    aggro_area.body_entered.connect(_on_player_entered)
-    aggro_area.body_exited.connect(_on_player_exited)
+    if multiplayer.is_server():
+        wander_center = global_position
+        _new_wander_direction()
+        aggro_area.body_entered.connect(_on_player_entered)
+        aggro_area.body_exited.connect(_on_player_exited)
 
 func _process(_delta):
     healthbar.update_health(max(health, 0) / max_health)
@@ -50,7 +47,7 @@ func _process(_delta):
 
 func _physics_process(delta):
     # Only server processes mob AI and movement
-    if not is_multiplayer_authority():
+    if not multiplayer.is_server():
         return
 
     shoot_timer -= delta
@@ -66,6 +63,7 @@ func _physics_process(delta):
     move_and_slide()
 
 func _chase_player(player: Player3D, _delta):
+    assert(multiplayer.is_server())
     var direction: Vector3 = (player.global_position - global_position).normalized()
     direction.y = 0
     velocity = direction * speed
@@ -75,6 +73,7 @@ func _chase_player(player: Player3D, _delta):
         shoot_timer = shoot_cooldown
 
 func shoot_at_player(player):
+    assert(multiplayer.is_server())
     var to_player = player.global_position - global_position
     to_player.y = 0
     var bullet_direction = to_player.normalized()
@@ -90,6 +89,7 @@ func shoot_at_player(player):
     get_tree().get_first_node_in_group("bullet_spawner").spawn_bullet(bullet_type)
 
 func _wander(delta):
+    assert(multiplayer.is_server())
     wander_timer -= delta
 
     if is_paused:

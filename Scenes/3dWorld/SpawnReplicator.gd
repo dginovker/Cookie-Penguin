@@ -27,6 +27,7 @@ func maybe_spawn_all() -> void:
                 if is_instance_valid(m):
                     mp[mid] = {"pos": m.global_position, "kind": m.mob_kind}
                     PlayerManager.players[peer_id].spawned_mobs[mid] = true
+                    print("player ", peer_id, " will have spawned ", mid)
         if pp.is_empty() && mp.is_empty(): continue
         _apply_entity_spawn.rpc_id(peer_id, pp, mp)
 

@@ -13,10 +13,13 @@ echo "Building Linux server.."
 # Build the server
 godot --headless --export-debug "Linux" 
 
-echo "Building Web client..."
-
-# Build the webclient
-godot --headless --export-debug "Web" ./build/index.html
+# Only build the web client if --no-webclient wasn't passed
+if [[ ! " $@ " =~ " --no-webclient " ]]; then
+    echo "Building Web client..."
+    godot --headless --export-debug "Web" ./build/index.html
+else
+    echo "Skipping Web client build..."
+fi
 
 # Package the build for itch.io
 zip -r build.zip build 

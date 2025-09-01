@@ -21,7 +21,7 @@ func send_snapshot(tick: int) -> void:
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map: _apply_snapshot.rpc_id(peer_id, pack)
 
-@rpc("authority", "call_local", "unreliable")
+@rpc("authority", "call_local", "unreliable_ordered")
 func _apply_snapshot(snap: Dictionary) -> void:
     if multiplayer.is_server(): return
     for id: int in snap.players.keys():
@@ -42,8 +42,10 @@ func consume_buffer() -> void:
                 if p.peer_id == id: p.global_transform = s.t; break
     for id in q_mobs.keys():
         var q2 := q_mobs[id]
-        while q2.size() > 0 && q2[0].tick <= target:
-            var s2 = q2.pop_front()
-            var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
-            var m := mm.spawned_mobs[id]
-            m.global_position = s2.pos
+        if q2.is_empty() || q2[0].tick > target: continue
+        var last                          # coalesce many → one
+        while q2.size() > 0 && q2[0].tick <= target: last = q2.pop_front()
+        var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
+        var m: MobNode = mm.spawned_mobs[id]
+        m.global_position = last.pos       # write sample to the node
+        (m.get_node("TickInterpolator") as TickInterpolator).push_state()  # push exactly once
