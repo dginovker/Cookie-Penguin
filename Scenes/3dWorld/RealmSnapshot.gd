@@ -27,5 +27,8 @@ func consume_update_mob_pos() -> void:
     for id in mob_data.keys():
         var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
         var m: MobNode = mm.spawned_mobs[id]
+        if not is_instance_valid(m):
+            # it's been freeeeeeeeeeeeeeeeed
+            continue
         m.global_position = mob_data[id].pos
         m.health = mob_data[id].h
