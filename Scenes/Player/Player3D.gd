@@ -14,11 +14,12 @@ Player spawning and despawning is not maintained by a syncronizer, it's done by 
 @onready var rb := $RollbackSynchronizer as RollbackSynchronizer
 @onready var ti := $TickInterpolator as TickInterpolator
 
+var stats_rev = 0
 @export var attack := 0
 @export var speed := 3.5
 @export var max_health := 100.0
 @export var xp := 0
-@export var health = 100.0
+@export var health := 100
 
 var input_vector := Vector3.ZERO
 var peer_id := -1 # Gets set in PlayerSpawner
@@ -50,13 +51,6 @@ func _ready():
 
     # --- Netfox nodes are created *now*, when we're fully in-tree ---
     rb.add_state(self, "global_transform")     # use global space everywhere
-    rb.add_state(self, "velocity")
-    rb.add_state(self, "health")
-    rb.add_state(self, "xp")
-    rb.add_state(self, "attack")
-    rb.add_state(self, "speed")
-    rb.add_state(self, "max_health")
-    rb.add_state(self, "fire_cooldown")
     rb.add_input($Input, "movement")
     rb.add_visibility_filter(func(to_peer:int): return PlayerManager.players.has(to_peer) && PlayerManager.players[to_peer].spawned_players.has(peer_id))
 

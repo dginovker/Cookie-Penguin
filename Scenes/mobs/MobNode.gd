@@ -1,6 +1,7 @@
 class_name MobNode
 extends CharacterBody3D
 # Spawn is managed by MobMultiplayerSpawner
+# Todo - add interpolation
 
 var mob_id: int = -1
 

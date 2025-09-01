@@ -33,6 +33,7 @@ func _process(_delta: float) -> void:
     # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler.
     # Yeah. I win ALL the arguments with myself in the shower.
     update_stats(int(player.xp), int(player.speed*2), player.attack, int(player.max_health))
+    update_health(int(player.health), (player.max_health))
     _update_debug()
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):

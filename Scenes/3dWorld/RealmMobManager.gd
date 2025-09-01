@@ -37,7 +37,7 @@ func _ready():
 func spawn(pos: Vector3, kind: String) -> MobNode:
     # Called locally
     var mob: MobNode = (mob_resources[kind] as PackedScene).instantiate()
-    print(len(spawned_mobs))
+    #print("Spawned node with id ", len(spawned_mobs))
     mob.mob_id = len(spawned_mobs)
     spawned_mobs[mob.mob_id] = mob
     mob.mob_kind = kind
