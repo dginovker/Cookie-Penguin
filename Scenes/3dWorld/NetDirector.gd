@@ -5,7 +5,7 @@ Single source of truth for cadence, tick, and routing.
 Can be made realm-scoped by adding a realm ID.
 """
 
-@onready var snapshot := $PoseSnapshot as PoseSnapshot
+@onready var snapshot := $RealmSnapshot as RealmSnapshot
 @onready var spawns := $SpawnReplicator as SpawnReplicator
 @onready var stats := $StatsReplicator as StatsReplicator
 

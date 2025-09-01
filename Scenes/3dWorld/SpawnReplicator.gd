@@ -4,7 +4,7 @@ extends Node
 Reliable lifecycle for players+mobs; sends initial baselines and seeds buffers.
 """
 
-@onready var snapshot := $"../PoseSnapshot" as PoseSnapshot
+@onready var snapshot := $"../RealmSnapshot" as RealmSnapshot
 var sent_players: Dictionary[int, bool] = {}
 var sent_mobs: Dictionary[int, bool] = {}
 
@@ -25,14 +25,14 @@ func maybe_spawn_all() -> void:
             if !PlayerManager.players[peer_id].spawned_mobs.has(mid):
                 var m: MobNode = mm.spawned_mobs[mid]
                 if is_instance_valid(m):
-                    mp[mid] = {"pos": m.global_position, "kind": m.mob_kind}
+                    mp[mid] = {"pos": m.global_position, "kind": m.mob_kind, "h": m.health}
                     PlayerManager.players[peer_id].spawned_mobs[mid] = true
                     print("player ", peer_id, " will have spawned ", mid)
         if pp.is_empty() && mp.is_empty(): continue
         _apply_entity_spawn.rpc_id(peer_id, pp, mp)
 
 @rpc("authority", "call_local", "reliable")
-func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mp: Dictionary[int, Dictionary]) -> void:
+func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int, Dictionary]) -> void:
     if multiplayer.is_server(): return
     for id in pp.keys():
         PlayerManager._spawn_player_for_real(id)
@@ -40,6 +40,6 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mp: Dictionary[int, Di
         p.global_transform = pp[id].t
         p.health = pp[id].h; p.xp = pp[id].x; p.attack = pp[id].a; p.speed = pp[id].s; p.max_health = pp[id].mh
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
-    for mid in mp.keys():
-        mm.spawn(mp[mid].pos, mp[mid].kind, mid)
-        ($"../PoseSnapshot" as PoseSnapshot).mobs[mid] = mp[mid].pos
+    for mid in mpack.keys():
+        mm.spawn(mpack[mid].pos, mpack[mid].kind, mid)
+        snapshot.mob_data[mid] = {"pos": mpack[mid].pos, "h": mpack[mid].h}

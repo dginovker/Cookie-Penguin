@@ -7,8 +7,8 @@ var mob_id: int = -1
 @export var speed = 2.0
 @export var shoot_cooldown = 1.0
 @export var wander_range = 100.0
-@export var health: float = 100.0
-@export var max_health: float = -1.0
+@export var health: int = 100
+@export var max_health: int = -1
 @export var xp_given: int = 5
 @export var drop_table: Dictionary[String, float] = {
     "health_potion": 1,
@@ -42,7 +42,7 @@ func _ready():
         aggro_area.body_exited.connect(_on_player_exited)
 
 func _process(_delta):
-    healthbar.update_health(max(health, 0) / max_health)
+    healthbar.update_health(float(max(health, 0)) / float(max_health))
     healthbar.update_location(global_position)
 
 func _physics_process(delta):
@@ -154,7 +154,7 @@ func take_damage(amount):
     if health < 0:
         return
 
-    LazyRPCs.pop_damage.rpc(get_path(), amount, max(health, 0) / max_health) # show on all peers
+    LazyRPCs.pop_damage.rpc(get_path(), amount, float(max(health, 0)) / float(max_health)) # show on all peers
 
     health -= amount
     if health < 0:

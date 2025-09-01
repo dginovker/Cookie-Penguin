@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://3cqk2c2utyuw" path="res://Scenes/3dWorld/MapStuff/TerrainMask.tres" id="3_5uwof"]
 [ext_resource type="Script" uid="uid://cq7xbya41mu4l" path="res://Scenes/BulletSpawner.gd" id="6_5uwof"]
 [ext_resource type="Script" uid="uid://bsy1b13wo4356" path="res://Scenes/3dWorld/NetDirector.gd" id="6_qhyur"]
-[ext_resource type="Script" uid="uid://dxu21gdpd2c4w" path="res://Scenes/3dWorld/PoseSnapshot.gd" id="7_bfqi2"]
+[ext_resource type="Script" uid="uid://dxu21gdpd2c4w" path="res://Scenes/3dWorld/RealmSnapshot.gd" id="7_bfqi2"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 [ext_resource type="Script" uid="uid://b3qmn4ncewaps" path="res://Scenes/3dWorld/SpawnReplicator.gd" id="8_bfqi2"]
 [ext_resource type="Script" uid="uid://bv47cy2mv6x7f" path="res://Scenes/3dWorld/StatsReplicator.gd" id="9_j0mbg"]
@@ -47,7 +47,7 @@ script = ExtResource("7_qhyur")
 [node name="NetDirector" type="Node" parent="." groups=["realm_net_director"]]
 script = ExtResource("6_qhyur")
 
-[node name="PoseSnapshot" type="Node" parent="NetDirector"]
+[node name="RealmSnapshot" type="Node" parent="NetDirector"]
 script = ExtResource("7_bfqi2")
 
 [node name="SpawnReplicator" type="Node" parent="NetDirector"]

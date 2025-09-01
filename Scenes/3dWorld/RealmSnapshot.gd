@@ -1,29 +1,31 @@
-class_name PoseSnapshot
+class_name RealmSnapshot
 extends Node
 
-var mobs: Dictionary[int, Vector3] = {}        # id -> pos
+# We populate this with data the server sends, then apply it during the next Network tick
+var mob_data: Dictionary[int, Dictionary] = {}        # id -> {"pos": Vector3, "h": int}
 
 func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
-    var pack := {"tick": tick, "players": {}, "mobs": {}}
+    var pack := {"mobs": {}}
     for m: MobNode in get_tree().get_nodes_in_group("mobs"):
-        pack.mobs[m.mob_id] = m.global_position
+        pack.mobs[m.mob_id] = {"pos": m.global_position, "h": m.health}
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map:
             _apply_snapshot.rpc_id(peer_id, pack)
 
 @rpc("authority", "call_local", "unreliable_ordered")
-func _apply_snapshot(snap: Dictionary) -> void:
+func _apply_snapshot(snapshot: Dictionary) -> void:
     if multiplayer.is_server(): return
-    for mid: int in snap.mobs.keys():
-        if not mobs.has(mid):
+    for mid: int in snapshot.mobs.keys():
+        if not mob_data.has(mid):
             print("For some reason client doesn't have mob ", mid, ". Will they have it soon?")
             continue
-        mobs[mid] = snap.mobs[mid]
+        mob_data[mid] = snapshot.mobs[mid]
 
 func consume_update_mob_pos() -> void:
     assert(!multiplayer.is_server())
-    for id in mobs.keys():
+    for id in mob_data.keys():
         var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
         var m: MobNode = mm.spawned_mobs[id]
-        m.global_position = mobs[id]
+        m.global_position = mob_data[id].pos
+        m.health = mob_data[id].h
