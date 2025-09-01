@@ -21,7 +21,7 @@ func maybe_spawn_all() -> void:
                 pp[other_id] = {"t": pl.global_transform, "h": pl.health, "x": pl.xp, "a": pl.attack, "s": pl.speed, "mh": pl.max_health, "r": pl.stats_rev}
                 PlayerManager.players[peer_id].spawned_players[other_id] = true
         var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
-        for mid: int in mm.spawned_mobs:
+        for mid: int in mm.spawned_mobs.keys():
             if !PlayerManager.players[peer_id].spawned_mobs.has(mid):
                 var m: MobNode = mm.spawned_mobs[mid]
                 if is_instance_valid(m):
@@ -44,5 +44,5 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mp: Dictionary[int, Di
             snapshot.q_players[id] = []
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
     for mid in mp.keys():
-        mm.spawn(mp[mid].pos, mp[mid].kind)
+        mm.spawn(mp[mid].pos, mp[mid].kind, mid)
         ($"../PoseSnapshot" as PoseSnapshot).q_mobs[mid] = []       # seed mob queue (critical)

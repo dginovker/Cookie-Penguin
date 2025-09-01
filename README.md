@@ -4,6 +4,13 @@
 
 <img width="1144" height="596" alt="image" src="https://github.com/user-attachments/assets/faa7496d-a7cd-4af8-aba0-eca14d25598f" />
 
+### Design Details
+
+Networking:
+* The Server is also a player.
+* NPCs (AKA mobs) have their movements all batched into one RPC for efficiency.
+* The game runs on WebRTC with UDP packets
+
 ### Setting up for Hosting
 
 Nginx config:

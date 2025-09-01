@@ -35,12 +35,18 @@ func _ready():
 
     spawn_timer.timeout.connect(_on_spawn_timer)
 
-func spawn(pos: Vector3, kind: String) -> MobNode:
+func spawn(pos: Vector3, kind: String, id: int = -1) -> MobNode:
     # Called locally
+    if multiplayer.is_server():
+        assert(id == -1)
     var mob: MobNode = (mob_resources[kind] as PackedScene).instantiate()
-    print("Spawned node with id ", _mob_index)
-    mob.mob_id = _mob_index
-    _mob_index += 1
+    if (multiplayer.is_server()):
+        print("Spawned node with id ", _mob_index)
+        mob.mob_id = _mob_index
+        _mob_index += 1
+    else:
+        # Clients use the server-provided mob id
+        mob.mob_id = id
     spawned_mobs[mob.mob_id] = mob
     mob.mob_kind = kind
     mob.name = "mob_%d" % mob.mob_id
