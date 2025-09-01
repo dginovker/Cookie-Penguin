@@ -38,7 +38,6 @@ shape = SubResource("SphereShape3D_dytcf")
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("4_8643o")
 root = NodePath("..")
-enable_recording = false
 metadata/_custom_type_script = "uid://dour8fehaaugp"
 
 [node name="MovementInterpolator" type="Node" parent="."]
