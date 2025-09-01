@@ -50,14 +50,7 @@ func _ready():
     await get_tree().process_frame
 
     # --- Netfox nodes are created *now*, when we're fully in-tree ---
-    rb.add_state(self, "global_transform")     # use global space everywhere
-    rb.add_input($Input, "movement")
     rb.add_visibility_filter(func(to_peer:int): return PlayerManager.players.has(to_peer) && PlayerManager.players[to_peer].spawned_players.has(peer_id))
-
-    ti.add_property(self, "global_transform")  # interpolate visuals only
-    ti.enable_recording = !multiplayer.is_server()   # client records per tick; server never writes display state
-    ti.enabled = !multiplayer.is_server()            # no interpolation on server
-    ti.process_settings()
 
     # --- Ownership AFTER nodes exist, THEN tell Netfox authority changed ---
     set_multiplayer_authority(1)               # server owns state
@@ -104,17 +97,16 @@ func _process(delta):
     cam.rotate_y((cv.x - cv.y) * delta * 1.5)
 
 # ---- Authoritative simulation (server + rollback) ----
-func _rollback_tick(delta, _tick, _is_fresh):
-    # Only server mutates gameplay state
-    if not multiplayer.is_server():
-        return
-        
+func _rollback_tick(delta, _tick, _is_fresh):        
     # Movement: derive from absolute input every tick; no latching, no reuse
     velocity = input.movement.normalized() * speed
     velocity *= NetworkTime.physics_factor
     move_and_slide()
     velocity /= NetworkTime.physics_factor
 
+func _physics_process(delta: float) -> void:
+    if !multiplayer.is_server():
+        return
     # Autofire logic (server authoritative)
     fire_cooldown -= delta
     if _get_nearest_mob() != null and fire_cooldown <= 0:
