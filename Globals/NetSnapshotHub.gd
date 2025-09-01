@@ -31,7 +31,7 @@ func _tick(_dt, tick):
     var mpack := {}
     for m: MobNode in get_tree().get_nodes_in_group("mobs"):
         mpack[m.mob_id] = {
-            "t": m.global_transform,  # visuals only are interpolated later
+            "pos": m.global_position,  # visuals only are interpolated later
             "h": m.health, "mh": m.max_health
         }
 
@@ -54,9 +54,9 @@ func _apply_snapshot(snap: Dictionary):
     for mid: int in snap.mobs.keys():
         var mob_manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
         var mob_instance: MobNode = mob_manager.spawned_mobs[mid]
-        mob_instance.global_position = snap.mobs[mid].t
-        mob_instance.health = snap.mobs.h
-        mob_instance.max_health = snap.mob.mh
+        mob_instance.global_position = snap.mobs[mid].pos
+        mob_instance.health = snap.mobs[mid].h
+        mob_instance.max_health = snap.mobs[mid].mh
 
 # Consume buffered snapshots each network tick with a one-packet offset; interpolator records automatically.
 func _client_tick():
@@ -93,7 +93,7 @@ func _spawn_entities(peer_id: int) -> void:
         if not is_instance_valid(mob):
             continue # was freed
         if !PlayerManager.players[peer_id].spawned_mobs.has(mob_id):
-            mpack[mob_id] = {"t": mob.global_transform, "kind": mob.mob_kind}
+            mpack[mob_id] = {"pos": mob.global_position, "kind": mob.mob_kind}
             PlayerManager.players[peer_id].spawned_mobs[mob_id] = true
     
     if mpack.is_empty() and pack.is_empty(): return
@@ -109,4 +109,4 @@ func _apply_entity_spawn(pack: Dictionary[int, Dictionary], mpack: Dictionary[in
 
     for mid in mpack.keys():
         var mob_manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
-        mob_manager.spawn(mpack[mid].t, mpack[mid].kind)
+        mob_manager.spawn(mpack[mid].pos, mpack[mid].kind)
