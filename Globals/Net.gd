@@ -5,8 +5,8 @@ var rtc: WebRTCMultiplayerPeer
 var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
-const URL: String = "ws://127.0.0.1:%d" % PORT
-#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
+#const URL: String = "ws://127.0.0.1:%d" % PORT
+const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false

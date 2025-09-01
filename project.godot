@@ -129,6 +129,10 @@ logging/log_level=5
 logging/netfox_log_level=5
 time/tickrate=30
 
+[network]
+
+limits/webrtc/max_channel_in_buffer_kb=256
+
 [physics]
 
 3d/default_gravity=0.0
