@@ -13,8 +13,6 @@ var _n := 0
 
 func _ready():
     NetworkTime.on_tick.connect(_tick)
-    if !multiplayer.is_server():
-        NetworkTime.before_tick_loop.connect(snapshot.consume_player_buffer)
 
 func _tick(_dt: float, tick: int) -> void:
     if !multiplayer.is_server():

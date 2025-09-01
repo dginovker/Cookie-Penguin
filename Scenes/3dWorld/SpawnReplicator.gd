@@ -39,8 +39,6 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mp: Dictionary[int, Di
         var p: Player3D = PlayerManager.players[id].player
         p.global_transform = pp[id].t
         p.health = pp[id].h; p.xp = pp[id].x; p.attack = pp[id].a; p.speed = pp[id].s; p.max_health = pp[id].mh
-        if not snapshot.q_players.has(id):
-            snapshot.q_players[id] = []
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
     for mid in mp.keys():
         mm.spawn(mp[mid].pos, mp[mid].kind, mid)
