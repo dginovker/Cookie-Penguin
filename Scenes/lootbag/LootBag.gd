@@ -38,14 +38,14 @@ func _on_player_entered(body):
         return
 
     var player: Player3D = body
-    nearby_players.append(player.get_multiplayer_authority())
+    nearby_players.append(player.peer_id)
 
     # Send lootbag contents to player
     var items: Array[ItemInstance] = ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)
     var item_data: Array[Dictionary] = []
     for item: ItemInstance in items:
         item_data.append(item.to_dict())
-    LootbagTracker.send_lootbag_contents.rpc_id(player.get_multiplayer_authority(), lootbag_id, item_data)
+    LootbagTracker.send_lootbag_contents.rpc_id(player.peer_id, lootbag_id, item_data)
 
 
 func _on_player_exited(body):
