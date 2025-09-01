@@ -6,6 +6,7 @@ class_name RealmMobManager
 @export var terrain: TerrainMask      # the .tres you saved from your baker
 @export var spawn_height := 0.01      # vertical offset above ground
 
+var _mob_index := 0
 var spawned_mobs: Dictionary[int, MobNode]
 
 # choose which mask-layer indices are valid for each region (exclude liquid indices)
@@ -37,8 +38,9 @@ func _ready():
 func spawn(pos: Vector3, kind: String) -> MobNode:
     # Called locally
     var mob: MobNode = (mob_resources[kind] as PackedScene).instantiate()
-    print("Spawned node with id ", len(spawned_mobs))
-    mob.mob_id = len(spawned_mobs)
+    print("Spawned node with id ", _mob_index)
+    mob.mob_id = _mob_index
+    _mob_index += 1
     spawned_mobs[mob.mob_id] = mob
     mob.mob_kind = kind
     mob.name = "mob_%d" % mob.mob_id

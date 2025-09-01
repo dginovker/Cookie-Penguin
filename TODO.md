@@ -7,6 +7,7 @@
 2. Improve item stats UI panel
 3. Add special attacks
 4. Make monsters drop a tier 1 sword
+5. Make it so you see other players' movement animation
 
 > ok but I wanna fix it <
 1. Chat

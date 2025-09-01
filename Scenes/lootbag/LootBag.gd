@@ -53,8 +53,8 @@ func _on_player_exited(body):
         return
 
     var player: Player3D = body
-    nearby_players.erase(player.get_multiplayer_authority())
-    LootbagTracker.hide_lootbag_contents.rpc_id(player.get_multiplayer_authority())
+    nearby_players.erase(player.peer_id)
+    LootbagTracker.hide_lootbag_contents.rpc_id(player.peer_id)
 
 func _exit_tree():
     LootbagTracker.lootbags.erase(lootbag_id)

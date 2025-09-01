@@ -46,6 +46,9 @@ func consume_buffer() -> void:
         var last                          # coalesce many → one
         while q2.size() > 0 && q2[0].tick <= target: last = q2.pop_front()
         var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
+        if not mm.spawned_mobs.has(id):
+            print("The reliable RPC to spawn the mob ", id, " hasn't come yet (but it will?)")
+            continue
         var m: MobNode = mm.spawned_mobs[id]
         m.global_position = last.pos       # write sample to the node
         (m.get_node("TickInterpolator") as TickInterpolator).push_state()  # push exactly once

@@ -84,8 +84,8 @@ func _process(delta):
 
     animated_sprite.waste_cut = terrain.is_in(global_position, TerrainDefs.Type.SHALLOW, 1) or terrain.is_in(global_position, TerrainDefs.Type.LAVA, 1)
 
-    # Only the owning client handles input presentation + HUD
-    if not is_multiplayer_authority():
+    # Only the player who uses this character handles input presentation + HUD
+    if multiplayer.get_unique_id() != peer_id:
         return
 
     if hud_instance:
