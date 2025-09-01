@@ -8,6 +8,9 @@ func send_snapshot(tick: int) -> void:
     var pack := {"tick": tick, "players": {}, "mobs": {}}
     for m: MobNode in get_tree().get_nodes_in_group("mobs"):
         pack.mobs[m.mob_id] = m.global_position
+    for peer_id: int in PlayerManager.players.keys():
+        if PlayerManager.players[peer_id].in_map:
+            _apply_snapshot.rpc_id(peer_id, pack)
 
 @rpc("authority", "call_local", "unreliable_ordered")
 func _apply_snapshot(snap: Dictionary) -> void:

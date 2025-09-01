@@ -4,6 +4,11 @@
 
 <img width="1144" height="596" alt="image" src="https://github.com/user-attachments/assets/faa7496d-a7cd-4af8-aba0-eca14d25598f" />
 
+### Running locally
+
+* Game is designed for ez dev; if you run as a server, you also spawn a player. Modify ServerConnection.gd to have `is_server = ... || true` and click play. Will work out of the box.
+* If you want to have multiple players, compile a server, then change that line to `|| false` for each client. Use scripts to make life happy.
+
 ### Design Details
 
 Networking:

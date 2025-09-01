@@ -8,10 +8,13 @@ rm -f build.zip
 rm -rf build/
 mkdir build
 
-echo "Building Linux server.."
-
-# Build the server
-godot --headless --export-debug "Linux" 
+# Only build the server if --no-server wasn't passed
+if [[ ! " $@ " =~ " --no-server " ]]; then
+    echo "Building Linux server.."
+    godot --headless --export-debug "Linux" 
+else
+    echo "Skipping Server build..."
+fi
 
 # Only build the web client if --no-webclient wasn't passed
 if [[ ! " $@ " =~ " --no-webclient " ]]; then
