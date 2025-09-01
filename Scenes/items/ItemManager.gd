@@ -99,6 +99,8 @@ func activate(uuid: String):
         else:
             ItemManager.request_item_sync(multiplayer.get_remote_sender_id())
         player.health = min(player.health + 100, player.max_health)
+        var net_director: NetDirector = get_tree().get_first_node_in_group("realm_net_director")
+        net_director.stats.buffer_stat_update(player)
         return
     if ItemManager.items[uuid].item_type == "tier_0_sword":
         # Todo - equip
