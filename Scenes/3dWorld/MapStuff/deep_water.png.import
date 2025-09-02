@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c17r6iejgmq0k"
-path.s3tc="res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.s3tc.ctex"
+path="res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Scenes/3dWorld/MapStuff/deep_water.png"
-dest_files=["res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.s3tc.ctex"]
+dest_files=["res://.godot/imported/deep_water.png-a444e3467e5885c6fbe7642732c0f4d8.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

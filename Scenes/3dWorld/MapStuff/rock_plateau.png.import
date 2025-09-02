@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5a0roq3hp5vl"
-path.s3tc="res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.s3tc.ctex"
+path="res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Scenes/3dWorld/MapStuff/rock_plateau.png"
-dest_files=["res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.s3tc.ctex"]
+dest_files=["res://.godot/imported/rock_plateau.png-365f8121b1c58ca10969d29e5449cd2b.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

@@ -1,6 +1,8 @@
 > First 5 seconds improvements <
-1. Test on mobile
-2. Get Chongho's kids to playtest again
+1. Make mobile images load
+2. Improve mobile controls more
+3. Make camera zoom be like radius of 10m
+4. Get Chongho's kids to playtest again
 
 > First 60 seconds improvements <
 1. Record hit sounds
@@ -13,11 +15,7 @@
 1. Chat
 
 > Networking improvements <
-1. Change mob and players to not use synchronizer and instead batch RPC updates
-2. Use Netfox for prediction and rollback on player movement
-3. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
-4. Make disconnecting work
-5. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
-
-> Bugs Lol <
-1. Server FPS drops when client is connected for 8 hours
+1. Visibility filter updates
+2. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
+3. Make disconnecting work
+4. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..

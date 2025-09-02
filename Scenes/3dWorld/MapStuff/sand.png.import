@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://mp7agt5p56h1"
-path.s3tc="res://.godot/imported/sand.png-df65d9dd50725da4afbbb43b5149133a.s3tc.ctex"
+path="res://.godot/imported/sand.png-df65d9dd50725da4afbbb43b5149133a.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Scenes/3dWorld/MapStuff/sand.png"
-dest_files=["res://.godot/imported/sand.png-df65d9dd50725da4afbbb43b5149133a.s3tc.ctex"]
+dest_files=["res://.godot/imported/sand.png-df65d9dd50725da4afbbb43b5149133a.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
