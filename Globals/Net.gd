@@ -46,11 +46,13 @@ func _process(_dt: float) -> void:
             else: _server_handle_signal(sender_id, msg)
     if rtc: rtc.poll()
     if multiplayer.is_server():
+        if (Engine.get_frames_drawn() % 60) != 0: return
         for pid: int in PlayerManager.players.keys():
             if pid == 1:
                 continue
             var b: int = rtc.get_peer(pid)["channels"][SNAPSHOT_CHANNEL].get_buffered_amount()
-            if (Engine.get_frames_drawn() % 60) == 0: print("pid ", pid, " snap buffered=", b)
+            for channel: WebRTCDataChannel in rtc.get_peer(pid)["channels"]:
+                print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
 
 
 # ---------- Server signaling over WebSocketMultiplayerPeer ----------
