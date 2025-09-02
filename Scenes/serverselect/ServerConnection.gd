@@ -4,7 +4,7 @@ var is_server: bool
 const PORT: int = 10000
 
 func _ready() -> void:
-    is_server = OS.get_cmdline_args().has("--server") || false
+    is_server = OS.get_cmdline_args().has("--server") || true
     if !is_server:
         # Join the server
         print("Joining as WebRTC Client..")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene load_steps=17 format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/Player/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cqv2gr4x48o1o" path="res://Scenes/Player/walk2.png" id="3_ggayc"]
 [ext_resource type="Texture2D" uid="uid://db0m4e286ui22" path="res://Scenes/Player/walk1.png" id="3_hkfi6"]
 [ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="6_2n8pm"]
+[ext_resource type="Script" uid="uid://cx6s327378stm" path="res://Scenes/Player/camera_3d.gd" id="7_jxwbu"]
 [ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/Sprite3DHelper.gd" id="8_0ny3v"]
 [ext_resource type="Script" uid="uid://d1jp2ouxf7dc5" path="res://Scenes/Player/PlayerInput.gd" id="8_254wg"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="9_q1k55"]
@@ -71,6 +72,7 @@ shape = SubResource("BoxShape3D_aeyrk")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
 size = 10.0
+script = ExtResource("7_jxwbu")
 
 [node name="AutofireArea3D" type="Area3D" parent="."]
 collision_layer = 0
@@ -84,6 +86,7 @@ debug_color = Color(0.620153, 0.472236, 0.668747, 0.42)
 y_offset_px = 50
 
 [node name="GlobalPositionHelper" type="MeshInstance3D" parent="."]
+visible = false
 material_override = SubResource("StandardMaterial3D_gqm3a")
 mesh = SubResource("TorusMesh_gqm3a")
 

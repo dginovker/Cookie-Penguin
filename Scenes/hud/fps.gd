@@ -1,6 +1,6 @@
 extends Control
 
-const UPDATE_INTERVAL = 1.0
+const UPDATE_INTERVAL = 0.2
 const SECONDS := 60.0
 const SEQ_MOD := 256
 

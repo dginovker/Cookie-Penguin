@@ -1,8 +1,8 @@
 > First 5 seconds improvements <
-1. Make mobile images load
-2. Improve mobile controls more
-3. Make camera zoom be like radius of 10m
-4. Get Chongho's kids to playtest again
+1. Improve mobile controls more. Joystick should take up like 5cm min
+  a) Make UI on the top and bottom if in portrait mode
+2. Figure out why the client doesn't have the right location of the server..
+3. Get Chongho's kids to playtest again
 
 > First 60 seconds improvements <
 1. Record hit sounds
