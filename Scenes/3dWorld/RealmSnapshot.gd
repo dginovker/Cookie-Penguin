@@ -13,7 +13,7 @@ func send_snapshot(_tick: int) -> void:
         if PlayerManager.players[peer_id].in_map:
             _apply_snapshot.rpc_id(peer_id, pack)
 
-@rpc("authority", "call_local", "unreliable_ordered")
+@rpc("authority", "call_local", "unreliable_ordered", Net.SNAPSHOT_CHANNEL)
 func _apply_snapshot(snapshot: Dictionary) -> void:
     if multiplayer.is_server(): return
     for mid: int in snapshot.mobs.keys():

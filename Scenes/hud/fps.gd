@@ -25,7 +25,8 @@ func _process(delta: float) -> void:
     t += delta
     times.append(t)
     fps.append(int(1.0 / delta))
-    ping_ms.append(NetworkTime.remote_rtt)
+    ping_ms.append(NetworkTime.remote_rtt / 1000)
+    print(NetworkTime.remote_rtt)
 
     var cut := t - SECONDS
     var i := 0

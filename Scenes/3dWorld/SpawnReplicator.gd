@@ -43,7 +43,7 @@ func maybe_spawn_all() -> void:
         if player_pack.is_empty() && mob_pack.is_empty() && despawn_mob_list.is_empty(): continue
         _apply_entity_spawn.rpc_id(peer_id, player_pack, mob_pack, despawn_mob_list)
 
-@rpc("authority", "call_local", "reliable")
+@rpc("authority", "call_local", "reliable", Net.SPAWN_CHANNEL)
 func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int, Dictionary], despawn_mob_list: Array[int]) -> void:
     if multiplayer.is_server(): return
     for id in pp.keys():

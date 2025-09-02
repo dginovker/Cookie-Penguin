@@ -5,18 +5,23 @@ var rtc: WebRTCMultiplayerPeer
 var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
-const URL: String = "ws://127.0.0.1:%d" % PORT
-#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
+#const URL: String = "ws://127.0.0.1:%d" % PORT
+const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false
 var client_pc: WebRTCPeerConnection
 var is_client: bool = false
 
+# called with create_client and create_server
+const SNAPSHOT_CHANNEL = 3
+const SPAWN_CHANNEL = 4
+const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE_ORDERED, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
+
 func start_server() -> void:
     is_client = false
     rtc = WebRTCMultiplayerPeer.new()
-    rtc.create_server()                                # ← WebRTC server role
+    rtc.create_server(ADDITIONAL_CHANNELS)  # ← WebRTC server role
     multiplayer.multiplayer_peer = rtc                 # Todo - Test what happens if I remove this then document it
     signal_mp = WebSocketMultiplayerPeer.new(); signal_mp.create_server(PORT)
 
@@ -88,7 +93,7 @@ func _client_handle_signal(msg: Dictionary) -> void:
     match String(msg.get("type", "")):
         "assign_id":
             var my_id: int = int(msg["id"])
-            rtc.create_client(my_id)                  # WebRTC client role
+            rtc.create_client(my_id, ADDITIONAL_CHANNELS)                  # WebRTC client role
             multiplayer.multiplayer_peer = rtc
 
         "offer":

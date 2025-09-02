@@ -15,7 +15,12 @@
 1. Chat
 
 > Networking improvements <
-1. Visibility filter updates
+1. Look into changing unreliable_lifetime to not backlog buffer: https://docs.godotengine.org/en/stable/classes/class_webrtcmultiplayerpeer.html#method-descriptions
+a) mp.add_peer(p, id, 150) # packets older than 150ms get dropped I think
+2. Look into using more different stream channels
+a) Snapshot update should def be different channel than movement RBSes 
+3. Visibility filter updates
+a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
 2. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
 3. Make disconnecting work
 4. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
