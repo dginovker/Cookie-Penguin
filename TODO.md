@@ -16,10 +16,10 @@
 
 > Networking improvements <
 1. Without interpolation, my NPCs look like they're teleporting. With interpolation, they're sliding and stopping, then sliding and stopping again. I'm not too sure how to describe this issue well, but is it a common thing, and is there a way to fix it? 
-2. Look into changing unreliable_lifetime to not backlog buffer: https://docs.godotengine.org/en/stable/classes/class_webrtcmultiplayerpeer.html#method-descriptions
-a) mp.add_peer(p, id, 150) # packets older than 150ms get dropped I think
-3. Visibility filter updates
+2. Visibility filter updates
 a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
-2. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
-3. Make disconnecting work
-4. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
+3. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
+4. Make disconnecting work
+a) Disconnected peers should disappear
+b) There should be a UI indication that you've disconnected
+5. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
