@@ -5,8 +5,8 @@ var rtc: WebRTCMultiplayerPeer
 var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
-#const URL: String = "ws://127.0.0.1:%d" % PORT
-const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
+const URL: String = "ws://127.0.0.1:%d" % PORT
+#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false
@@ -45,6 +45,13 @@ func _process(_dt: float) -> void:
             if is_client: _client_handle_signal(msg)
             else: _server_handle_signal(sender_id, msg)
     if rtc: rtc.poll()
+    if multiplayer.is_server():
+        for pid: int in PlayerManager.players.keys():
+            if pid == 1:
+                continue
+            var b: int = rtc.get_peer(pid)["channels"][SNAPSHOT_CHANNEL].get_buffered_amount()
+            if (Engine.get_frames_drawn() % 60) == 0: print("pid ", pid, " snap buffered=", b)
+
 
 # ---------- Server signaling over WebSocketMultiplayerPeer ----------
 
