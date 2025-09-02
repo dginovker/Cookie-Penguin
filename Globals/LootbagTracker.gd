@@ -3,13 +3,13 @@ extends Node
 
 var lootbags: Dictionary[int, LootBag] = {}
 
-@rpc("authority", "call_local")
+@rpc("authority", "call_local", "reliable", Net.LOOTBAG_CHANNEL)
 func hide_lootbag_contents():
     # Client update
     var hud: HUD = get_tree().get_first_node_in_group("hud")
     hud.hide_loot_bag()
 
-@rpc("authority", "call_local", "reliable")
+@rpc("authority", "call_local", "reliable", Net.LOOTBAG_CHANNEL)
 func send_lootbag_contents(lootbag_id: int, item_data: Array[Dictionary]):
     # Client update
     var items: Array[ItemInstance] = []

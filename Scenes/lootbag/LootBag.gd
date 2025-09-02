@@ -45,7 +45,7 @@ func _on_player_entered(body):
     var item_data: Array[Dictionary] = []
     for item: ItemInstance in items:
         item_data.append(item.to_dict())
-    LootbagTracker.send_lootbag_contents.rpc_id(player.peer_id, lootbag_id, item_data, Net.LOOTBAG_CHANNEL)
+    LootbagTracker.send_lootbag_contents.rpc_id(player.peer_id, lootbag_id, item_data)
 
 
 func _on_player_exited(body):
@@ -61,7 +61,7 @@ func _exit_tree():
 
 func broadcast_lootbag_update():
     for player_id in nearby_players:
-        LootbagTracker.send_lootbag_contents.rpc_id(player_id, lootbag_id, get_serialized_item_data(), Net.LOOTBAG_CHANNEL)
+        LootbagTracker.send_lootbag_contents.rpc_id(player_id, lootbag_id, get_serialized_item_data())
 
 func get_items() -> Array[ItemInstance]:
     return ItemManager.get_container_items(ItemLocation.Type.LOOTBAG, lootbag_id)
