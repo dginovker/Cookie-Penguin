@@ -97,7 +97,7 @@ func _process(delta):
     cam.rotate_y((cv.x - cv.y) * delta * 1.5)
 
 # ---- Authoritative simulation (server + rollback) ----
-func _rollback_tick(_delta, _tick, _is_fresh):        
+func _rollback_tick(_delta, _tick, _is_fresh):
     # Movement: derive from absolute input every tick; no latching, no reuse
     velocity = input.movement.normalized() * speed
     velocity *= NetworkTime.physics_factor
