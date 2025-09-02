@@ -41,7 +41,7 @@ func spawn(pos: Vector3, kind: String, id: int = -1) -> MobNode:
         assert(id == -1)
     var mob: MobNode = (mob_resources[kind] as PackedScene).instantiate()
     if (multiplayer.is_server()):
-        print("Spawned node with id ", _mob_index)
+        #print("Spawned node with id ", _mob_index)
         mob.mob_id = _mob_index
         _mob_index += 1
     else:

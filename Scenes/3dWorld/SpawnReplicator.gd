@@ -32,7 +32,7 @@ func maybe_spawn_all() -> void:
                 if is_instance_valid(m):
                     mob_pack[mid] = {"pos": m.global_position, "kind": m.mob_kind, "h": m.health}
                     PlayerManager.players[peer_id].spawned_mobs[mid] = true
-                    print("player ", peer_id, " will have spawned ", mid)
+                    #print("player ", peer_id, " will have spawned ", mid)
         
         # Despawn dead mobs
         for mid in PlayerManager.players[peer_id].spawned_mobs.keys():
