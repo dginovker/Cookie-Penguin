@@ -41,5 +41,5 @@ func _process(delta: float) -> void:
             fps.back(), fps.min()
         ]
         ping_label.text = " ping: %d ms   max: %d ms" % [
-            int(NetworkTime.remote_rtt), int(ping_ms.max())
+            int(NetworkTime.remote_rtt * 1000), int(ping_ms.max())
         ]
