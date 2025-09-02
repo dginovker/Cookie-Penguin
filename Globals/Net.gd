@@ -16,7 +16,7 @@ var is_client: bool = false
 # called with create_client and create_server
 const SNAPSHOT_CHANNEL = 1
 const SPAWN_CHANNEL = 2
-const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
+const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE_ORDERED, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
 
 func start_server() -> void:
     is_client = false
