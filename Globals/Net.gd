@@ -18,6 +18,8 @@ const SNAPSHOT_CHANNEL = 1
 const SPAWN_CHANNEL = 2
 const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE_ORDERED, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
 
+const MAX_PACKET_LIFETIME = 150 # experiment; lower values should(?) mean less lag, at the cost of unreliable packets never delivering?
+
 func start_server() -> void:
     is_client = false
     rtc = WebRTCMultiplayerPeer.new()
@@ -66,7 +68,7 @@ func _server_handle_signal(ws_id: int, msg: Dictionary) -> void:
                 _sig_send(ws_id, { "type":"ice", "id":peer_id, "mid":mid, "index":i, "cand":c })
             )
 
-            rtc.add_peer(pc, peer_id)        # must be STATE_NEW at this point
+            rtc.add_peer(pc, peer_id, MAX_PACKET_LIFETIME)        # must be STATE_NEW at this point
             pc.create_offer()                 # emits session_description_created → send offer
 
         "answer":
@@ -109,7 +111,7 @@ func _client_handle_signal(msg: Dictionary) -> void:
                 signal_mp.put_packet(JSON.stringify({ "type":"ice", "id":rtc.get_unique_id(), "mid":mid, "index":i, "cand":c }).to_utf8_buffer())
             )
 
-            rtc.add_peer(client_pc, 1)                                # add while STATE_NEW
+            rtc.add_peer(client_pc, 1, MAX_PACKET_LIFETIME)                                # add while STATE_NEW
             client_pc.set_remote_description("offer", String(msg["sdp"]))  # triggers session_description_created with "answer"
 
         "ice":
