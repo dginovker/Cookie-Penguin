@@ -18,6 +18,7 @@
 1. Chat
 
 > Networking improvements <
+1. Add debug stats about server physics/s and client browser memory
 2. Try making snapshot not send ordered packets
 3. Try exporting web builds with threads. Need to verify it still works on Itch 
 1. Without interpolation, my NPCs look like they're teleporting. With interpolation, they're sliding and stopping, then sliding and stopping again. I'm not too sure how to describe this issue well, but is it a common thing, and is there a way to fix it? 

@@ -17,7 +17,7 @@ var is_client: bool = false
 const SNAPSHOT_CHANNEL = 1 # Channel 4
 const SPAWN_CHANNEL = 2 # Channel 5
 const LOOTBAG_CHANNEL = 3 # Channel 6, mostly for debugging to see if all channels are blocked
-const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE_ORDERED, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
+const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
 
 func start_server() -> void:
     is_client = false

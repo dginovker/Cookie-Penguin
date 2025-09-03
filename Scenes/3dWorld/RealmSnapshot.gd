@@ -21,7 +21,8 @@ func _apply_snapshot(snapshot: Dictionary) -> void:
     if multiplayer.is_server(): return
     for mid: int in snapshot.mobs.keys():
         if not mob_data.has(mid):
-            print("For some reason client doesn't have mob ", mid, ". Will they have it soon?")
+            # Spawn packet comes on a different channel. We'll have it soon
+            #print("For some reason client doesn't have mob ", mid, ". Will they have it soon?")
             continue
         mob_data[mid] = snapshot.mobs[mid]
 
