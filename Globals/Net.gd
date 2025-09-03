@@ -14,9 +14,9 @@ var client_pc: WebRTCPeerConnection
 var is_client: bool = false
 
 # called with create_client and create_server
-const SNAPSHOT_CHANNEL = 1
-const SPAWN_CHANNEL = 2
-const LOOTBAG_CHANNEL = 3 # mostly for debugging to see if all channels are blocked
+const SNAPSHOT_CHANNEL = 1 # Channel 4
+const SPAWN_CHANNEL = 2 # Channel 5
+const LOOTBAG_CHANNEL = 3 # Channel 6, mostly for debugging to see if all channels are blocked
 const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE_ORDERED, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
 
 func start_server() -> void:
@@ -54,6 +54,11 @@ func _process(_dt: float) -> void:
                 var b: int = channel.get_buffered_amount()
                 print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
 
+
+func get_backpressure(pid: int, channel_id: int) -> int:
+    if pid == 1:
+        return 0
+    return rtc.get_peer(pid)["channels"][channel_id].get_buffered_amount()
 
 # ---------- Server signaling over WebSocketMultiplayerPeer ----------
 

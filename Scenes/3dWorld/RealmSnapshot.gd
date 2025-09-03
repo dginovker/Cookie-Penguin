@@ -11,6 +11,9 @@ func send_snapshot(_tick: int) -> void:
         pack.mobs[m.mob_id] = {"pos": m.global_position, "h": m.health}
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map:
+            if Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 3) > 1000:
+                print(peer_id, " is backed up on snapshots, not gonna send them a snapshot this tick.") 
+                continue
             _apply_snapshot.rpc_id(peer_id, pack)
 
 @rpc("authority", "call_local", "unreliable_ordered", Net.SNAPSHOT_CHANNEL)
