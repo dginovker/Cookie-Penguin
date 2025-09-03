@@ -32,6 +32,7 @@ func start_client() -> void:
     signal_mp = WebSocketMultiplayerPeer.new(); signal_mp.create_client(URL)
     #print("Done signalining start")
 
+var _time = 0
 func _process(_dt: float) -> void:
     if signal_mp:
         signal_mp.poll()
@@ -46,13 +47,15 @@ func _process(_dt: float) -> void:
             else: _server_handle_signal(sender_id, msg)
     if rtc: rtc.poll()
     if multiplayer.is_server():
-        if (Engine.get_frames_drawn() % 60) != 0: return
-        for pid: int in PlayerManager.players.keys():
-            if pid == 1:
-                continue
-            for channel: WebRTCDataChannel in rtc.get_peer(pid)["channels"]:
-                var b: int = channel.get_buffered_amount()
-                print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
+        _time -= _dt
+        if _time < 0:
+            _time = 1
+            for pid: int in PlayerManager.players.keys():
+                if pid == 1:
+                    continue
+                for channel: WebRTCDataChannel in rtc.get_peer(pid)["channels"]:
+                    var b: int = channel.get_buffered_amount()
+                    print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
 
 
 func get_backpressure(pid: int, channel_id: int) -> int:

@@ -11,6 +11,9 @@
 4. Make monsters drop a tier 1 sword
 5. Make it so you see other players' movement animation
 
+> Bugs <
+1. You can't see lootbag loot if the lootbag spawned before you
+
 > ok but I wanna fix it <
 1. Chat
 
