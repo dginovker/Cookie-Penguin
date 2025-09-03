@@ -59,6 +59,12 @@ func _process(_dt: float) -> void:
 
 
 func get_backpressure(pid: int, channel_id: int) -> int:
+    """
+    Godot exposes 3 channels by default
+    So i.e. SNAPSHOT_CHANNEL is channel 4, despite being value 1 in RPCs
+    ...But also, rtc.get_peer(pid)["channels"] is an array, so the index of SNAPSHOT_CHANNEL is 4-1 = 3
+    Confusing, right?
+    """
     if pid == 1:
         return 0
     return rtc.get_peer(pid)["channels"][channel_id].get_buffered_amount()

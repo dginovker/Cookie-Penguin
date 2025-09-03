@@ -18,8 +18,8 @@
 1. Chat
 
 > Networking improvements <
-0. Check WebRTCDataChannels' buffered_amount, skip sending non-required data this frame if it's above 512KB (test tuning different values)
-2. Read these Settings: https://foxssake.github.io/netfox/latest/netfox/guides/network-rollback/
+2. Try making snapshot not send ordered packets
+3. Try exporting web builds with threads. Need to verify it still works on Itch 
 1. Without interpolation, my NPCs look like they're teleporting. With interpolation, they're sliding and stopping, then sliding and stopping again. I'm not too sure how to describe this issue well, but is it a common thing, and is there a way to fix it? 
 2. Visibility filter updates
 a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
