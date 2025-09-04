@@ -12,11 +12,11 @@ func send_snapshot(_tick: int) -> void:
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map:
             if Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 2) > 1000:
-                print(peer_id, " is backed up on snapshots, not gonna send them a snapshot this tick.") 
+                print(peer_id, " is backed up on snapshots (", Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 2) ,") not gonna send them a snapshot of size ", var_to_bytes(pack).size(), " tick.") 
                 continue
             _apply_snapshot.rpc_id(peer_id, pack)
 
-@rpc("authority", "call_local", "unreliable_ordered", Net.SNAPSHOT_CHANNEL)
+@rpc("authority", "call_local", "unreliable", Net.SNAPSHOT_CHANNEL)
 func _apply_snapshot(snapshot: Dictionary) -> void:
     if multiplayer.is_server(): return
     for mid: int in snapshot.mobs.keys():

@@ -18,14 +18,12 @@
 1. Chat
 
 > Networking improvements <
-1. Add debug stats about server physics/s and client browser memory
-2. Try making snapshot not send ordered packets
-3. Try exporting web builds with threads. Need to verify it still works on Itch 
-1. Without interpolation, my NPCs look like they're teleporting. With interpolation, they're sliding and stopping, then sliding and stopping again. I'm not too sure how to describe this issue well, but is it a common thing, and is there a way to fix it? 
-2. Visibility filter updates
+1. Try exporting web builds with threads. Need to verify it still works on Itch 
+2. Without interpolation, my NPCs look like they're teleporting. With interpolation, they're sliding and stopping, then sliding and stopping again. I'm not too sure how to describe this issue well, but is it a common thing, and is there a way to fix it? 
+3. Visibility filter updates
 a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
-3. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
-4. Make disconnecting work
+4. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
+5. Make disconnecting work
 a) Disconnected peers should disappear
 b) There should be a UI indication that you've disconnected
-5. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..
+6. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..

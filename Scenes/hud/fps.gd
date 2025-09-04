@@ -10,6 +10,9 @@ var ping_ms := Array()
 
 @onready var fps_label := $Fps
 @onready var ping_label := $Ping
+@onready var static_mem_label := $StaticMem
+@onready var video_mem_label := $VideoMem
+@onready var obj_count_label := $ObjCount
 @onready var graph := $Grapf
 
 func _ready() -> void:
@@ -22,9 +25,13 @@ func _process(delta: float) -> void:
         return
     _timing_uwu = UPDATE_INTERVAL
     
+    static_mem_label.text = "Static memory (MB): " + str(int(Performance.get_monitor(Performance.MEMORY_STATIC) / 1000_000))
+    video_mem_label.text = "Video memory (MB): " + str(int(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1000_000))  
+    obj_count_label.text = "Obj count: " + str(int(Performance.get_monitor(Performance.OBJECT_COUNT)))
+    
     t += delta
     times.append(t)
-    fps.append(int(1.0 / delta))
+    fps.append(Performance.get_monitor(Performance.TIME_FPS))
     ping_ms.append(NetworkTime.remote_rtt * 1000)
 
     var cut := t - SECONDS
@@ -37,9 +44,9 @@ func _process(delta: float) -> void:
 
     if times.size() % 10 == 0:
         graph.set_data(times, fps, ping_ms, t)
-        fps_label.text = " %d FPS   min: %d" % [
+        fps_label.text = "%d FPS   min: %d" % [
             fps.back(), fps.min()
         ]
-        ping_label.text = " ping: %d ms   max: %d ms" % [
+        ping_label.text = "ping: %d ms   max: %d ms" % [
             int(NetworkTime.remote_rtt * 1000), int(ping_ms.max())
         ]
