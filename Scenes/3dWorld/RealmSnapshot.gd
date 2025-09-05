@@ -10,11 +10,20 @@ extends Node
 #       [mob_id: uLEB128]               # unsigned varint
 #       [pos: 3 bytes]                  # x/z quantized to 0.1 m ⇒ xq,zq ∈ [0..2559]
 #                                       # pack xq:u12, zq:u12 → 24 bits
+#
+# Server-side bandwidth cut without fragile deltas:
+#   - Send entries only for mobs whose quantized X/Z changed since last send.
+#   - Force a periodic absolute resend (keyframe) every RESEND_INTERVAL_TICKS.
+#   - Each entry is absolute; dropped packets only delay updates, not corrupt them.
 # Quantization: xq = round(x*10) clamped to [0..2559], same for z. y = 0.
-# Savings: Vector3 (12B) → 3B; no Variant/Dict overhead; varint IDs.
+# Savings: Vector3 (12B) → 3B; no Variant/Dict overhead; varint IDs; skip unchanged.
 # ---------------------------------------------------------------------------
 
 var mob_data: Dictionary[int, Dictionary] = {}  # id -> {"pos": Vector3}
+
+# Server-side cache of last sent quantized positions
+var last_qpos: Dictionary[int, Vector2i] = {}
+var RESEND_INTERVAL_TICKS: int = 20  # force a full refresh per mob every N ticks
 
 static func quantize_pos_to_u12_pair(p: Vector3) -> Vector2i:
     var xq: int = clampi(roundi(p.x * 10.0), 0, 2559)
@@ -39,11 +48,8 @@ static func leb128_write_u(value: int, out_bytes: PackedByteArray) -> void:
     while true:
         var b: int = n & 0x7F
         n >>= 7
-        if n != 0:
-            out_bytes.push_back(b | 0x80)
-        else:
-            out_bytes.push_back(b)
-            break
+        if n != 0: out_bytes.push_back(b | 0x80)
+        else: out_bytes.push_back(b); break
 
 static func leb128_read_u(data: PackedByteArray, start_index: int) -> Array:
     var shift: int = 0
@@ -56,23 +62,26 @@ static func leb128_read_u(data: PackedByteArray, start_index: int) -> Array:
         shift += 7
     return [val, i]
 
-func send_snapshot(_tick: int) -> void:
+func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
 
-    # Build body: [count u16] + entries
+    # Body: [count u16] + changed entries (absolute)
     var body: PackedByteArray = PackedByteArray()
-    body.resize(2)  # reserve for mob_count; fill later
-    var mob_count: int = 0
+    body.resize(2)
+    var count: int = 0
+    var force_keyframe: bool = (tick % RESEND_INTERVAL_TICKS) == 0
 
     for mob: MobNode in get_tree().get_nodes_in_group("mobs"):
-        leb128_write_u(mob.mob_id, body)
         var q: Vector2i = quantize_pos_to_u12_pair(mob.global_position)
+        var changed: bool = force_keyframe || !last_qpos.has(mob.mob_id) || last_qpos[mob.mob_id] != q
+        if !changed: continue
+        leb128_write_u(mob.mob_id, body)
         body.append_array(pack_u12_pair(q.x, q.y))
-        mob_count += 1
+        last_qpos[mob.mob_id] = q
+        count += 1
 
-    # Write mob_count (u16 LE)
-    body[0] = mob_count & 0xFF
-    body[1] = (mob_count >> 8) & 0xFF
+    body[0] = count & 0xFF
+    body[1] = (count >> 8) & 0xFF
 
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map:
