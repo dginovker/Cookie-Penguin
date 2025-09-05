@@ -1,3 +1,4 @@
+class_name PopText
 extends Label
 
 var target: Node3D
@@ -20,7 +21,7 @@ func pop_xp(target_p: Node3D, text_p: String) -> void:
     var t := create_tween()
     t.tween_property(self, "offset_y", -50.0, 2.0).set_ease(Tween.EASE_OUT).finished.connect(queue_free)
 
-func pop_level(target_p: Node3D) -> void:
+func pop_levelup(target_p: Node3D) -> void:
     target = target_p
     text = "LEVEL UP"
     modulate = Color.GREEN

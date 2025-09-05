@@ -25,10 +25,10 @@ func pop_xp(path: NodePath, xp: int):
     text.pop_xp(node, "+" + str(xp) + " XP")
 
 @rpc("any_peer", "call_local", "unreliable")
-func pop_level(path: NodePath):
+func pop_levelup(path: NodePath):
     var node := get_node_or_null(path)
     if not node:
         return
-    var text = POP_TEXT.instantiate()
+    var text = POP_TEXT.instantiate() as PopText
     get_tree().get_first_node_in_group("pop_texts").add_child(text)
-    text.pop_level(node)
+    text.pop_levelup(node)

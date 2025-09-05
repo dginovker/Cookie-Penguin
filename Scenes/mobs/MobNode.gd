@@ -167,7 +167,7 @@ func _die() -> void:
 
     for player: Player3D in players_in_range:
         if LevelsMath.get_level(player.xp) < LevelsMath.get_level(player.xp + xp_given):
-            LazyRPCs.pop_level.rpc(player.get_path())
+            LazyRPCs.pop_levelup.rpc(player.get_path())
             player.level_up()
         else:
             # Looks ugly to give both xp and level up message at the same timeasd
