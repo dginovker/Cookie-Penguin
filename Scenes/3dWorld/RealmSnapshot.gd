@@ -2,13 +2,13 @@ class_name RealmSnapshot
 extends Node
 
 # We populate this with data the server sends, then apply it during the next Network tick
-var mob_data: Dictionary[int, Dictionary] = {}        # id -> {"pos": Vector3, "h": int}
+var mob_data: Dictionary[int, Dictionary] = {}        # id -> {"pos": Vector3}
 
 func send_snapshot(_tick: int) -> void:
     assert(multiplayer.is_server())
     var pack := {"mobs": {}}
     for m: MobNode in get_tree().get_nodes_in_group("mobs"):
-        pack.mobs[m.mob_id] = {"pos": m.global_position, "h": m.health}
+        pack.mobs[m.mob_id] = {"pos": m.global_position}
     for peer_id: int in PlayerManager.players.keys():
         if PlayerManager.players[peer_id].in_map:
             if Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 2) > 1000:
@@ -35,4 +35,3 @@ func consume_update_mob_pos() -> void:
             # it's been freeeeeeeeeeeeeeeeed
             continue
         m.global_position = mob_data[id].pos
-        m.health = mob_data[id].h

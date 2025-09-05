@@ -32,3 +32,10 @@ func pop_levelup(path: NodePath):
     var text = POP_TEXT.instantiate() as PopText
     get_tree().get_first_node_in_group("pop_texts").add_child(text)
     text.pop_levelup(node)
+    
+@rpc("any_peer", "call_local", "unreliable", Net.MOB_HEALTH_UPDATES)
+func update_health(path: NodePath, health: int):
+    var mob: MobNode = get_node_or_null(path)
+    if not mob:
+        return
+    mob.health = health

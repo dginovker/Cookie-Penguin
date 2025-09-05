@@ -5,8 +5,8 @@ var rtc: WebRTCMultiplayerPeer
 var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
-#const URL: String = "ws://127.0.0.1:%d" % PORT
-const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
+const URL: String = "ws://127.0.0.1:%d" % PORT
+#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false
@@ -17,7 +17,13 @@ var is_client: bool = false
 const SNAPSHOT_CHANNEL = 1 # Channel 4
 const SPAWN_CHANNEL = 2 # Channel 5
 const LOOTBAG_CHANNEL = 3 # Channel 6, mostly for debugging to see if all channels are blocked
-const ADDITIONAL_CHANNELS = [MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE]
+const MOB_HEALTH_UPDATES = 4 # Channel 7
+const ADDITIONAL_CHANNELS = [
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE,
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE
+]
 
 func start_server() -> void:
     is_client = false
