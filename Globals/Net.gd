@@ -56,12 +56,17 @@ func _process(_dt: float) -> void:
         _time -= _dt
         if _time < 0:
             _time = 1
-            for pid: int in PlayerManager.players.keys():
-                if pid == 1:
-                    continue
-                for channel: WebRTCDataChannel in rtc.get_peer(pid)["channels"]:
-                    var b: int = channel.get_buffered_amount()
-                    print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
+            print_buffers()
+        
+func print_buffers():
+    if true:
+        return
+    for pid: int in PlayerManager.players.keys():
+        if pid == 1:
+            continue
+        for channel: WebRTCDataChannel in rtc.get_peer(pid)["channels"]:
+            var b: int = channel.get_buffered_amount()
+            print("pid ", pid, ", channel id: ", channel.get_id(), " label: ", channel.get_label(), " is_ordered(): ", channel.is_ordered(), ", buffered bytes=", b)
 
 
 func get_backpressure(pid: int, channel_id: int) -> int:
