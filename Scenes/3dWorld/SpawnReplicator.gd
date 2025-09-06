@@ -30,7 +30,7 @@ func maybe_spawn_all() -> void:
             if !PlayerManager.players[peer_id].spawned_mobs.has(mid):
                 var m: MobNode = mm.spawned_mobs[mid]
                 if is_instance_valid(m):
-                    mob_pack[mid] = {"pos": m.global_position, "kind": m.mob_kind, "h": m.health}
+                    mob_pack[mid] = {"pos": m.global_position, "kind": m.mob_kind}
                     PlayerManager.players[peer_id].spawned_mobs[mid] = true
                     #print("player ", peer_id, " will have spawned ", mid)
         
@@ -54,6 +54,6 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int,
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
     for mid in mpack.keys():
         mm.spawn(mpack[mid].pos, mpack[mid].kind, mid)
-        snapshot.mob_data[mid] = {"pos": mpack[mid].pos, "h": mpack[mid].h}
+        snapshot.mob_data[mid] = {"pos": mpack[mid].pos, "dir": Vector3.ZERO}
     for mid in despawn_mob_list:
         mm.spawned_mobs[mid].queue_free()

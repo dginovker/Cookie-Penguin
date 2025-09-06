@@ -1,29 +1,42 @@
+# RealmSnapshot.gd
 class_name RealmSnapshot
 extends Node
 
 # ---------------------------------------------------------------------------
-# Compact mob snapshot (absolute positions, unreliable):
+# Compact mob snapshot for movement smoothing (absolute positions + heading).
 #
-# Body format:
+# Packet body:
 #   [mob_count: u16 LE]
 #   repeated mob_count times:
-#       [mob_id: uLEB128]               # unsigned varint
-#       [pos: 3 bytes]                  # x/z quantized to 0.1 m ⇒ xq,zq ∈ [0..2559]
+#       [mob_id: uLEB128]               # unsigned LEB128 varint
+#       [pos: 3 bytes]                  # X/Z quantized to 0.1 m → xq,zq ∈ [0..2559]
 #                                       # pack xq:u12, zq:u12 → 24 bits
+#       [heading: u8]                   # atan2(XZ) quantized to 0..255
 #
-# Server-side bandwidth cut without fragile deltas:
-#   - Send entries only for mobs whose quantized X/Z changed since last send.
-#   - Force a periodic absolute resend (keyframe) every RESEND_INTERVAL_TICKS.
-#   - Each entry is absolute; dropped packets only delay updates, not corrupt them.
-# Quantization: xq = round(x*10) clamped to [0..2559], same for z. y = 0.
-# Savings: Vector3 (12B) → 3B; no Variant/Dict overhead; varint IDs; skip unchanged.
+# Design:
+#   - Server sends absolute states only for mobs whose quantized X/Z changed
+#     since last send, plus a periodic keyframe every RESEND_INTERVAL_TICKS.
+#   - Client performs dead-reckoning using the received heading and the local
+#     mob.speed, then clamps corrections to hide jitter.
+#   - No speed is sent; client reads speed from the mob instance.
+#   - No rollback; dropped packets only delay corrections.
+#
+# Notes:
+#   - Server computes heading from velocity; if stationary, reuse last sent
+#     heading for that mob (cached), falling back to wander_direction only for
+#     the very first send.
+#   - is_instance_valid is used to remove mobs that are dead, since our
+#     spawn_replicator.gd reliably despawns dead mobs
 # ---------------------------------------------------------------------------
 
-var mob_data: Dictionary[int, Dictionary] = {}  # id -> {"pos": Vector3}
+var mob_data: Dictionary[int, Dictionary] = {}     # id -> {"pos": Vector3, "dir": Vector3}
+var last_qpos: Dictionary[int, Vector2i] = {}      # server: last quantized XZ sent
+var last_qheading: Dictionary[int, int] = {}       # server: last heading byte sent per mob
+var RESEND_INTERVAL_TICKS: int = 20
 
-# Server-side cache of last sent quantized positions
-var last_qpos: Dictionary[int, Vector2i] = {}
-var RESEND_INTERVAL_TICKS: int = 20  # force a full refresh per mob every N ticks
+@onready var realm_mob_manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
+
+# ------------------------- Quantization helpers ------------------------------
 
 static func quantize_pos_to_u12_pair(p: Vector3) -> Vector2i:
     var xq: int = clampi(roundi(p.x * 10.0), 0, 2559)
@@ -31,8 +44,7 @@ static func quantize_pos_to_u12_pair(p: Vector3) -> Vector2i:
     return Vector2i(xq, zq)
 
 static func pack_u12_pair(xq: int, zq: int) -> PackedByteArray:
-    var bytes: PackedByteArray = PackedByteArray()
-    bytes.resize(3)
+    var bytes: PackedByteArray = PackedByteArray(); bytes.resize(3)
     bytes[0] = (xq >> 4) & 0xFF
     bytes[1] = ((xq & 0xF) << 4) | ((zq >> 8) & 0xF)
     bytes[2] = zq & 0xFF
@@ -62,22 +74,48 @@ static func leb128_read_u(data: PackedByteArray, start_index: int) -> Array:
         shift += 7
     return [val, i]
 
+# ----------------------------- Heading helpers -------------------------------
+
+static func angle_to_u8(v: Vector3) -> int:
+    var a: float = atan2(v.z, v.x)  # [-PI..PI]
+    var u: int = int(round(((a + PI) * 255.0) / (2.0 * PI))) & 0xFF
+    return u
+
+static func u8_to_dir(u: int) -> Vector3:
+    var a: float = (float(u) * 2.0 * PI) / 255.0 - PI
+    return Vector3(cos(a), 0.0, sin(a))
+
+# --------------------------- Server: send snapshot ---------------------------
+
 func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
 
-    # Body: [count u16] + changed entries (absolute)
-    var body: PackedByteArray = PackedByteArray()
-    body.resize(2)
+    var body: PackedByteArray = PackedByteArray(); body.resize(2)
     var count: int = 0
     var force_keyframe: bool = (tick % RESEND_INTERVAL_TICKS) == 0
 
     for mob: MobNode in get_tree().get_nodes_in_group("mobs"):
         var q: Vector2i = quantize_pos_to_u12_pair(mob.global_position)
-        var changed: bool = force_keyframe || !last_qpos.has(mob.mob_id) || last_qpos[mob.mob_id] != q
-        if !changed: continue
+        var changed: bool = force_keyframe or (not last_qpos.has(mob.mob_id)) or (last_qpos[mob.mob_id] != q)
+        if not changed: continue
+
+        var dir_vec: Vector3
+        if mob.velocity.length_squared() > 0.0001:
+            dir_vec = mob.velocity.normalized()
+        else:
+            if last_qheading.has(mob.mob_id):
+                dir_vec = u8_to_dir(last_qheading[mob.mob_id])
+            else:
+                dir_vec = mob.wander_direction  # first-time fallback
+
+        var dir_u8: int = angle_to_u8(dir_vec)
+
         leb128_write_u(mob.mob_id, body)
         body.append_array(pack_u12_pair(q.x, q.y))
+        body.push_back(dir_u8)
+
         last_qpos[mob.mob_id] = q
+        last_qheading[mob.mob_id] = dir_u8
         count += 1
 
     body[0] = count & 0xFF
@@ -91,6 +129,8 @@ func send_snapshot(tick: int) -> void:
                 continue
             _apply_snapshot.rpc_id(peer_id, body)
 
+# --------------------- Client: apply snapshot → target state -----------------
+
 @rpc("authority", "call_local", "unreliable", Net.SNAPSHOT_CHANNEL)
 func _apply_snapshot(body: PackedByteArray) -> void:
     if multiplayer.is_server(): return
@@ -99,18 +139,35 @@ func _apply_snapshot(body: PackedByteArray) -> void:
     var mob_count: int = body[i] | (body[i+1] << 8); i += 2
     for _n: int in range(mob_count):
         var id_and_next: Array = leb128_read_u(body, i)
-        var mob_id: int = id_and_next[0]
-        i = id_and_next[1]
+        var mob_id: int = id_and_next[0]; i = id_and_next[1]
         var q: Vector2i = unpack_u12_pair(body[i], body[i+1], body[i+2]); i += 3
-        if mob_data.has(mob_id):
-            mob_data[mob_id] = {"pos": Vector3(q.x * 0.1, 0.0, q.y * 0.1)}
-        # Spawn packet comes on a different channel. We'll have it soon.
+        var dir_u8: int = body[i]; i += 1
+
+        var pos: Vector3 = Vector3(q.x * 0.1, 0.0, q.y * 0.1)
+        var dir: Vector3 = u8_to_dir(dir_u8)
+
+        mob_data[mob_id] = {"pos": pos, "dir": dir}
+
+# --------------------- Client: integrate + clamp per frame -------------------
 
 func consume_update_mob_pos() -> void:
     assert(!multiplayer.is_server())
-    var manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
+
     for mob_id: int in mob_data.keys():
-        var mob: MobNode = manager.spawned_mobs[mob_id]
-        if !is_instance_valid(mob):  # it's been freeeeeeeeeeeeeeeeed
+        if not mob_id in realm_mob_manager.spawned_mobs:
             continue
-        mob.global_position = mob_data[mob_id].pos
+        var mob: MobNode = realm_mob_manager.spawned_mobs[mob_id]
+        if not is_instance_valid(mob):
+            continue
+
+        var tgt: Vector3 = mob_data[mob_id].pos
+        var dir: Vector3 = mob_data[mob_id].dir
+        var s: float = mob.speed
+
+        var dt: float = get_physics_process_delta_time()
+        var predicted: Vector3 = tgt + dir * s * dt
+        var diff: Vector3 = predicted - mob.global_position
+        var max_step: float = 0.25
+        if diff.length() > max_step:
+            diff = diff.normalized() * max_step
+        mob.global_position += diff
