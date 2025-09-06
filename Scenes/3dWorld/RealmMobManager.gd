@@ -4,7 +4,7 @@ class_name RealmMobManager
 
 @export var spawn_timer: Timer
 @export var terrain: TerrainMask      # the .tres you saved from your baker
-@export var spawn_height := 0.01      # vertical offset above ground
+@export var spawn_height := 0.1      # vertical offset above ground
 
 var _mob_index := 0
 var spawned_mobs: Dictionary[int, MobNode]
@@ -76,7 +76,7 @@ func _bake_positions(layers: PackedInt32Array)->Array[Vector3]:
                 if idx == L:
                     var spawn_x = xx + 0.5
                     var spawn_z = yy + 0.5
-                    out.append(Vector3(spawn_x, 0.01, spawn_z))
+                    out.append(Vector3(spawn_x, 0.1, spawn_z))
                     break
     return out
 

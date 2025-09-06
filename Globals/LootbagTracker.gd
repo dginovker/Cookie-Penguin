@@ -16,4 +16,7 @@ func send_lootbag_contents(lootbag_id: int, item_data: Array[Dictionary]):
     for item: Dictionary in item_data:
         items.append(ItemInstance.from_dict(item))
     var hud: HUD = get_tree().get_first_node_in_group("hud")
+    if not hud:
+        print("Where is my hud?")
+        return
     hud.show_loot_bag(lootbag_id, items)

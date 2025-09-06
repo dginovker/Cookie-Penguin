@@ -53,5 +53,5 @@ func _spawn_player_for_real(id: int):
     players[id].player.name = "Player_%d" % id
     players[id].player.peer_id = id
     get_tree().get_first_node_in_group("player_holder").add_child(players[id].player)
-    players[id].player.global_position = Vector3(238, 0.01, 198)
+    players[id].player.global_position = Vector3(238, 0.1, 198)
     players[id].in_map = true
