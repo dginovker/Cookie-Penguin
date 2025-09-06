@@ -16,7 +16,6 @@
 Networking:
 * The Server is also a player.
 * NPCs (AKA mobs) have their movements all batched into one RPC for efficiency.
-* NPC movement is interpolated with Netfox for smoothness
 * Player movement uses Netfox rollback synchronizers for instant client feedback and anti-cheat
 * The game runs on WebRTC with UDP packets
 * To prevent Buffer Full errors on client browsers, network/limits/webrtc/max_channel_in_buffer_kb is boosted massively from 64KB to 2MB

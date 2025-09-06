@@ -48,6 +48,7 @@ func _process(_delta):
 func _physics_process(delta):
     # Only server processes mob AI and movement
     if not multiplayer.is_server():
+        # Note that RealmSnapshot.gd updates the position on the client
         return
 
     shoot_timer -= delta

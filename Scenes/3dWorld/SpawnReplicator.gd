@@ -54,6 +54,5 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int,
     var mm: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
     for mid in mpack.keys():
         mm.spawn(mpack[mid].pos, mpack[mid].kind, mid)
-        snapshot.mob_data[mid] = {"pos": mpack[mid].pos, "dir": Vector3.ZERO}
     for mid in despawn_mob_list:
         mm.spawned_mobs[mid].queue_free()

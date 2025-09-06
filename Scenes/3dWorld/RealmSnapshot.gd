@@ -16,8 +16,9 @@ extends Node
 # Design:
 #   - Server sends absolute states only for mobs whose quantized X/Z changed
 #     since last send, plus a periodic keyframe every RESEND_INTERVAL_TICKS.
-#   - Client performs dead-reckoning using the received heading and the local
-#     mob.speed, then clamps corrections to hide jitter.
+#   - Client performs dead-reckoning using received heading and local mob.speed,
+#     integrating every physics frame from the latest snapshot baseline and
+#     clamping corrections to hide jitter.
 #   - No speed is sent; client reads speed from the mob instance.
 #   - No rollback; dropped packets only delay corrections.
 #
@@ -25,13 +26,20 @@ extends Node
 #   - Server computes heading from velocity; if stationary, reuse last sent
 #     heading for that mob (cached), falling back to wander_direction only for
 #     the very first send.
-#   - is_instance_valid is used to remove mobs that are dead, since our
-#     spawn_replicator.gd reliably despawns dead mobs
+#   - is_instance_valid is used to ignore mobs that were despawned; spawn
+#     replication is responsible for reliable lifecycles.
 # ---------------------------------------------------------------------------
 
-var mob_data: Dictionary[int, Dictionary] = {}     # id -> {"pos": Vector3, "dir": Vector3}
-var last_qpos: Dictionary[int, Vector2i] = {}      # server: last quantized XZ sent
-var last_qheading: Dictionary[int, int] = {}       # server: last heading byte sent per mob
+# Client: id -> {"pos": Vector3, "dir": Vector3, "acc": float, "moving": bool}
+var mob_data: Dictionary[int, Dictionary] = {}
+
+# Server-side caches (authoritative): last quantized pos + last sent heading byte
+var last_qpos: Dictionary[int, Vector2i] = {}
+var last_qheading: Dictionary[int, int] = {}
+
+# Client-only cache: last quantized pos seen, to flag "moving" vs "stopped"
+var client_last_qpos: Dictionary[int, Vector2i] = {}
+
 var RESEND_INTERVAL_TICKS: int = 20
 
 @onready var realm_mob_manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
@@ -54,6 +62,8 @@ static func unpack_u12_pair(b0: int, b1: int, b2: int) -> Vector2i:
     var xq: int = ((b0 << 4) | (b1 >> 4)) & 0xFFF
     var zq: int = (((b1 & 0xF) << 8) | b2) & 0xFFF
     return Vector2i(xq, zq)
+
+# ------------------------------ Varint helpers -------------------------------
 
 static func leb128_write_u(value: int, out_bytes: PackedByteArray) -> void:
     var n: int = value
@@ -146,28 +156,43 @@ func _apply_snapshot(body: PackedByteArray) -> void:
         var pos: Vector3 = Vector3(q.x * 0.1, 0.0, q.y * 0.1)
         var dir: Vector3 = u8_to_dir(dir_u8)
 
-        mob_data[mob_id] = {"pos": pos, "dir": dir}
+        # Reset prediction window on fresh snapshot; flag moving if quantized changed
+        var moving: bool = (client_last_qpos[mob_id] != q) if client_last_qpos.has(mob_id) else true
+        mob_data[mob_id] = {"pos": pos, "dir": dir, "acc": 0.0, "moving": moving}
+        client_last_qpos[mob_id] = q
 
 # --------------------- Client: integrate + clamp per frame -------------------
 
-func consume_update_mob_pos() -> void:
+func _physics_process(delta: float) -> void:
+    if multiplayer.is_server(): return
+    consume_update_mob_pos(delta)
+
+func consume_update_mob_pos(dt: float) -> void:
     assert(!multiplayer.is_server())
 
     for mob_id: int in mob_data.keys():
-        if not mob_id in realm_mob_manager.spawned_mobs:
-            continue
+        if !realm_mob_manager.spawned_mobs.has(mob_id): continue
         var mob: MobNode = realm_mob_manager.spawned_mobs[mob_id]
-        if not is_instance_valid(mob):
-            continue
+        if !is_instance_valid(mob): continue
 
-        var tgt: Vector3 = mob_data[mob_id].pos
+        mob_data[mob_id]["acc"] += dt
+
+        var base_pos: Vector3 = mob_data[mob_id].pos
         var dir: Vector3 = mob_data[mob_id].dir
         var s: float = mob.speed
+        var moving: bool = mob_data[mob_id].moving
 
-        var dt: float = get_physics_process_delta_time()
-        var predicted: Vector3 = tgt + dir * s * dt
+        # Predict from the snapshot baseline, not last frame
+        var predicted: Vector3 = (base_pos + dir * s * mob_data[mob_id].acc) if moving else base_pos
+
+        # Bound per-frame correction; scale with speed so fast mobs don't crawl
         var diff: Vector3 = predicted - mob.global_position
-        var max_step: float = 0.25
+        var max_step: float = max(0.25, s * dt * 1.25)
         if diff.length() > max_step:
             diff = diff.normalized() * max_step
         mob.global_position += diff
+
+        # Optional micro de-jitter when stopped inside the quantization cell
+        var q_epsilon: float = 0.05
+        if !moving and (mob.global_position - base_pos).length() < q_epsilon:
+            mob.global_position = base_pos
