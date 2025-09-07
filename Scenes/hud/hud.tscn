@@ -18,9 +18,10 @@
 [ext_resource type="Texture2D" uid="uid://be2iti6vu6pwe" path="res://Scenes/hud/slot_icons/armor_slot.png" id="7_ftse4"]
 [ext_resource type="Texture2D" uid="uid://c5pgmxde1i3d4" path="res://Scenes/hud/slot_icons/ring_slot.png" id="8_er4v8"]
 [ext_resource type="Texture2D" uid="uid://by23u3v8os63f" path="res://Scenes/hud/backpack-svgrepo-com.png" id="8_ove2u"]
-[ext_resource type="LabelSettings" uid="uid://c5bjaxmylldel" path="res://Scenes/hud/statsvbox_label_settings.tres" id="11_r3eqt"]
 [ext_resource type="Script" uid="uid://nkff1bp0nfpb" path="res://Scenes/hud/special_attack.gd" id="16_er4v8"]
 [ext_resource type="Texture2D" uid="uid://cs1nigow7tuti" path="res://Scenes/hud/ice_barrage_ability_icon.png" id="16_ftse4"]
+
+[sub_resource type="Theme" id="Theme_r3eqt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3ovpy"]
 font_size = 18
@@ -35,6 +36,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_r3eqt")
 script = ExtResource("1_4welq")
 
 [node name="RootSplit" type="Control" parent="."]
@@ -133,7 +135,6 @@ text = "Level: 0"
 
 [node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
 theme_override_styles/fill = ExtResource("2_ro43y")
 value = 60.0
@@ -152,7 +153,6 @@ vertical_alignment = 1
 
 [node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
 theme_override_styles/fill = ExtResource("3_l0dsp")
 value = 30.0
@@ -337,37 +337,30 @@ visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
 
 [node name="Fighting" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Fighting Level: 0"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Speed" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Speed: 0"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Attack" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Attack: 0"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Life" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Life: 0"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Debug Header" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Debug"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Position" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 layout_mode = 2
 text = "Position: "
-label_settings = ExtResource("11_r3eqt")
 
 [node name="NerdStats" type="VBoxContainer" parent="RootSplit/Right/TopRightContainer/StatsVbox"]
 custom_minimum_size = Vector2(50, 50)
@@ -377,27 +370,22 @@ script = ExtResource("6_jnh4k")
 [node name="StaticMem" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 layout_mode = 2
 text = "Static Mem"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="VideoMem" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 layout_mode = 2
 text = "Static Mem"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="ObjCount" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 layout_mode = 2
 text = "Dyno Mem"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Fps" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 layout_mode = 2
 text = "FPS"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Ping" type="Label" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 layout_mode = 2
 text = "Ping"
-label_settings = ExtResource("11_r3eqt")
 
 [node name="Grapf" type="Control" parent="RootSplit/Right/TopRightContainer/StatsVbox/NerdStats"]
 custom_minimum_size = Vector2(0, 40)
