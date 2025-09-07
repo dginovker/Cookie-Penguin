@@ -1,16 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://wibj8e7f6avp"]
+[gd_scene load_steps=3 format=3 uid="uid://wibj8e7f6avp"]
 
 [ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/serverselect/ServerConnection.gd" id="1_ufl2m"]
+[ext_resource type="Script" uid="uid://dgwtd5jo2bagq" path="res://Scenes/ui_root.gd" id="2_iiabo"]
 
-[node name="ServerSelect" type="VBoxContainer"]
-offset_right = 44.0
-offset_bottom = 66.0
+[node name="RootRoot" type="Node"]
+
+[node name="ServerConnection" type="Node" parent="."]
 script = ExtResource("1_ufl2m")
 
-[node name="HostButton" type="Button" parent="."]
-layout_mode = 2
-text = "Host"
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
 
-[node name="JoinButton" type="Button" parent="."]
-layout_mode = 2
-text = "Join"
+[node name="UIRoot" type="Control" parent="UILayer" groups=["ui_root"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_iiabo")

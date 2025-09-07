@@ -58,12 +58,7 @@ func _ready():
     rb.process_settings()
 
 func setup_hud():
-    var ui_layer = get_viewport().get_node_or_null("UILayer")
-    if not ui_layer:
-        ui_layer = CanvasLayer.new()
-        ui_layer.name = "UILayer"
-        ui_layer.layer = 10
-        get_viewport().add_child(ui_layer)
+    var ui_layer: Control = get_tree().get_first_node_in_group("ui_root")
     hud_instance = hud_scene.instantiate()
     ui_layer.add_child(hud_instance)
     hud_instance.player = self

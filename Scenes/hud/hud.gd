@@ -4,9 +4,9 @@ extends Control
 var player: Player3D # the player this HUD is for
 
 @onready var level_label = %level_label
-@onready var health_bar = %hp_TextureProgressBar
+@onready var health_bar = %hp_ProgressBar
 @onready var health_text = %hp_HealthText
-@onready var xp_bar = %xp_TextureProgressBar
+@onready var xp_bar = %xp_ProgressBar
 @onready var xp_text = %xp_XpText
 @onready var chat_display = %chatdisplay_RichTextLabel
 @onready var chat_input = %chatinput_LineEdit

@@ -27,6 +27,9 @@ func spawn_player(id):
 func despawn_player(id):
     assert(multiplayer.is_server())
     print("Peer disconnected:", id)
+    if not players.has(id):
+        # We never even spawned them
+        return
     players[id].player.queue_free()
     players.erase(id) # SpawnReplicator will handle despawning for clients
 
@@ -37,7 +40,7 @@ func load_scene_on_client():
     print("Got the RPC call to load the scene")
     var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
     get_tree().root.add_child(game_scene)
-    get_node("/root/ServerSelect").queue_free()  # remove the main menu
+    get_tree().root.get_node("RootRoot/ServerConnection").queue_free()  # remove the main menu
     client_loaded_scene.rpc_id(1)
 
 @rpc("any_peer", "call_remote", "reliable")

@@ -75,7 +75,7 @@ func _layout():
 
     var grid_h_spacing = grids[0].get_theme_constant("h_separation", "GridContainer")
     var vbox_spacing := panel_vbox.get_theme_constant("separation", "VBoxContainer")
-    var hp_bar_height = %hp_TextureProgressBar.get_combined_minimum_size().y
+    var hp_bar_height = %hp_ProgressBar.get_combined_minimum_size().y
 
     var cell_width := int((panel_content.x - grid_h_spacing * (columns - 1)) / columns)
     var cell_height := int((panel_content.y - hp_bar_height - vbox_spacing) / total_grid_rows)

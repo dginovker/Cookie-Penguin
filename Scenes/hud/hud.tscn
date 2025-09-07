@@ -133,14 +133,14 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Level: 0"
 
-[node name="hp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
+[node name="hp_ProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/fill = ExtResource("2_ro43y")
 value = 60.0
 show_percentage = false
 
-[node name="hp_HealthText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/hp_TextureProgressBar"]
+[node name="hp_HealthText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/hp_ProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -151,14 +151,14 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="xp_TextureProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
+[node name="xp_ProgressBar" type="ProgressBar" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/fill = ExtResource("3_l0dsp")
 value = 30.0
 show_percentage = false
 
-[node name="xp_XpText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/xp_TextureProgressBar"]
+[node name="xp_XpText" type="Label" parent="RootSplit/Right/TopRightContainer/InvenVbox/NonInvenStuff/xp_ProgressBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
