@@ -60,6 +60,7 @@ mob_holder=""
 realm_mob_manager=""
 realm_net_director=""
 ui_root=""
+health_bar_manager=""
 
 [gui]
 

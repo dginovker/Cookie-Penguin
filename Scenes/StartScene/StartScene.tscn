@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://wibj8e7f6avp"]
+[gd_scene load_steps=4 format=3 uid="uid://wibj8e7f6avp"]
 
 [ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/StartScene/ServerConnection.gd" id="1_ysy5m"]
 [ext_resource type="Script" uid="uid://dgwtd5jo2bagq" path="res://Scenes/ui_root.gd" id="2_licni"]
+[ext_resource type="Script" uid="uid://cxyqsf86ms614" path="res://Scenes/Uncommon/WorldHealthBar/health_bar_manager.gd" id="3_ot7rq"]
 
 [node name="RootRoot" type="Node"]
 
@@ -21,3 +22,6 @@ grow_vertical = 2
 script = ExtResource("2_licni")
 
 [node name="PopTexts" type="Node" parent="UILayer/UIRoot" groups=["pop_texts"]]
+
+[node name="HealthBarManager" type="Node" parent="UILayer/UIRoot" groups=["health_bar_manager"]]
+script = ExtResource("3_ot7rq")

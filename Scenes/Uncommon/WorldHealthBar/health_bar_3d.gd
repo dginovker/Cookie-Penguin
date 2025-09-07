@@ -1,24 +1,29 @@
 extends Control
 class_name HealthBar
 
-@onready var bar: TextureProgressBar = $"."
-@export var y_offset_px: int = 30
+@export var yOffsetPx: int = 30
+@onready var bar: TextureProgressBar = $"." # root is the bar
 
-func _enter_tree() -> void:
-    visible = false # prevent flicker in top left every time a mob spawns
+var target: Node3D
 
-func update_health(percent_health: float):
-    visible = percent_health < 1
-    bar.value = bar.max_value * percent_health
+func bind_target(t: Node3D) -> void:
+    target = t
+    target.tree_exiting.connect(_on_target_exiting)
+    visible = false
 
-func update_location(world_position: Vector3):
-    var cam = get_viewport().get_camera_3d()
-    if not cam:
-        return
+func set_health01(x: float) -> void:
+    # x in [0,1]
+    visible = x < 1.0
+    bar.value = bar.max_value * x
 
-    # Project to screen (viewport) coordinates
-    var screen_pos: Vector2 = cam.unproject_position(world_position)
+func _process(_dt: float) -> void:
+    assert(target != null)
+    var cam: Camera3D = get_viewport().get_camera_3d()
+    assert(cam != null)
+    set_health01(float(max(target.health, 0)) / float(target.max_health))
+    var sp: Vector2 = cam.unproject_position(target.global_position)
+    sp += Vector2(-size.x * 0.5, yOffsetPx)
+    global_position = sp
 
-    screen_pos += Vector2(-size.x * 0.5, y_offset_px)
-
-    global_position = screen_pos
+func _on_target_exiting() -> void:
+    queue_free()

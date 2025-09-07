@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bb4qj16o4tj8i"]
+[gd_scene load_steps=5 format=3 uid="uid://bb4qj16o4tj8i"]
 
 [ext_resource type="Script" uid="uid://b06vbhwstd3e1" path="res://Scenes/mobs/MobNode.gd" id="1_atepr"]
 [ext_resource type="Texture2D" uid="uid://btu3cda3if881" path="res://Scenes/mobs/lolipop/lolipop.png" id="2_fs184"]
-[ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="3_v4y32"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mq7ec"]
 size = Vector3(1, 2, 1)
@@ -36,5 +35,3 @@ collision_mask = 4
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AggressionArea"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_dytcf")
-
-[node name="HealthBar" parent="." instance=ExtResource("3_v4y32")]

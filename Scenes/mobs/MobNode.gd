@@ -26,9 +26,10 @@ var is_paused = false
 var pause_timer = 0.0
 
 @onready var aggro_area: Area3D = $AggressionArea
-@onready var healthbar := $HealthBar
 
 func _ready():
+    (get_tree().get_first_node_in_group("health_bar_manager") as HealthBarManager).spawn_healthbar(self)
+
     # Server has authority over all mobs
     set_multiplayer_authority(1)  # 1 = server ID
 
@@ -39,10 +40,6 @@ func _ready():
         _new_wander_direction()
         aggro_area.body_entered.connect(_on_player_entered)
         aggro_area.body_exited.connect(_on_player_exited)
-
-func _process(_delta):
-    healthbar.update_health(float(max(health, 0)) / float(max_health))
-    healthbar.update_location(global_position)
 
 func _physics_process(delta):
     # Only server processes mob AI and movement

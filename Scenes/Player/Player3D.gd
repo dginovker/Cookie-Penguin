@@ -8,7 +8,6 @@ Player spawning and despawning is not maintained by a syncronizer, it's done by 
 
 @onready var animated_sprite = $AnimatedSprite3D as Sprite3DHelper
 @onready var autofire_area = $AutofireArea3D
-@onready var healthbar := $HealthBar
 @onready var input := $Input as PlayerInput
 @onready var cam := $Camera3D
 @onready var rb := $RollbackSynchronizer as RollbackSynchronizer
@@ -36,6 +35,9 @@ func _enter_tree() -> void:
     add_to_group("players")
 
 func _ready():
+    
+    (get_tree().get_first_node_in_group("health_bar_manager") as HealthBarManager).spawn_healthbar(self)
+    
     if multiplayer.is_server():
         var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))
         ItemManager.spawn_item(sword)
@@ -67,8 +69,8 @@ func _setup_camera():
     cam.make_current()
 
 func _process(delta):
-    healthbar.update_health(max(health, 0) / max_health)
-    healthbar.update_location(global_position)
+    #healthbar.update_health(max(health, 0) / max_health)
+    #healthbar.update_location(global_position)
 
     animated_sprite.waste_cut = terrain.is_in(global_position, TerrainDefs.Type.SHALLOW, 1) or terrain.is_in(global_position, TerrainDefs.Type.LAVA, 1)
 
