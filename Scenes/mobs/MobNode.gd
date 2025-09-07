@@ -36,7 +36,6 @@ func _ready():
 
     # Only server runs mob logic
     if multiplayer.is_server():
-        wander_center = global_position
         _new_wander_direction()
         aggro_area.body_entered.connect(_on_player_entered)
         aggro_area.body_exited.connect(_on_player_exited)
@@ -108,9 +107,9 @@ func _wander(delta):
 
 func _new_wander_direction():
     # Chance to pause instead of moving
-    if randf() < 0.7:
+    if randf() < 0.05:
         is_paused = true
-        pause_timer = randf_range(1.0, 2.5)
+        pause_timer = randf_range(5.0, 8)
         return
 
     # Choose direction that stays within wander range
@@ -122,7 +121,7 @@ func _new_wander_direction():
             break
         attempts += 1
 
-    wander_timer = randf_range(1.0, 3.0)
+    wander_timer = randf_range(5.0, 8.0)
 
 func _get_nearest_player():
     # Clean up invalid players first

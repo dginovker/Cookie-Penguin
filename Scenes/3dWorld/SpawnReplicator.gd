@@ -15,7 +15,7 @@ func maybe_spawn_all() -> void:
         var player_pack: Dictionary[int, Dictionary] = {}
         var mob_pack: Dictionary[int, Dictionary] = {}
         var despawn_mob_list: Array[int] = []
-        
+
         # Spawn unspawned players
         for other_id: int in PlayerManager.players.keys():
             var st := PlayerManager.players[other_id]
@@ -33,13 +33,13 @@ func maybe_spawn_all() -> void:
                     mob_pack[mid] = {"pos": m.global_position, "kind": m.mob_kind}
                     PlayerManager.players[peer_id].spawned_mobs[mid] = true
                     #print("player ", peer_id, " will have spawned ", mid)
-        
+
         # Despawn dead mobs
         for mid in PlayerManager.players[peer_id].spawned_mobs.keys():
             if not is_instance_valid(mm.spawned_mobs[mid]):
                 despawn_mob_list.append(mid)
                 PlayerManager.players[peer_id].spawned_mobs.erase(mid)
-        
+
         if player_pack.is_empty() && mob_pack.is_empty() && despawn_mob_list.is_empty(): continue
         _apply_entity_spawn.rpc_id(peer_id, player_pack, mob_pack, despawn_mob_list)
 
