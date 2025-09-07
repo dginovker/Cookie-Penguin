@@ -23,6 +23,7 @@ class_name InventoryManager
 @onready var item_tooltip_text = %ItemToolTipText
 
 var empty_slot_texture = preload("res://Scenes/hud/empty_slot.png")
+var invisible_texture = preload("res://Scenes/hud/invisible_slot.png")
 var current_lootbag_id := -1
 
 # Ghost-drag state
@@ -48,12 +49,10 @@ func _wire(b: TextureButton, t, i):
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     current_lootbag_id = lootbag_id
-    $LootVBoxContainer.visible = true
     var bs = loot_container.get_children()
     for i in bs.size():
         var b: TextureButton = bs[i]
         b.set_meta("lootbag_id", lootbag_id)
-        b.visible = true
         if i < loot_items.size():
             var it: ItemInstance = loot_items[i]
             b.texture_normal = it.get_texture()
@@ -64,7 +63,11 @@ func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
 
 func hide_loot_bag():
     current_lootbag_id = -1
-    $LootVBoxContainer.visible = false
+    var bs = loot_container.get_children()
+    for i in bs.size():
+        var b: TextureButton = bs[i]
+        b.texture_normal = invisible_texture
+        b.remove_meta("item_instance")
 
 func _on_slot_input(event: InputEvent, slot: TextureButton):
     if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):

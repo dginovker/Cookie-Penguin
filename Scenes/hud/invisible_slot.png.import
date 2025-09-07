@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://efnlfenwew78"
-path="res://.godot/imported/index.apple-touch-icon.png-dcd2c094bfa3f769157f6f2ba930cc56.ctex"
+uid="uid://deyi015t4dgwf"
+path="res://.godot/imported/invisible_slot.png-963ab297cfa6d2e248b982a0971287af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://build/index.apple-touch-icon.png"
-dest_files=["res://.godot/imported/index.apple-touch-icon.png-dcd2c094bfa3f769157f6f2ba930cc56.ctex"]
+source_file="res://Scenes/hud/invisible_slot.png"
+dest_files=["res://.godot/imported/invisible_slot.png-963ab297cfa6d2e248b982a0971287af.ctex"]
 
 [params]
 
