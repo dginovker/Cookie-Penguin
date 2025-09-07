@@ -34,7 +34,7 @@ var hud_instance: HUD
 
 func _enter_tree() -> void:
     add_to_group("players")
-    
+
 func _ready():
     if multiplayer.is_server():
         var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))

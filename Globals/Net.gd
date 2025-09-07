@@ -57,7 +57,7 @@ func _process(_dt: float) -> void:
         if _time < 0:
             _time = 1
             print_buffers()
-        
+
 func print_buffers():
     if true:
         return

@@ -20,7 +20,7 @@ Networking:
 * The game runs on WebRTC with UDP packets
 * To prevent Buffer Full errors on client browsers, network/limits/webrtc/max_channel_in_buffer_kb is boosted massively from 64KB to 2MB
 * To prevent DoSing the client, server should never send more than 56 KiB/s; this includes all spawn info, player movement, NPC snapshots, etc
-* To prevent the browser client from falling behind, the server checks outbound buffer on the Snapshot (NPC movement) channel, and will skip sending the next update if it's non-empty 
+* To prevent the browser client from falling behind, the server checks outbound buffer on the Snapshot (NPC movement) channel, and will skip sending the next update if it's non-empty
 
 ### Setting up for Hosting
 

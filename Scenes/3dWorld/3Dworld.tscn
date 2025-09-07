@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://f5tk13xsoscg"]
+[gd_scene load_steps=11 format=3 uid="uid://f5tk13xsoscg"]
 
 [ext_resource type="PackedScene" uid="uid://cryp8mruwlu44" path="res://Scenes/3dWorld/MapStuff/WorldGround.tscn" id="1_bfqi2"]
 [ext_resource type="Script" uid="uid://b5nma7kswga3l" path="res://Scenes/3dWorld/RealmMobManager.gd" id="2_utcp4"]
@@ -8,7 +8,8 @@
 [ext_resource type="Script" uid="uid://dxu21gdpd2c4w" path="res://Scenes/3dWorld/RealmSnapshot.gd" id="7_bfqi2"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 [ext_resource type="Script" uid="uid://b3qmn4ncewaps" path="res://Scenes/3dWorld/SpawnReplicator.gd" id="8_bfqi2"]
-[ext_resource type="Script" uid="uid://bv47cy2mv6x7f" path="res://Scenes/3dWorld/StatsReplicator.gd" id="9_j0mbg"]
+[ext_resource type="Script" path="res://Scenes/3dWorld/StatsReplicator.gd" id="9_j0mbg"]
+[ext_resource type="Script" uid="uid://ys0qx8efmu08" path="res://Scenes/ChatManager.gd" id="10_iom57"]
 
 [node name="3Dworld" type="Node3D"]
 
@@ -55,3 +56,6 @@ script = ExtResource("8_bfqi2")
 
 [node name="StatsReplicator" type="Node" parent="NetDirector"]
 script = ExtResource("9_j0mbg")
+
+[node name="ChatManager" type="Node" parent="." groups=["chat_manager"]]
+script = ExtResource("10_iom57")
