@@ -6,9 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://cqv2gr4x48o1o" path="res://Scenes/Player/walk2.png" id="3_ggayc"]
 [ext_resource type="Texture2D" uid="uid://db0m4e286ui22" path="res://Scenes/Player/walk1.png" id="3_hkfi6"]
 [ext_resource type="PackedScene" uid="uid://ca6ip45hrlevm" path="res://Scenes/Uncommon/WorldHealthBar/HealthBar.tscn" id="6_2n8pm"]
-[ext_resource type="Script" uid="uid://cx6s327378stm" path="res://Scenes/Player/camera_3d.gd" id="7_jxwbu"]
-[ext_resource type="Script" uid="uid://bf3icv5elf6u7" path="res://Scenes/3dWorld/Sprite3DHelper.gd" id="8_0ny3v"]
-[ext_resource type="Script" uid="uid://d1jp2ouxf7dc5" path="res://Scenes/Player/PlayerInput.gd" id="8_254wg"]
+[ext_resource type="Script" path="res://Scenes/Player/camera_3d.gd" id="7_jxwbu"]
+[ext_resource type="Script" path="res://Scenes/3dWorld/Sprite3DHelper.gd" id="8_0ny3v"]
+[ext_resource type="Script" path="res://Scenes/Player/PlayerInput.gd" id="8_254wg"]
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="9_q1k55"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="10_ye1a3"]
 

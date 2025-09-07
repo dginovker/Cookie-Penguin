@@ -1,0 +1,52 @@
+[gd_scene load_steps=11 format=3 uid="uid://d4fi8lifqp0oq"]
+
+[ext_resource type="Texture2D" uid="uid://cf0rjjcdyug6c" path="res://Scenes/animations/icicle_barrage/icycle_barrage_0.png" id="1_5ooig"]
+[ext_resource type="Texture2D" uid="uid://d1akoblgihp0r" path="res://Scenes/animations/icicle_barrage/icycle_barrage_1.png" id="2_4lfff"]
+[ext_resource type="Texture2D" uid="uid://0mqfxio36lrl" path="res://Scenes/animations/icicle_barrage/icycle_barrage_2.png" id="3_ni2y0"]
+[ext_resource type="Texture2D" uid="uid://dngaob57n05yc" path="res://Scenes/animations/icicle_barrage/icycle_barrage_3.png" id="4_r2he0"]
+[ext_resource type="Texture2D" uid="uid://dqb52qf7vb7g6" path="res://Scenes/animations/icicle_barrage/icycle_barrage_4.png" id="5_3io7n"]
+[ext_resource type="Texture2D" uid="uid://gkwrpts4fwg1" path="res://Scenes/animations/icicle_barrage/icycle_barrage_5.png" id="6_3io7n"]
+[ext_resource type="Texture2D" uid="uid://dju337fb6lykp" path="res://Scenes/animations/icicle_barrage/icycle_barrage_6.png" id="7_ejl77"]
+[ext_resource type="Texture2D" uid="uid://ep5x28h2rb5s" path="res://Scenes/animations/icicle_barrage/icycle_barrage_7.png" id="8_m8vti"]
+[ext_resource type="Texture2D" uid="uid://ds20dywj8ta7u" path="res://Scenes/animations/icicle_barrage/icycle_barrage_8.png" id="9_y57es"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ejl77"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_5ooig")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_4lfff")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ni2y0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_r2he0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3io7n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_3io7n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ejl77")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_m8vti")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_y57es")
+}],
+"loop": false,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="IcycleBarrageAnimation" type="AnimatedSprite3D"]
+billboard = 1
+texture_filter = 2
+render_priority = -2
+sprite_frames = SubResource("SpriteFrames_ejl77")

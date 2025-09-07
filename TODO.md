@@ -1,5 +1,4 @@
 > First 5 seconds improvements <
-0. Why aren't enemies waddling around
 1. Improve mobile controls more. Joystick should take up like 5cm min
   a) Make UI on the top and bottom if in portrait mode
 2. Get Chongho's kids to playtest again

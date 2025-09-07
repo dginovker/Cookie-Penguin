@@ -53,7 +53,7 @@ func spawn(pos: Vector3, kind: String, id: int = -1) -> MobNode:
     mob.set_multiplayer_authority(1)
     get_tree().get_first_node_in_group("mob_holder").add_child(mob)
     mob.global_position = Vector3(pos.x, spawn_height, pos.z)
-    mob.wander_center = mob.global_positionw
+    mob.wander_center = mob.global_position
     return mob
 
 func _bake_positions(layers: PackedInt32Array)->Array[Vector3]:

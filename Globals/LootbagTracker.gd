@@ -7,6 +7,8 @@ var lootbags: Dictionary[int, LootBag] = {}
 func hide_lootbag_contents():
     # Client update
     var hud: HUD = get_tree().get_first_node_in_group("hud")
+    if not hud:
+        print("where's your hud boy")
     hud.hide_loot_bag()
 
 @rpc("authority", "call_local", "reliable", Net.LOOTBAG_CHANNEL)

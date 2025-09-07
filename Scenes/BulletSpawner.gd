@@ -11,7 +11,7 @@ func spawn_bullet_custom(bullet_dict: Dictionary):
     # Create the appropriate bullet scene
     var bullet_scene = load("res://Scenes/bullet/Bullet.tscn")
     var bullet_node: BulletNode = bullet_scene.instantiate()
-    
+
     # Initialize the bullet with our data (see BaseBullet.gd)
     bullet_node.initialize(bullet_data)
 
@@ -21,5 +21,5 @@ func spawn_bullet_custom(bullet_dict: Dictionary):
 func spawn_bullet(bullet_type: BulletData):
     if not multiplayer.is_server():
         return
-    
+
     spawn(bullet_type.to_dict())
