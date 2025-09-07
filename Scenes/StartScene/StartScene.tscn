@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://wibj8e7f6avp"]
 
-[ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/serverselect/ServerConnection.gd" id="1_ufl2m"]
-[ext_resource type="Script" uid="uid://dgwtd5jo2bagq" path="res://Scenes/ui_root.gd" id="2_iiabo"]
+[ext_resource type="Script" uid="uid://d2kj1ckvgahyt" path="res://Scenes/StartScene/ServerConnection.gd" id="1_ysy5m"]
+[ext_resource type="Script" uid="uid://dgwtd5jo2bagq" path="res://Scenes/ui_root.gd" id="2_licni"]
 
 [node name="RootRoot" type="Node"]
 
 [node name="ServerConnection" type="Node" parent="."]
-script = ExtResource("1_ufl2m")
+script = ExtResource("1_ysy5m")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 10
@@ -18,4 +18,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_iiabo")
+script = ExtResource("2_licni")
+
+[node name="PopTexts" type="Node" parent="UILayer/UIRoot" groups=["pop_texts"]]

@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dxu21gdpd2c4w" path="res://Scenes/3dWorld/RealmSnapshot.gd" id="7_bfqi2"]
 [ext_resource type="Script" uid="uid://bwcv5tds6rgr" path="res://Scenes/LootSpawner.gd" id="7_qhyur"]
 [ext_resource type="Script" uid="uid://b3qmn4ncewaps" path="res://Scenes/3dWorld/SpawnReplicator.gd" id="8_bfqi2"]
-[ext_resource type="Script" path="res://Scenes/3dWorld/StatsReplicator.gd" id="9_j0mbg"]
+[ext_resource type="Script" uid="uid://bv47cy2mv6x7f" path="res://Scenes/3dWorld/StatsReplicator.gd" id="9_j0mbg"]
 [ext_resource type="Script" uid="uid://ys0qx8efmu08" path="res://Scenes/ChatManager.gd" id="10_iom57"]
 
 [node name="3Dworld" type="Node3D"]
@@ -28,8 +28,6 @@ autostart = true
 script = ExtResource("2_utcp4")
 spawn_timer = NodePath("../SpawnTimer")
 terrain = ExtResource("3_5uwof")
-
-[node name="PopTexts" type="CanvasLayer" parent="Mobs" groups=["pop_texts"]]
 
 [node name="Players" type="Node" parent="." groups=["player_holder"]]
 
