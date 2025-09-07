@@ -27,7 +27,8 @@ func spawn_player(id):
 func despawn_player(id):
     assert(multiplayer.is_server())
     print("Peer disconnected:", id)
-    players.erase(id)
+    players[id].player.queue_free()
+    players.erase(id) # SpawnReplicator will handle despawning for clients
 
 
 @rpc("authority", "call_remote", "reliable")

@@ -23,4 +23,9 @@ a) This basically will test throttling snapshots. Don't worry about case where l
 3. Make disconnecting work
 a) Disconnected peers should disappear
 b) There should be a UI indication that you've disconnected
+4. Make mobs send their movement ahead of time ("move here in 0.5s")
+a) pre-req for making mob bullets schedule shoot in 0.5s
+5. Make player bullets come from client location
+a) Just do a distance check to be sure it's within 2 squares of server location or something
+b) or see if Netfox rollback states work here
 6. Make a second world scene: Going to have to make the server player be in all scenes/adjust all the spawners to grab where the local player is..

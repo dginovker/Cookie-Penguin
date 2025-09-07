@@ -15,6 +15,7 @@ func maybe_spawn_all() -> void:
         var player_pack: Dictionary[int, Dictionary] = {}
         var mob_pack: Dictionary[int, Dictionary] = {}
         var despawn_mob_list: Array[int] = []
+        var despawn_player_list: Array[int] = []
 
         # Spawn unspawned players
         for other_id: int in PlayerManager.players.keys():
@@ -40,11 +41,17 @@ func maybe_spawn_all() -> void:
                 despawn_mob_list.append(mid)
                 PlayerManager.players[peer_id].spawned_mobs.erase(mid)
 
-        if player_pack.is_empty() && mob_pack.is_empty() && despawn_mob_list.is_empty(): continue
-        _apply_entity_spawn.rpc_id(peer_id, player_pack, mob_pack, despawn_mob_list)
+        # Despawn disconnected players
+        for other_id: int in PlayerManager.players[peer_id].spawned_players.keys():
+            if not PlayerManager.players.has(other_id):
+                despawn_player_list.append(other_id)
+                PlayerManager.players[peer_id].spawned_players.erase(other_id)                
+
+        if player_pack.is_empty() && mob_pack.is_empty() && despawn_mob_list.is_empty() && despawn_player_list.is_empty(): continue
+        _apply_entity_spawn.rpc_id(peer_id, player_pack, mob_pack, despawn_mob_list, despawn_player_list)
 
 @rpc("authority", "call_local", "reliable", Net.SPAWN_CHANNEL)
-func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int, Dictionary], despawn_mob_list: Array[int]) -> void:
+func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int, Dictionary], despawn_mob_list: Array[int], despawn_player_list: Array[int]) -> void:
     if multiplayer.is_server(): return
     for id in pp.keys():
         PlayerManager._spawn_player_for_real(id)
@@ -56,3 +63,6 @@ func _apply_entity_spawn(pp: Dictionary[int, Dictionary], mpack: Dictionary[int,
         mm.spawn(mpack[mid].pos, mpack[mid].kind, mid)
     for mid in despawn_mob_list:
         mm.spawned_mobs[mid].queue_free()
+    for pid in despawn_player_list:
+        PlayerManager.players[pid].player.queue_free()
+        PlayerManager.players.erase(pid)

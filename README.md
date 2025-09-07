@@ -11,6 +11,10 @@
 * Game is designed for ez dev; if you run as a server, you also spawn a player. Modify ServerConnection.gd to have `is_server = ... || true` and click play. Will work out of the box.
 * If you want to have multiple players, compile a server, then change that line to `|| false` for each client. Use scripts to make life happy.
 
+### Contributing
+
+* Feel free to contribute whatever you think would make the game more fun! I recommend starting small with adding mechanics/mobs you think would be fun :)
+
 ### Design Details
 
 Networking:
