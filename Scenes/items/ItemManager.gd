@@ -50,7 +50,7 @@ func request_move_item(item_uuid: String, new_location_string: String):
 @rpc("any_peer", "call_local")
 func request_spawn_lootbag(peer_id: int, item_uuid: String):
     assert(multiplayer.is_server())
-    var loc: Vector3 = PlayerManager.players[peer_id].global_position
+    var loc: Vector3 = PlayerManager.players[peer_id].player.global_position
     var loot_spawner: LootSpawner = get_tree().get_first_node_in_group("loot_spawners")
     var original_item: ItemInstance = items[item_uuid]
     # Delete original item
