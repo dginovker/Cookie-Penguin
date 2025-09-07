@@ -5,8 +5,8 @@ class_name InventoryManager
 @onready var drag_layer: Control       = %DragLayer
 
 @onready var top_right_container: PanelContainer = %"TopRightContainer"
-@onready var non_inven_stuff: VBoxContainer = %"NonInvenStuff"
-@onready var panel_vbox: VBoxContainer   = $".."
+@onready var non_inven_stuff: Control = %"NonInvenStuff"
+@onready var panel_vbox: Control   = $".."
 @onready var grids := [
     $"GearVBoxContainer/GearGridContainer",
     $"BackpackVBoxContainer/BackpackGridContainer",
@@ -36,58 +36,15 @@ var drag_start_pos: Vector2
 const DRAG_THRESHOLD := 6.0
 
 func _ready():
-    for g in grids: g.size_flags_vertical = 0
     for i in gear_slots.size():     _wire(gear_slots[i], ItemLocation.Type.PLAYER_GEAR, i)
     for i in backpack_slots.size(): _wire(backpack_slots[i], ItemLocation.Type.PLAYER_BACKPACK, i)
     for i in loot_slots.size():     _wire(loot_slots[i], ItemLocation.Type.LOOTBAG, i)
     hide_loot_bag()
 
-    resized.connect(_request_layout)
-    get_viewport().size_changed.connect(_request_layout)
-    for g in grids: g.resized.connect(_request_layout)
-    call_deferred("_layout")
-
 func _wire(b: TextureButton, t, i):
     b.set_meta("container_type", t)
     b.set_meta("slot_index", i)
     b.gui_input.connect(_on_slot_input.bind(b))
-
-func _request_layout(): call_deferred("_layout")
-
-func _panel_content_size() -> Vector2:
-    var vp := get_viewport_rect().size
-    var right := top_right_container.get_parent() as Control
-    var outer_w := vp.x * (right.anchor_right - right.anchor_left) * (top_right_container.anchor_right - top_right_container.anchor_left)
-    var outer_h := vp.y * (top_right_container.anchor_bottom - top_right_container.anchor_top) - non_inven_stuff.size.y
-    return Vector2(
-        outer_w,
-        outer_h
-    )
-
-func _layout():
-    var panel_content: Vector2 = _panel_content_size()
-    var columns := 4
-
-    var total_grid_rows := 0
-    for grid in grids:
-        var visible_slots = grid.get_children().filter(func(c): return c.visible).size()
-        total_grid_rows += int(ceil(float(visible_slots) / columns))
-
-    var grid_h_spacing = grids[0].get_theme_constant("h_separation", "GridContainer")
-    var vbox_spacing := panel_vbox.get_theme_constant("separation", "VBoxContainer")
-    var hp_bar_height = %hp_ProgressBar.get_combined_minimum_size().y
-
-    var cell_width := int((panel_content.x - grid_h_spacing * (columns - 1)) / columns)
-    var cell_height := int((panel_content.y - hp_bar_height - vbox_spacing) / total_grid_rows)
-
-    var cell_size = max(1, min(cell_width, cell_height))  # keeps proportions consistent across aspect ratios
-
-    for grid in grids:
-        for button in grid.get_children():
-            if button is TextureButton and button.visible:
-                button.custom_minimum_size = Vector2(cell_size, cell_size)
-
-    queue_sort()
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     current_lootbag_id = lootbag_id
@@ -104,12 +61,10 @@ func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
         else:
             b.texture_normal = empty_slot_texture
             b.remove_meta("item_instance")
-    _request_layout()
 
 func hide_loot_bag():
     current_lootbag_id = -1
     $LootVBoxContainer.visible = false
-    _request_layout()
 
 func _on_slot_input(event: InputEvent, slot: TextureButton):
     if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):

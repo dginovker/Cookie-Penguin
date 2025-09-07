@@ -20,20 +20,6 @@ var player: Player3D # the player this HUD is for
 var _inv_panel_stylebox: StyleBoxFlat
 var _stats_panel_stylebox: StyleBoxFlat
 
-const BASE_SIZE: Vector2i = Vector2i(1152, 648)
-const FONT_AT_2X: float = 1
-
-const FONT_CLASSES: Array[StringName] = [
-    StringName("Label"), StringName("Button"), StringName("CheckBox"),
-    StringName("LineEdit"), StringName("TextEdit"), StringName("OptionButton"),
-    StringName("MenuButton"), StringName("SpinBox"), StringName("ItemList"),
-    StringName("Tree"), StringName("Tabs"), StringName("TabBar")
-]
-
-var theme_local: Theme
-var base_font_size: Dictionary[StringName, int] = {} # per-class baselines
-var base_default_font: int
-
 func _ready():
     chat_input.text_submitted.connect(_on_chat_submitted)
 
@@ -42,38 +28,6 @@ func _ready():
     inven_button.pressed.connect(_inven_button_pressed)
     stats_button.pressed.connect(_stats_button_pressed)
 
-    assert(theme != null) # this node must own a Theme
-    theme_local = theme.duplicate()
-    theme = theme_local
-    # If inheritance is messy across layers, uncomment the next line to force it globally:
-    # ThemeDB.set_project_theme(theme_local)
-
-    _cache_font_baselines()
-    _apply_theme_scale()
-    get_viewport().connect("size_changed", Callable(self, "_apply_theme_scale"))
-
-func _cache_font_baselines() -> void:
-    base_font_size.clear()
-    for cls in FONT_CLASSES:
-        base_font_size[cls] = theme_local.get_font_size(StringName("font_size"), cls)
-    base_default_font = theme_local.default_font_size
-
-func _apply_theme_scale() -> void:
-    var win: Vector2i = get_window().size
-    var k_ui: float = min(float(win.x) / float(BASE_SIZE.x), float(win.y) / float(BASE_SIZE.y))
-    var dpr: float = DisplayServer.screen_get_scale()
-
-    # Cancel HiDPI inflation for paddings/margins; stay crisp
-    theme_local.default_base_scale = 1.0 / dpr
-
-    # Solve exponent so s(2) = FONT_AT_2X, then cancel DPR for fonts too
-    var a: float = log(FONT_AT_2X) / log(2.0)
-    var s_font: float = pow(k_ui, a) / dpr
-
-    for cls in FONT_CLASSES:
-        theme_local.set_font_size(StringName("font_size"), cls, max(1, int(round(float(base_font_size[cls]) * s_font))))
-    theme_local.default_font_size = max(1, int(round(float(base_default_font) * s_font)))
-    
 func _process(_delta: float) -> void:
     # Boohoo, inefficient?
     # Stop playing with "signals" and race conditions with levelup RPCs. Write clean code and use the profiler.

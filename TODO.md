@@ -20,8 +20,7 @@
 1. Visibility filter updates
 a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
 2. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
-3. Make disconnecting work
-a) Disconnected peers should disappear
+3. Make it so when you disconnect, you get notified/kicked out of game
 b) There should be a UI indication that you've disconnected
 4. Make mobs send their movement ahead of time ("move here in 0.5s")
 a) pre-req for making mob bullets schedule shoot in 0.5s
