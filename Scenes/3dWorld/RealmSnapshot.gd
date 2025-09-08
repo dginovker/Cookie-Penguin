@@ -4,53 +4,54 @@ extends Node
 
 # ---------------------------------------------------------------------------
 # Compact mob snapshot stream with timestamped frames + client-side
-# Hermite interpolation (uses heading + local speed for tangents).
+# Hermite interpolation (uses heading + local speed for tangents) and
+# 1-byte subcell residuals to remove "steps" inside 0.1 m cells.
 #
 # Packet body (little-endian):
 #   [mobCount: u16]
 #   [serverTick: u16]                    # 60 Hz wrap; client reconstructs 32-bit time
 #   repeated mobCount times:
 #       [mobId: uLEB128]
-#       [pos: 3 bytes]                   # X/Z quantized to 0.1 m → xq,zq ∈ [0..2559]
+#       [pos24: 3 bytes]                 # X/Z quantized to 0.1 m → xq,zq ∈ [0..2559]
 #                                        # pack xq:u12, zq:u12 → 24 bits
 #       [heading: u8]                    # atan2(XZ) quantized to 0..255
 #       [flags: u8]                      # bit0 = moving
+#       [subcell: u8]                    # signed 4-bit cm residuals: rx4|rz4 (−8..+7 cm)
 #
 # Design:
-#   - Server sends absolute states when quantized X/Z changed OR mob is moving,
+#   - Server sends when quantized X/Z changed OR mob is moving,
 #     plus periodic keyframes every resendIntervalTicks.
 #   - Client keeps ~120 ms buffer keyed by server time; render at (serverNow - interpDelayMs).
-#   - Short extrapolation only when target time exceeds newest snapshot.
-#   - No speed is sent; client reads from the mob instance.
-#   - No rollback; dropped packets only delay corrections.
+#   - Hermite interpolation between samples; short extrapolation past newest.
+#   - Residuals in centimeters remove intra-cell "stepping" without larger packets.
 # ---------------------------------------------------------------------------
 
 # ------------------------------ Settings ------------------------------------
 
-var resendIntervalTicks: int = 6                  # ~100 ms at 60 Hz, keeps motion smooth
-var tickHz: int = 60                              # server simulation Hz (authoritative)
-var interpDelayMs: float = 120.0                  # render delay for smoothing
+var resendIntervalTicks: int = 6
+var tickHz: int = 60
+var interpDelayMs: float = 120.0
 
 # ------------------------------ Server caches -------------------------------
 
-var lastQPos: Dictionary[int, Vector2i] = {}      # id -> last sent quantized pos
-var lastQHeading: Dictionary[int, int] = {}       # id -> last sent heading byte
+var lastQPos: Dictionary[int, Vector2i] = {}
+var lastQHeading: Dictionary[int, int] = {}
 
 # ------------------------------ Client caches -------------------------------
 
-# Per-mob ring buffer of snapshots: id -> [ {t:float,pos:Vector3,dir:Vector3,m:bool}, ... ]
+# id -> [ {t:float,pos:Vector3,dir:Vector3,m:bool}, ... ]
 var snaps: Dictionary[int, Array] = {}
 
 # Server clock reconstruction (client-side)
 var lastTick16: int = 0
 var tickWraps: int = 0
-var serverTimeOffsetMs: float = 0.0               # local_ms - server_ms (EMA)
+var serverTimeOffsetMs: float = 0.0
 
 # ------------------------------- Scene refs ---------------------------------
 
 @onready var realmMobManager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
 
-# ------------------------- Quantization helpers ------------------------------
+# ------------------------- Quantization + residuals --------------------------
 
 static func quantizePosToU12Pair(p: Vector3) -> Vector2i:
     var xq: int = clampi(roundi(p.x * 10.0), 0, 2559)
@@ -68,6 +69,22 @@ static func unpackU12Pair(b0: int, b1: int, b2: int) -> Vector2i:
     var xq: int = ((b0 << 4) | (b1 >> 4)) & 0xFFF
     var zq: int = (((b1 & 0xF) << 8) | b2) & 0xFFF
     return Vector2i(xq, zq)
+
+# Signed 4-bit two's-complement helpers (−8..+7)
+static func nibbleFromInt(v: int) -> int:
+    var clamped: int = clampi(v, -8, 7)
+    return clamped & 0xF
+
+static func intFromNibble(n: int) -> int:
+    return n - 16 if n >= 8 else n
+
+static func packResidualCm(rx_cm: int, rz_cm: int) -> int:
+    return (nibbleFromInt(rx_cm) << 4) | nibbleFromInt(rz_cm)
+
+static func unpackResidualCm(byte: int) -> Vector2i:
+    var rx4: int = (byte >> 4) & 0xF
+    var rz4: int = byte & 0xF
+    return Vector2i(intFromNibble(rx4), intFromNibble(rz4))  # centimeters
 
 # ------------------------------ Varint helpers -------------------------------
 
@@ -95,7 +112,7 @@ static func leb128ReadU(data: PackedByteArray, startIndex: int) -> Array:
 # ----------------------------- Heading helpers -------------------------------
 
 static func angleToU8(v: Vector3) -> int:
-    var a: float = atan2(v.z, v.x)  # [-PI..PI]
+    var a: float = atan2(v.z, v.x)
     var u: int = int(round(((a + PI) * 255.0) / (2.0 * PI))) & 0xFF
     return u
 
@@ -108,7 +125,7 @@ static func u8ToDir(u: int) -> Vector3:
 func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
 
-    # Header: [mobCount:u16][serverTick:u16] → fill count after encoding
+    # Header: [mobCount:u16][serverTick:u16]; fill count after encoding
     var body: PackedByteArray = PackedByteArray(); body.resize(4)
     var count: int = 0
     var forceKeyframe: bool = (tick % resendIntervalTicks) == 0
@@ -126,28 +143,32 @@ func send_snapshot(tick: int) -> void:
             if lastQHeading.has(mob.mob_id):
                 dirVec = u8ToDir(lastQHeading[mob.mob_id])
             else:
-                dirVec = mob.wander_direction  # first-time fallback
+                dirVec = mob.wander_direction
 
         var dirU8: int = angleToU8(dirVec)
         var flags: int = 1 if moving else 0
+
+        # Residual in centimeters relative to the rounded decimeter cell center
+        var rx_cm: int = roundi((mob.global_position.x - float(q.x) * 0.1) * 100.0)
+        var rz_cm: int = roundi((mob.global_position.z - float(q.y) * 0.1) * 100.0)
+        var subcell: int = packResidualCm(rx_cm, rz_cm)
 
         leb128WriteU(mob.mob_id, body)
         body.append_array(packU12Pair(q.x, q.y))
         body.push_back(dirU8)
         body.push_back(flags)
+        body.push_back(subcell)
 
         lastQPos[mob.mob_id] = q
         lastQHeading[mob.mob_id] = dirU8
         count += 1
 
-    # Fill header
     body[0] = count & 0xFF;          body[1] = (count >> 8) & 0xFF
     body[2] = tick & 0xFF;           body[3] = (tick >> 8) & 0xFF
 
     for peerId: int in PlayerManager.players.keys():
         if PlayerManager.players[peerId].in_map:
             if Net.get_backpressure(peerId, Net.SNAPSHOT_CHANNEL) > 1000:
-                # If the channel is backed up, skip this frame; next tick will try again
                 continue
             _apply_snapshot.rpc_id(peerId, body)
 
@@ -170,8 +191,11 @@ func _apply_snapshot(body: PackedByteArray) -> void:
         var q: Vector2i = unpackU12Pair(body[i], body[i+1], body[i+2]); i += 3
         var dirU8: int = body[i]; i += 1
         var flags: int = body[i]; i += 1
+        var subcell: int = body[i]; i += 1
 
-        var pos: Vector3 = Vector3(q.x * 0.1, 0.0, q.y * 0.1)
+        var r_cm: Vector2i = unpackResidualCm(subcell)
+        var pos: Vector3 = Vector3(float(q.x) * 0.1 + float(r_cm.x) * 0.01, 0.0,
+                                   float(q.y) * 0.1 + float(r_cm.y) * 0.01)
         var dir: Vector3 = u8ToDir(dirU8)
         var moving: bool = (flags & 1) == 1
 
@@ -187,13 +211,14 @@ func _physics_process(_delta: float) -> void:
 
 func _renderInterpolatedMobs() -> void:
     var targetT: float = serverNowMs() - interpDelayMs
+    var visLerp: float = 0.25  # tiny output low-pass; set 0.0 to disable
 
     for mobId: int in realmMobManager.spawned_mobs.keys():
         if !snaps.has(mobId): continue
         var buf: Array = snaps[mobId]
         if buf.size() < 2: continue
 
-        # Find segment [a,b] around targetT
+        # Locate segment [a,b] around targetT
         var a: Dictionary = buf[0]
         var b: Dictionary = buf[1]
         var idx: int = 1
@@ -210,28 +235,35 @@ func _renderInterpolatedMobs() -> void:
         var dtMs: float = maxf(1.0, t1 - t0)
         var u: float = clampf((targetT - t0) / dtMs, 0.0, 1.0)
 
-        # Tangents from heading * speed (convert to "position delta" across dt)
-        var v0: Vector3 = a.dir.normalized() * mob.speed            # m/s
-        var v1: Vector3 = b.dir.normalized() * mob.speed            # m/s
-        var m0: Vector3 = v0 * (dtMs / 1000.0)                      # meters over dt
-        var m1: Vector3 = v1 * (dtMs / 1000.0)
+        # Neighboring points for Catmull–Rom (p0, p1=a, p2=b, p3)
+        var i1: int = max(0, idx - 1)             # a index
+        var i2: int = min(buf.size() - 1, idx)    # b index
+        var i0: int = max(0, i1 - 1)
+        var i3: int = min(buf.size() - 1, i2 + 1)
 
-        # Cubic Hermite basis
+        var p0: Vector3 = buf[i0].pos
+        var p1: Vector3 = buf[i1].pos
+        var p2: Vector3 = buf[i2].pos
+        var p3: Vector3 = buf[i3].pos
+
+        # Catmull–Rom spline (centripetal-ish feel with uniform parameter here)
         var u2: float = u * u
         var u3: float = u2 * u
-        var h00: float =  2.0 * u3 - 3.0 * u2 + 1.0
-        var h10: float =        u3 - 2.0 * u2 + u
-        var h01: float = -2.0 * u3 + 3.0 * u2
-        var h11: float =        u3 -       u2
+        var c0: Vector3 = p1 * 2.0
+        var c1: Vector3 = (p2 - p0)
+        var c2: Vector3 = (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3)
+        var c3: Vector3 = (-p0 + p1 * 3.0 - p2 * 3.0 + p3)
+        var posCR: Vector3 = (c0 + c1 * u + c2 * u2 + c3 * u3) * 0.5
 
-        var pos: Vector3 = a.pos * h00 + m0 * h10 + b.pos * h01 + m1 * h11
-
-        # Short extrapolation if target exceeds newest
-        if targetT > t1 and b.m:
+        # If target is beyond newest sample, short capped extrapolation
+        if targetT > t1 and buf[i2].m:
             var leadMs: float = minf(targetT - t1, 150.0)
-            pos += b.dir * mob.speed * (leadMs / 1000.0)
+            posCR += buf[i2].dir * mob.speed * (leadMs / 1000.0)
 
-        mob.global_position = pos
+        # Optional tiny visual low-pass to hide residual quantization/packet cadence
+        var outPos: Vector3 = posCR if visLerp <= 0.0 else mob.global_position.lerp(posCR, visLerp)
+        mob.global_position = outPos
+
 
 # ------------------------ Client clock reconstruction ------------------------
 
