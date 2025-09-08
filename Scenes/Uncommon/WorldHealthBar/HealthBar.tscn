@@ -5,9 +5,11 @@
 [ext_resource type="Script" uid="uid://d4l56iergxbho" path="res://Scenes/Uncommon/WorldHealthBar/health_bar_3d.gd" id="3_1pdii"]
 
 [node name="HealthBar" type="TextureProgressBar"]
+custom_minimum_size = Vector2(20, 4)
 offset_right = 1.0
 offset_bottom = 1.0
 value = 50.0
+nine_patch_stretch = true
 texture_over = ExtResource("1_ydi58")
 texture_progress = ExtResource("2_7klgx")
 script = ExtResource("3_1pdii")

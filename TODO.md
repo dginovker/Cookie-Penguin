@@ -11,7 +11,7 @@
 5. Make it so you see other players' movement animation
 
 > Bugs <
-1. None!
+1. Browser clients see mobs clipping. Clipping only happens when they're over the ground.
 
 > ok but I wanna fix it <
 1. Game is perfect
