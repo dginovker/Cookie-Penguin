@@ -3,80 +3,88 @@ class_name RealmSnapshot
 extends Node
 
 # ---------------------------------------------------------------------------
-# Compact mob snapshot for movement smoothing (absolute positions + heading).
+# Compact mob snapshot stream with timestamped frames + client-side
+# Hermite interpolation (uses heading + local speed for tangents).
 #
-# Packet body:
-#   [mob_count: u16 LE]
-#   repeated mob_count times:
-#       [mob_id: uLEB128]               # unsigned LEB128 varint
-#       [pos: 3 bytes]                  # X/Z quantized to 0.1 m → xq,zq ∈ [0..2559]
-#                                       # pack xq:u12, zq:u12 → 24 bits
-#       [heading: u8]                   # atan2(XZ) quantized to 0..255
+# Packet body (little-endian):
+#   [mobCount: u16]
+#   [serverTick: u16]                    # 60 Hz wrap; client reconstructs 32-bit time
+#   repeated mobCount times:
+#       [mobId: uLEB128]
+#       [pos: 3 bytes]                   # X/Z quantized to 0.1 m → xq,zq ∈ [0..2559]
+#                                        # pack xq:u12, zq:u12 → 24 bits
+#       [heading: u8]                    # atan2(XZ) quantized to 0..255
+#       [flags: u8]                      # bit0 = moving
 #
 # Design:
-#   - Server sends absolute states only for mobs whose quantized X/Z changed
-#     since last send, plus a periodic keyframe every RESEND_INTERVAL_TICKS.
-#   - Client performs dead-reckoning using received heading and local mob.speed,
-#     integrating every physics frame from the latest snapshot baseline and
-#     clamping corrections to hide jitter.
-#   - No speed is sent; client reads speed from the mob instance.
+#   - Server sends absolute states when quantized X/Z changed OR mob is moving,
+#     plus periodic keyframes every resendIntervalTicks.
+#   - Client keeps ~120 ms buffer keyed by server time; render at (serverNow - interpDelayMs).
+#   - Short extrapolation only when target time exceeds newest snapshot.
+#   - No speed is sent; client reads from the mob instance.
 #   - No rollback; dropped packets only delay corrections.
-#
-# Notes:
-#   - Server computes heading from velocity; if stationary, reuse last sent
-#     heading for that mob (cached), falling back to wander_direction only for
-#     the very first send.
-#   - is_instance_valid is used to ignore mobs that were despawned; spawn
-#     replication is responsible for reliable lifecycles.
 # ---------------------------------------------------------------------------
 
-# Client: id -> {"pos": Vector3, "dir": Vector3, "acc": float, "moving": bool}
-var mob_data: Dictionary[int, Dictionary] = {}
+# ------------------------------ Settings ------------------------------------
 
-# Server-side caches (authoritative): last quantized pos + last sent heading byte
-var last_qpos: Dictionary[int, Vector2i] = {}
-var last_qheading: Dictionary[int, int] = {}
+var resendIntervalTicks: int = 6                  # ~100 ms at 60 Hz, keeps motion smooth
+var tickHz: int = 60                              # server simulation Hz (authoritative)
+var interpDelayMs: float = 120.0                  # render delay for smoothing
 
-# Client-only cache: last quantized pos seen, to flag "moving" vs "stopped"
-var client_last_qpos: Dictionary[int, Vector2i] = {}
+# ------------------------------ Server caches -------------------------------
 
-var RESEND_INTERVAL_TICKS: int = 20
+var lastQPos: Dictionary[int, Vector2i] = {}      # id -> last sent quantized pos
+var lastQHeading: Dictionary[int, int] = {}       # id -> last sent heading byte
 
-@onready var realm_mob_manager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
+# ------------------------------ Client caches -------------------------------
+
+# Per-mob ring buffer of snapshots: id -> [ {t:float,pos:Vector3,dir:Vector3,m:bool}, ... ]
+var snaps: Dictionary[int, Array] = {}
+
+# Server clock reconstruction (client-side)
+var lastTick16: int = 0
+var tickWraps: int = 0
+var serverTimeOffsetMs: float = 0.0               # local_ms - server_ms (EMA)
+
+# ------------------------------- Scene refs ---------------------------------
+
+@onready var realmMobManager: RealmMobManager = get_tree().get_first_node_in_group("realm_mob_manager")
 
 # ------------------------- Quantization helpers ------------------------------
 
-static func quantize_pos_to_u12_pair(p: Vector3) -> Vector2i:
+static func quantizePosToU12Pair(p: Vector3) -> Vector2i:
     var xq: int = clampi(roundi(p.x * 10.0), 0, 2559)
     var zq: int = clampi(roundi(p.z * 10.0), 0, 2559)
     return Vector2i(xq, zq)
 
-static func pack_u12_pair(xq: int, zq: int) -> PackedByteArray:
+static func packU12Pair(xq: int, zq: int) -> PackedByteArray:
     var bytes: PackedByteArray = PackedByteArray(); bytes.resize(3)
     bytes[0] = (xq >> 4) & 0xFF
     bytes[1] = ((xq & 0xF) << 4) | ((zq >> 8) & 0xF)
     bytes[2] = zq & 0xFF
     return bytes
 
-static func unpack_u12_pair(b0: int, b1: int, b2: int) -> Vector2i:
+static func unpackU12Pair(b0: int, b1: int, b2: int) -> Vector2i:
     var xq: int = ((b0 << 4) | (b1 >> 4)) & 0xFFF
     var zq: int = (((b1 & 0xF) << 8) | b2) & 0xFFF
     return Vector2i(xq, zq)
 
 # ------------------------------ Varint helpers -------------------------------
 
-static func leb128_write_u(value: int, out_bytes: PackedByteArray) -> void:
+static func leb128WriteU(value: int, outBytes: PackedByteArray) -> void:
     var n: int = value
     while true:
         var b: int = n & 0x7F
         n >>= 7
-        if n != 0: out_bytes.push_back(b | 0x80)
-        else: out_bytes.push_back(b); break
+        if n != 0:
+            outBytes.push_back(b | 0x80)
+        else:
+            outBytes.push_back(b); break
 
-static func leb128_read_u(data: PackedByteArray, start_index: int) -> Array:
+static func leb128ReadU(data: PackedByteArray, startIndex: int) -> Array:
     var shift: int = 0
     var val: int = 0
-    var i: int = start_index
+    var i: int = startIndex
     while true:
         var b: int = data[i]; i += 1
         val |= (b & 0x7F) << shift
@@ -86,12 +94,12 @@ static func leb128_read_u(data: PackedByteArray, start_index: int) -> Array:
 
 # ----------------------------- Heading helpers -------------------------------
 
-static func angle_to_u8(v: Vector3) -> int:
+static func angleToU8(v: Vector3) -> int:
     var a: float = atan2(v.z, v.x)  # [-PI..PI]
     var u: int = int(round(((a + PI) * 255.0) / (2.0 * PI))) & 0xFF
     return u
 
-static func u8_to_dir(u: int) -> Vector3:
+static func u8ToDir(u: int) -> Vector3:
     var a: float = (float(u) * 2.0 * PI) / 255.0 - PI
     return Vector3(cos(a), 0.0, sin(a))
 
@@ -100,99 +108,144 @@ static func u8_to_dir(u: int) -> Vector3:
 func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
 
-    var body: PackedByteArray = PackedByteArray(); body.resize(2)
+    # Header: [mobCount:u16][serverTick:u16] → fill count after encoding
+    var body: PackedByteArray = PackedByteArray(); body.resize(4)
     var count: int = 0
-    var force_keyframe: bool = (tick % RESEND_INTERVAL_TICKS) == 0
+    var forceKeyframe: bool = (tick % resendIntervalTicks) == 0
 
     for mob: MobNode in get_tree().get_nodes_in_group("mobs"):
-        var q: Vector2i = quantize_pos_to_u12_pair(mob.global_position)
-        var changed: bool = force_keyframe or (not last_qpos.has(mob.mob_id)) or (last_qpos[mob.mob_id] != q)
+        var q: Vector2i = quantizePosToU12Pair(mob.global_position)
+        var moving: bool = mob.velocity.length_squared() > 0.0001
+        var changed: bool = forceKeyframe or (not lastQPos.has(mob.mob_id)) or (lastQPos[mob.mob_id] != q) or moving
         if not changed: continue
 
-        var dir_vec: Vector3
-        if mob.velocity.length_squared() > 0.0001:
-            dir_vec = mob.velocity.normalized()
+        var dirVec: Vector3
+        if moving:
+            dirVec = mob.velocity.normalized()
         else:
-            if last_qheading.has(mob.mob_id):
-                dir_vec = u8_to_dir(last_qheading[mob.mob_id])
+            if lastQHeading.has(mob.mob_id):
+                dirVec = u8ToDir(lastQHeading[mob.mob_id])
             else:
-                dir_vec = mob.wander_direction  # first-time fallback
+                dirVec = mob.wander_direction  # first-time fallback
 
-        var dir_u8: int = angle_to_u8(dir_vec)
+        var dirU8: int = angleToU8(dirVec)
+        var flags: int = 1 if moving else 0
 
-        leb128_write_u(mob.mob_id, body)
-        body.append_array(pack_u12_pair(q.x, q.y))
-        body.push_back(dir_u8)
+        leb128WriteU(mob.mob_id, body)
+        body.append_array(packU12Pair(q.x, q.y))
+        body.push_back(dirU8)
+        body.push_back(flags)
 
-        last_qpos[mob.mob_id] = q
-        last_qheading[mob.mob_id] = dir_u8
+        lastQPos[mob.mob_id] = q
+        lastQHeading[mob.mob_id] = dirU8
         count += 1
 
-    body[0] = count & 0xFF
-    body[1] = (count >> 8) & 0xFF
+    # Fill header
+    body[0] = count & 0xFF;          body[1] = (count >> 8) & 0xFF
+    body[2] = tick & 0xFF;           body[3] = (tick >> 8) & 0xFF
 
-    for peer_id: int in PlayerManager.players.keys():
-        if PlayerManager.players[peer_id].in_map:
-            if Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 2) > 1000:
-                print(peer_id, " is backed up on snapshots (", Net.get_backpressure(peer_id, Net.SNAPSHOT_CHANNEL + 2),
-                    ") not gonna send them a snapshot of size ", body.size(), " tick.")
+    for peerId: int in PlayerManager.players.keys():
+        if PlayerManager.players[peerId].in_map:
+            if Net.get_backpressure(peerId, Net.SNAPSHOT_CHANNEL) > 1000:
+                # If the channel is backed up, skip this frame; next tick will try again
                 continue
-            _apply_snapshot.rpc_id(peer_id, body)
+            _apply_snapshot.rpc_id(peerId, body)
 
-# --------------------- Client: apply snapshot → target state -----------------
+# --------------------- Client: apply snapshot → buffer -----------------------
 
 @rpc("authority", "call_local", "unreliable", Net.SNAPSHOT_CHANNEL)
 func _apply_snapshot(body: PackedByteArray) -> void:
     if multiplayer.is_server(): return
 
     var i: int = 0
-    var mob_count: int = body[i] | (body[i+1] << 8); i += 2
-    for _n: int in range(mob_count):
-        var id_and_next: Array = leb128_read_u(body, i)
-        var mob_id: int = id_and_next[0]; i = id_and_next[1]
-        var q: Vector2i = unpack_u12_pair(body[i], body[i+1], body[i+2]); i += 3
-        var dir_u8: int = body[i]; i += 1
+    var mobCount: int = body[i] | (body[i+1] << 8); i += 2
+    var tick16: int = body[i] | (body[i+1] << 8); i += 2
+
+    _noteSnapshotTime(tick16)
+    var tMs: float = _serverMsFromTick16(tick16)
+
+    for _n: int in range(mobCount):
+        var idAndNext: Array = leb128ReadU(body, i)
+        var mobId: int = idAndNext[0]; i = idAndNext[1]
+        var q: Vector2i = unpackU12Pair(body[i], body[i+1], body[i+2]); i += 3
+        var dirU8: int = body[i]; i += 1
+        var flags: int = body[i]; i += 1
 
         var pos: Vector3 = Vector3(q.x * 0.1, 0.0, q.y * 0.1)
-        var dir: Vector3 = u8_to_dir(dir_u8)
+        var dir: Vector3 = u8ToDir(dirU8)
+        var moving: bool = (flags & 1) == 1
 
-        # Reset prediction window on fresh snapshot; flag moving if quantized changed
-        var moving: bool = (client_last_qpos[mob_id] != q) if client_last_qpos.has(mob_id) else true
-        mob_data[mob_id] = {"pos": pos, "dir": dir, "acc": 0.0, "moving": moving}
-        client_last_qpos[mob_id] = q
+        if !snaps.has(mobId): snaps[mobId] = []
+        snaps[mobId].append({ "t": tMs, "pos": pos, "dir": dir, "m": moving })
+        if snaps[mobId].size() > 32: snaps[mobId].pop_front()
 
-# --------------------- Client: integrate + clamp per frame -------------------
+# --------------------- Client: interpolate per frame ------------------------
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
     if multiplayer.is_server(): return
-    consume_update_mob_pos(delta)
+    _renderInterpolatedMobs()
 
-func consume_update_mob_pos(dt: float) -> void:
-    assert(!multiplayer.is_server())
+func _renderInterpolatedMobs() -> void:
+    var targetT: float = serverNowMs() - interpDelayMs
 
-    for mob_id: int in mob_data.keys():
-        if !realm_mob_manager.spawned_mobs.has(mob_id): continue
-        var mob: MobNode = realm_mob_manager.spawned_mobs[mob_id]
+    for mobId: int in realmMobManager.spawned_mobs.keys():
+        if !snaps.has(mobId): continue
+        var buf: Array = snaps[mobId]
+        if buf.size() < 2: continue
+
+        # Find segment [a,b] around targetT
+        var a: Dictionary = buf[0]
+        var b: Dictionary = buf[1]
+        var idx: int = 1
+        while idx < buf.size() and buf[idx].t < targetT:
+            a = buf[idx - 1]
+            b = buf[idx]
+            idx += 1
+
+        var mob: MobNode = realmMobManager.spawned_mobs[mobId]
         if !is_instance_valid(mob): continue
 
-        mob_data[mob_id]["acc"] += dt
+        var t0: float = a.t
+        var t1: float = b.t
+        var dtMs: float = maxf(1.0, t1 - t0)
+        var u: float = clampf((targetT - t0) / dtMs, 0.0, 1.0)
 
-        var base_pos: Vector3 = mob_data[mob_id].pos
-        var dir: Vector3 = mob_data[mob_id].dir
-        var s: float = mob.speed
-        var moving: bool = mob_data[mob_id].moving
+        # Tangents from heading * speed (convert to "position delta" across dt)
+        var v0: Vector3 = a.dir.normalized() * mob.speed            # m/s
+        var v1: Vector3 = b.dir.normalized() * mob.speed            # m/s
+        var m0: Vector3 = v0 * (dtMs / 1000.0)                      # meters over dt
+        var m1: Vector3 = v1 * (dtMs / 1000.0)
 
-        # Predict from the snapshot baseline, not last frame
-        var predicted: Vector3 = (base_pos + dir * s * mob_data[mob_id].acc) if moving else base_pos
+        # Cubic Hermite basis
+        var u2: float = u * u
+        var u3: float = u2 * u
+        var h00: float =  2.0 * u3 - 3.0 * u2 + 1.0
+        var h10: float =        u3 - 2.0 * u2 + u
+        var h01: float = -2.0 * u3 + 3.0 * u2
+        var h11: float =        u3 -       u2
 
-        # Bound per-frame correction; scale with speed so fast mobs don't crawl
-        var diff: Vector3 = predicted - mob.global_position
-        var max_step: float = max(0.25, s * dt * 1.25)
-        if diff.length() > max_step:
-            diff = diff.normalized() * max_step
-        mob.global_position += diff
+        var pos: Vector3 = a.pos * h00 + m0 * h10 + b.pos * h01 + m1 * h11
 
-        # Optional micro de-jitter when stopped inside the quantization cell
-        var q_epsilon: float = 0.05
-        if !moving and (mob.global_position - base_pos).length() < q_epsilon:
-            mob.global_position = base_pos
+        # Short extrapolation if target exceeds newest
+        if targetT > t1 and b.m:
+            var leadMs: float = minf(targetT - t1, 150.0)
+            pos += b.dir * mob.speed * (leadMs / 1000.0)
+
+        mob.global_position = pos
+
+# ------------------------ Client clock reconstruction ------------------------
+
+func _serverMsFromTick16(t16: int) -> float:
+    if t16 < lastTick16:
+        tickWraps += 1
+    lastTick16 = t16
+    var t32: int = (tickWraps << 16) | t16
+    return float(t32) * (1000.0 / float(tickHz))
+
+func _noteSnapshotTime(tick16: int) -> void:
+    var serverMs: float = _serverMsFromTick16(tick16)
+    var localMs: float = Time.get_ticks_msec()
+    serverTimeOffsetMs = lerp(serverTimeOffsetMs, localMs - serverMs, 0.1)
+
+func serverNowMs() -> float:
+    return Time.get_ticks_msec() - serverTimeOffsetMs
