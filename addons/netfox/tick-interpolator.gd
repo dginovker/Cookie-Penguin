@@ -135,7 +135,19 @@ func _exit_tree() -> void:
 func _process(_delta: float) -> void:
     if Engine.is_editor_hint():
         return
+    var f: float = NetworkTime.tick_factor
 
+    if f != f:
+        print("!!!!!!! NETWORK TIME tick_factor IS ", f, "!!!!! THIS IS PROOF OF INFINITY BUG")
+        f = 0.0          # NaN → hold previous state this frame
+    if f < 0.0:
+        print("Network time is <0")
+        f = 0.0
+    if f > 1.0:
+        print("Network time is >0")
+        f = 1.0
+
+    assert(f >= 0.0 and f <= 1.0)
     _interpolate(_state_from, _state_to, NetworkTime.tick_factor)
 
 func _reprocess_settings() -> void:

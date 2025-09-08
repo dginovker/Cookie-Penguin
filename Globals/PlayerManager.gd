@@ -41,6 +41,8 @@ func load_scene_on_client():
     var game_scene = load("res://Scenes/3dWorld/3Dworld.tscn").instantiate()
     get_tree().root.add_child(game_scene)
     get_tree().root.get_node("RootRoot/ServerConnection").queue_free()  # remove the main menu
+    await get_tree().process_frame
+    print("Telling server we loaded the scene")
     client_loaded_scene.rpc_id(1)
 
 @rpc("any_peer", "call_remote", "reliable")
