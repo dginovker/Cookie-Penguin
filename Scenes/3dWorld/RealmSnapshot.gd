@@ -18,12 +18,6 @@ extends Node
 #   [mobCount: u16][serverTick: u16]  # tickHz wrap; client reconstructs 32-bit ms
 # ---------------------------------------------------------------------------
 
-"""
-Currently testing a more optimal implementation
-Previous implementation had like 6fps when there were like 5 clients and 300 mobs
-(scientific, I know)
-"""
-
 # ------------------------------ Settings ------------------------------------
 
 var resendIntervalTicks: int = 6          # ~100 ms @60Hz
@@ -251,6 +245,7 @@ func _renderInterpolatedMobs() -> void:
     # Iterate once over spawned mobs; avoid repeated dictionary indexing
     for mobId: int in realmMobManager.spawned_mobs.keys():
         if !mobBufs.has(mobId): continue
+        if not is_instance_valid(realmMobManager.spawned_mobs[mobId]): continue
         var buf: MobBuf = mobBufs[mobId]
         if buf.size < 2: continue
 

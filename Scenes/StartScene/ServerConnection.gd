@@ -4,8 +4,8 @@ var is_server: bool
 const PORT: int = 10000
 
 func _ready() -> void:
-    is_server = OS.get_cmdline_args().has("--server") || false
     # || false || true <- ez ctrl shift F
+    is_server = OS.get_cmdline_args().has("--server") || false
     if OS.get_name() == "Web":
         is_server = false
     if !is_server:
