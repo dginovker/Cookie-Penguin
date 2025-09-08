@@ -210,59 +210,66 @@ func _physics_process(_delta: float) -> void:
     _renderInterpolatedMobs()
 
 func _renderInterpolatedMobs() -> void:
-    var targetT: float = serverNowMs() - interpDelayMs
-    var visLerp: float = 0.25  # tiny output low-pass; set 0.0 to disable
-
     for mobId: int in realmMobManager.spawned_mobs.keys():
         if !snaps.has(mobId): continue
         var buf: Array = snaps[mobId]
         if buf.size() < 2: continue
 
-        # Locate segment [a,b] around targetT
-        var a: Dictionary = buf[0]
-        var b: Dictionary = buf[1]
-        var idx: int = 1
-        while idx < buf.size() and buf[idx].t < targetT:
-            a = buf[idx - 1]
-            b = buf[idx]
-            idx += 1
+        _render_interpolated_mob(mobId, buf)
+        
+func _render_interpolated_mob(mobId: int, buf: Array):
+    var targetT: float = serverNowMs() - interpDelayMs
 
-        var mob: MobNode = realmMobManager.spawned_mobs[mobId]
-        if !is_instance_valid(mob): continue
+    # Locate segment [a,b] around targetT
+    var a: Dictionary = buf[0]
+    var b: Dictionary = buf[1]
+    var idx: int = 1
+    while idx < buf.size() and buf[idx].t < targetT:
+        a = buf[idx - 1]
+        b = buf[idx]
+        idx += 1
 
-        var t0: float = a.t
-        var t1: float = b.t
-        var dtMs: float = maxf(1.0, t1 - t0)
-        var u: float = clampf((targetT - t0) / dtMs, 0.0, 1.0)
+    var mob: MobNode = realmMobManager.spawned_mobs[mobId]
+    if !is_instance_valid(mob): return
+    
+    do_maths(a, b, targetT, idx, buf, mob)
+    
+func do_maths(a: Dictionary, b: Dictionary, targetT: float, idx: int, buf: Array, mob: MobNode):
+    var visLerp: float = 0.25  # tiny output low-pass; set 0.0 to disable
 
-        # Neighboring points for Catmull–Rom (p0, p1=a, p2=b, p3)
-        var i1: int = max(0, idx - 1)             # a index
-        var i2: int = min(buf.size() - 1, idx)    # b index
-        var i0: int = max(0, i1 - 1)
-        var i3: int = min(buf.size() - 1, i2 + 1)
+    var t0: float = a.t
+    var t1: float = b.t
+    var dtMs: float = maxf(1.0, t1 - t0)
+    var u: float = clampf((targetT - t0) / dtMs, 0.0, 1.0)
 
-        var p0: Vector3 = buf[i0].pos
-        var p1: Vector3 = buf[i1].pos
-        var p2: Vector3 = buf[i2].pos
-        var p3: Vector3 = buf[i3].pos
+    # Neighboring points for Catmull–Rom (p0, p1=a, p2=b, p3)
+    var i1: int = max(0, idx - 1)             # a index
+    var i2: int = min(buf.size() - 1, idx)    # b index
+    var i0: int = max(0, i1 - 1)
+    var i3: int = min(buf.size() - 1, i2 + 1)
 
-        # Catmull–Rom spline (centripetal-ish feel with uniform parameter here)
-        var u2: float = u * u
-        var u3: float = u2 * u
-        var c0: Vector3 = p1 * 2.0
-        var c1: Vector3 = (p2 - p0)
-        var c2: Vector3 = (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3)
-        var c3: Vector3 = (-p0 + p1 * 3.0 - p2 * 3.0 + p3)
-        var posCR: Vector3 = (c0 + c1 * u + c2 * u2 + c3 * u3) * 0.5
+    var p0: Vector3 = buf[i0].pos
+    var p1: Vector3 = buf[i1].pos
+    var p2: Vector3 = buf[i2].pos
+    var p3: Vector3 = buf[i3].pos
 
-        # If target is beyond newest sample, short capped extrapolation
-        if targetT > t1 and buf[i2].m:
-            var leadMs: float = minf(targetT - t1, 150.0)
-            posCR += buf[i2].dir * mob.speed * (leadMs / 1000.0)
+    # Catmull–Rom spline (centripetal-ish feel with uniform parameter here)
+    var u2: float = u * u
+    var u3: float = u2 * u
+    var c0: Vector3 = p1 * 2.0
+    var c1: Vector3 = (p2 - p0)
+    var c2: Vector3 = (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3)
+    var c3: Vector3 = (-p0 + p1 * 3.0 - p2 * 3.0 + p3)
+    var posCR: Vector3 = (c0 + c1 * u + c2 * u2 + c3 * u3) * 0.5
 
-        # Optional tiny visual low-pass to hide residual quantization/packet cadence
-        var outPos: Vector3 = posCR if visLerp <= 0.0 else mob.global_position.lerp(posCR, visLerp)
-        mob.global_position = outPos
+    # If target is beyond newest sample, short capped extrapolation
+    if targetT > t1 and buf[i2].m:
+        var leadMs: float = minf(targetT - t1, 150.0)
+        posCR += buf[i2].dir * mob.speed * (leadMs / 1000.0)
+
+    # Optional tiny visual low-pass to hide residual quantization/packet cadence
+    var outPos: Vector3 = posCR if visLerp <= 0.0 else mob.global_position.lerp(posCR, visLerp)
+    mob.global_position = outPos
 
 
 # ------------------------ Client clock reconstruction ------------------------

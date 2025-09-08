@@ -613,7 +613,7 @@ func _submit_full_state(serialized_state: Dictionary, tick: int) -> void:
 
     if tick < NetworkRollback.history_start:
         # State too old!
-        _logger.error("Received full state for %s, rejecting because older than %s frames", [tick, NetworkRollback.history_limit])
+        _logger.error("Received full state for %s, rejecting because older than %s frames (current tick: %s)", [tick, NetworkRollback.history_limit, NetworkTime.tick])
         return
 
     var sender := multiplayer.get_remote_sender_id()

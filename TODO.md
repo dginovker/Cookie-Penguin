@@ -1,6 +1,10 @@
 > First 5 seconds improvements <
-1. Improve mobile controls more. Joystick should take up like 5cm min
-  a) Make UI on the top and bottom if in portrait mode
+2. Figure out why FPS so bad on mobile
+a) It's from render_interpolate_mobs
+i) Can we make it better _without_ stopping rendering mobs outside the view (so it's still good on intense situations)
+b) Try to make hidpi dynamically turn on
+3. Make text font bigger on mobile
+a) This is actually an issue of text size on large resolutions
 2. Get Chongho's kids to playtest again
 
 > First 60 seconds improvements <
@@ -18,12 +22,13 @@
 a) Game tab
 i) Sound control (just so I have something in this tab)
 b) Debug tab
-i) For host, backpressure of each client
-ii) For client, last packet received 
+i) For host, backpressure of each client for each channel
+ii) For client, last packet received for each channel (this will help debug things like bullets stop spawning all of a sudden)
 iii) Move all the debug stuff from the stats panel into there
 
 > Networking improvements <
-1. Visibility filter updates
+1. Move away from all the multiplayer synchronizers and stuff so it stops spamming errors
+2. Visibility filter updates
 a) This basically will test throttling snapshots. Don't worry about case where lots of people in 1 space for now
 2. Set up a TURN relay so people blocked on UDP can connect (add readme instructions)
 3. Make it so when you disconnect, you get notified/kicked out of game
