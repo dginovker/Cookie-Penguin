@@ -14,7 +14,13 @@
 1. Browser clients see mobs clipping. Clipping only happens when they're over the ground.
 
 > ok but I wanna fix it <
-1. Game is perfect
+1. Settings panel
+a) Game tab
+i) Sound control (just so I have something in this tab)
+b) Debug tab
+i) For host, backpressure of each client
+ii) For client, last packet received 
+iii) Move all the debug stuff from the stats panel into there
 
 > Networking improvements <
 1. Visibility filter updates

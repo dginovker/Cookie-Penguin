@@ -21,5 +21,5 @@ Style guidelines:
 * Type all variables with `var x: some_type = some_value` syntax. Type Dictionaries with `var x: Dictionary[some_type, some_type] = some_value` syntax.
 * Do not declare variables when they only need to be used in one place.
 * Prefer one-liners, but keep if statements multi-line
-* *Never* use ternary operators. They are not supported in GDScript.
+* *Never* use ? : syntax for ternary operators. They are not supported in GDScript.
 * If I give you code with comments, keep or improve those comments in  the output.

@@ -1,7 +1,8 @@
 # UIRoot.gd — single owner, single scale. Web == Editor. Late UI safe.
-# Fonts + layout via theme. No bar code. No separation overrides.
+# Fonts + layout via theme. No per-node font overrides here.
 # Goal: behave as if HiDPI were OFF for perceived size, while keeping HiDPI raster fidelity.
 
+class_name UIRoot
 extends Control
 
 # ---------- knobs ----------
@@ -21,8 +22,12 @@ var theme_local: Theme
 var base_font_size: Dictionary[StringName, int] = {}
 var base_default_font: int = 0
 
+# exposed one-shot scale for listeners that refuse signals
+var s_percept: float = 1.0
+
 # ---------- lifecycle ----------
 func _ready() -> void:
+    add_to_group("ui_root")
     var project_theme: Theme = ThemeDB.get_project_theme()
     assert(project_theme != null)
     theme_local = project_theme.duplicate()
@@ -31,6 +36,7 @@ func _ready() -> void:
     _cache_font_baselines()
     _apply()
 
+    # Keep UIRoot correct on resize/DPI; children that only read once will not follow
     get_viewport().connect("size_changed", Callable(self, "_apply"))
     get_window().connect("dpi_changed", Callable(self, "_apply"))
 
@@ -53,7 +59,7 @@ func _apply() -> void:
 
     # neutralize HiDPI for perception; DPR only improves raster fidelity
     var dpr: float = DisplayServer.screen_get_scale()
-    var s_percept: float = s_ui / dpr
+    s_percept = s_ui / dpr
 
     # layout through theme (paddings, styleboxes, container math)
     theme_local.default_base_scale = s_percept
