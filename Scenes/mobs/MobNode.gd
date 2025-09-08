@@ -56,7 +56,10 @@ func _physics_process(delta):
         _chase_player(target_player, delta)
     else:
         _wander(delta)
-
+    
+    call_move_and_slide()
+    
+func call_move_and_slide():
     move_and_slide()
 
 func _chase_player(player: Player3D, _delta):
