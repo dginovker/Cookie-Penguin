@@ -16,6 +16,8 @@ var player: Player3D # the player this HUD is for
 @onready var inven_button_panel: Panel = %InvenButtonPanel
 @onready var stats_button: TextureButton = %StatsButton
 @onready var stats_button_panel: Panel = %StatsButtonPanel
+@onready var options_button: TextureButton = %OptionsButton
+@onready var options_screen: PanelContainer = %OptionsScreen
 
 var _inv_panel_stylebox: StyleBoxFlat
 var _stats_panel_stylebox: StyleBoxFlat
@@ -27,6 +29,7 @@ func _ready():
     _stats_panel_stylebox = stats_button_panel.get_theme_stylebox("panel")
     inven_button.pressed.connect(_inven_button_pressed)
     stats_button.pressed.connect(_stats_button_pressed)
+    options_button.pressed.connect(_options_button_pressed)
 
 func _process(_delta: float) -> void:
     # Boohoo, inefficient?
@@ -99,6 +102,9 @@ func _stats_button_pressed():
         _inv_panel_stylebox.bg_color = UNFOCUS_COLOR
         %InvenVbox.visible = false
         %StatsVbox.visible = true
+        
+func _options_button_pressed():
+    %OptionsScreen.visible = true
 
 func _update_debug():
     $RootSplit/Right/TopRightContainer/StatsVbox/Position.text = "Position: " + str(Vector3i(player.global_position))

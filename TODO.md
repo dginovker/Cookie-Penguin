@@ -14,9 +14,7 @@ a) This is actually an issue of text size on large resolutions
 
 > Bugs <
 1. Browser clients see mobs clipping. Clipping only happens when they're over the ground.
-2. instance_set_transform: Condition "!v.is_finite()" is true. <C++ Source>  servers/rendering/renderer_scene_cull.cpp:991 @ instance_set_transform()
-a) I have no idea when this even happens. Ask ChatGPT like "Sometimes my game crashes with _error_. I have no idea how or why. It seems to only happen on the Client, during periods of lag/high latency. I don't even know where to narrow it down. How can I track this down? 
-3. Bullets stop spawning sometimes
+2. Bullets stop spawning sometimes
 a) I suspect this is reliable UDP packet issue. Settings debug panel will help confirm.
 
 > ok but I wanna fix it <

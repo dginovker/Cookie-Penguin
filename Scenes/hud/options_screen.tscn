@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=3 uid="uid://jjhotsry0lgs"]
+
+[ext_resource type="Script" uid="uid://cb2jbn2mlt7jf" path="res://Scenes/hud/Options.gd" id="1_0h4mb"]
+[ext_resource type="Texture2D" uid="uid://bwvbagaoxdsqo" path="res://Scenes/hud/button_icons/close.png" id="2_y4e53"]
+
+[node name="OptionsMenu" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0h4mb")
+
+[node name="vbox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="header" type="HBoxContainer" parent="vbox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GeneralButton" type="Button" parent="vbox/header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "General"
+
+[node name="DebugButton" type="Button" parent="vbox/header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Debug"
+
+[node name="Spacer" type="Control" parent="vbox/header"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 13.68
+
+[node name="close" type="Button" parent="vbox/header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("2_y4e53")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Panel" type="Panel" parent="vbox"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 6.0
+
+[node name="GeneralControl" type="VBoxContainer" parent="vbox/Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="label" type="Label" parent="vbox/Panel/GeneralControl"]
+layout_mode = 2
+text = "Lol you thought we had settings?"
+
+[node name="DebugControl" type="VBoxContainer" parent="vbox/Panel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="label" type="Label" parent="vbox/Panel/DebugControl"]
+layout_mode = 2
+text = "brr debug"
