@@ -1,3 +1,9 @@
+### How long does your Penguin last before the Cookies kill you?
+
+Cookie Penguin is a real-time multiplayer browser-based bullet hell MMO with permadeath mechanics.
+
+You might love Cookies, but Cookies are monsters...
+
 ### Screenshots from the journey...
 
 <img width="1755" height="715" alt="image" src="https://github.com/user-attachments/assets/30c4b12f-4112-474a-af17-0abecf646e16" />
