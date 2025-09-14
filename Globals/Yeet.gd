@@ -26,3 +26,6 @@ func serialize_array(data: Array) -> Array[Dictionary]:
 func billboard_me(n: Node3D) -> void:
     var b := n.get_viewport().get_camera_3d().global_transform.basis
     n.global_transform.basis = Basis(b.x, b.y, -b.z) # screen-right, screen-up, facing camera
+
+func get_local_player() -> Player3D:
+    return PlayerManager.players[multiplayer.get_unique_id()].player

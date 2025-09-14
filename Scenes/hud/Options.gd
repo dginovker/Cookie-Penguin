@@ -14,3 +14,6 @@ func _ready() -> void:
 func _turn_off_controls():
     general_control.visible = false
     debug_control.visible = false
+
+func _process(_delta: float) -> void:
+    %DebugControl/Position.text = "Position: " + str(Vector3i(Yeet.get_local_player().global_position))

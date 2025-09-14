@@ -37,7 +37,6 @@ func _process(_delta: float) -> void:
     # Yeah. I win ALL the arguments with myself in the shower.
     update_stats(int(player.xp), int(player.speed*2), player.attack, int(player.max_health))
     update_health(int(player.health), (player.max_health))
-    _update_debug()
 
 func show_loot_bag(lootbag_id: int, loot_items: Array[ItemInstance]):
     inventory_manager.show_loot_bag(lootbag_id, loot_items)
@@ -105,6 +104,3 @@ func _stats_button_pressed():
         
 func _options_button_pressed():
     %OptionsScreen.visible = true
-
-func _update_debug():
-    $RootSplit/Right/TopRightContainer/StatsVbox/Position.text = "Position: " + str(Vector3i(player.global_position))

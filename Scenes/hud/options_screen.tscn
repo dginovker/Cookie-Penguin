@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://jjhotsry0lgs"]
+[gd_scene load_steps=5 format=3 uid="uid://jjhotsry0lgs"]
 
 [ext_resource type="Script" uid="uid://cb2jbn2mlt7jf" path="res://Scenes/hud/Options.gd" id="1_0h4mb"]
 [ext_resource type="Texture2D" uid="uid://bwvbagaoxdsqo" path="res://Scenes/hud/button_icons/close.png" id="2_y4e53"]
+[ext_resource type="Script" uid="uid://dgn5evp2qtnjn" path="res://Scenes/hud/fps.gd" id="3_vwaup"]
+[ext_resource type="Script" uid="uid://brgosfyth4e5c" path="res://Scenes/hud/nerdstats.gd" id="4_g8n31"]
 
 [node name="OptionsMenu" type="PanelContainer"]
 anchors_preset = 15
@@ -52,6 +54,7 @@ size_flags_stretch_ratio = 6.0
 
 [node name="GeneralControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,7 +68,6 @@ text = "Lol you thought we had settings?"
 
 [node name="DebugControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -73,6 +75,36 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="label" type="Label" parent="vbox/Panel/DebugControl"]
+[node name="Position" type="Label" parent="vbox/Panel/DebugControl"]
 layout_mode = 2
-text = "brr debug"
+text = "Position: "
+
+[node name="NerdStats" type="VBoxContainer" parent="vbox/Panel/DebugControl"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+script = ExtResource("3_vwaup")
+
+[node name="StaticMem" type="Label" parent="vbox/Panel/DebugControl/NerdStats"]
+layout_mode = 2
+text = "Static Mem"
+
+[node name="VideoMem" type="Label" parent="vbox/Panel/DebugControl/NerdStats"]
+layout_mode = 2
+text = "Static Mem"
+
+[node name="ObjCount" type="Label" parent="vbox/Panel/DebugControl/NerdStats"]
+layout_mode = 2
+text = "Dyno Mem"
+
+[node name="Fps" type="Label" parent="vbox/Panel/DebugControl/NerdStats"]
+layout_mode = 2
+text = "FPS"
+
+[node name="Ping" type="Label" parent="vbox/Panel/DebugControl/NerdStats"]
+layout_mode = 2
+text = "Ping"
+
+[node name="Grapf" type="Control" parent="vbox/Panel/DebugControl/NerdStats"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+script = ExtResource("4_g8n31")
