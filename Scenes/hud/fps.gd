@@ -1,7 +1,7 @@
 extends Control
 
-const UPDATE_INTERVAL = 0.1
-const SECONDS := 60.0
+const UPDATE_INTERVAL = 0.01
+const HISTORY_LEN_SECONDS := 60.0
 
 var t := 0.0
 var times := PackedFloat32Array()
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
     fps.append(Performance.get_monitor(Performance.TIME_FPS))
     ping_ms.append(NetworkTime.remote_rtt * 1000)
 
-    var cut := t - SECONDS
+    var cut := t - HISTORY_LEN_SECONDS
     var i := 0
     while i < times.size() and times[i] < cut: i += 1
     if i > 0:
@@ -42,7 +42,7 @@ func _process(delta: float) -> void:
         fps = fps.slice(i)
         ping_ms = ping_ms.slice(i)
 
-    if times.size() % 10 == 0:
+    if times.size() % 2 == 0:
         graph.set_data(times, fps, ping_ms, t)
         fps_label.text = "%d FPS   min: %d" % [
             fps.back(), fps.min()

@@ -34,6 +34,14 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "Debug"
 
+[node name="HostNetworkButton" type="Button" parent="vbox/header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Host
+Networking"
+
 [node name="Spacer" type="Control" parent="vbox/header"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -64,10 +72,11 @@ grow_vertical = 2
 
 [node name="label" type="Label" parent="vbox/Panel/GeneralControl"]
 layout_mode = 2
-text = "Lol you thought we had settings?"
+text = "Yay!"
 
 [node name="DebugControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -108,3 +117,16 @@ text = "Ping"
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 script = ExtResource("4_g8n31")
+
+[node name="HostNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="yay" type="Label" parent="vbox/Panel/HostNetworkControl"]
+layout_mode = 2
+text = "i) For host, backpressure of each client for each channel"

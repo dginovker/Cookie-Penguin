@@ -19,13 +19,9 @@ a) I suspect this is reliable UDP packet issue. Settings debug panel will help c
 
 > ok but I wanna fix it <
 1. Settings panel
-a) Game tab
-i) Sound control (just so I have something in this tab)
-b) Debug tab
+a) Debug tab
 i) For host, backpressure of each client for each channel
 ii) For client, last packet received for each channel (this will help debug things like bullets stop spawning all of a sudden)
-iii) Move all the debug stuff from the stats panel into there
-2) Figure out how I can open f12 after the game launched...
 
 > Networking improvements <
 1. Move away from all the multiplayer synchronizers and stuff so it stops spamming errors
