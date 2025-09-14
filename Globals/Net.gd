@@ -14,10 +14,10 @@ var client_pc: WebRTCPeerConnection
 var is_client: bool = false
 
 # called with create_client and create_server
-const SNAPSHOT_CHANNEL = 1 # Channel 4
-const SPAWN_CHANNEL = 2 # Channel 5
-const LOOTBAG_CHANNEL = 3 # Channel 6, mostly for debugging to see if all channels are blocked
-const MOB_HEALTH_UPDATES = 4 # Channel 7
+const SNAPSHOT_CHANNEL = 1 # Channel id 3
+const SPAWN_CHANNEL = 2 # Channel id 4
+const LOOTBAG_CHANNEL = 3 # Channel id 5, mostly for debugging to see if all channels are blocked
+const MOB_HEALTH_UPDATES = 4 # Channel id 6
 const ADDITIONAL_CHANNELS = [
     MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE,
     MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
@@ -72,8 +72,9 @@ func print_buffers():
 func get_backpressure(pid: int, channel_id: int) -> int:
     """
     Godot exposes 3 channels by default
-    So i.e. SNAPSHOT_CHANNEL is channel 4, despite being value 1 in RPCs
-    ...But also, rtc.get_peer(pid)["channels"] is an array, so the index of SNAPSHOT_CHANNEL is 4-1 = 3
+    So i.e. SNAPSHOT_CHANNEL is channel 2, despite being value 1 in RPCs
+    ...But also, rtc.get_peer(pid)["channels"] is an array, so the index of SNAPSHOT_CHANNEL is 3-1 = 2
+    (The first 3 are default channels)
     Confusing, right?
     """
     if pid == 1:

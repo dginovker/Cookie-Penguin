@@ -127,6 +127,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="yay" type="Label" parent="vbox/Panel/HostNetworkControl"]
+[node name="BackpressureScroll" type="ScrollContainer" parent="vbox/Panel/HostNetworkControl"]
 layout_mode = 2
-text = "i) For host, backpressure of each client for each channel"
+size_flags_vertical = 3
+
+[node name="BackpressureContainer" type="VBoxContainer" parent="vbox/Panel/HostNetworkControl/BackpressureScroll"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
