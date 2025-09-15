@@ -158,6 +158,10 @@ text = "Last Health Data: --"
 layout_mode = 2
 text = "Client Backpressure: --"
 
+[node name="ServerVersion" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Server Versiona"
+
 [node name="HostNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
 visible = false

@@ -13,6 +13,9 @@ var ws_hello_sent: bool = false
 var client_pc: WebRTCPeerConnection
 var is_client: bool = false
 
+var server_version_hash: String = ""
+var server_version_count: int = 0
+
 const SNAPSHOT_CHANNEL = 1 # Channel id 3
 const SPAWN_CHANNEL = 2 # Channel id 4
 const LOOTBAG_CHANNEL = 3 # Channel id 5, mostly for debugging to see if all channels are blocked
@@ -28,6 +31,7 @@ const ADDITIONAL_CHANNELS = [
 
 func start_server() -> void:
     is_client = false
+    _detect_server_version()
     rtc = WebRTCMultiplayerPeer.new()
     rtc.create_server(ADDITIONAL_CHANNELS)  # ← WebRTC server role
     multiplayer.multiplayer_peer = rtc                 # Todo - Test what happens if I remove this then document it
@@ -105,7 +109,7 @@ func _server_handle_signal(ws_id: int, msg: Dictionary) -> void:
             pc.session_description_created.connect(func(t: String, s: String):
                 pc.set_local_description(t, s)
                 # on server we only expect an OFFER here
-                if t == "offer": _sig_send(ws_id, { "type":"offer", "id":peer_id, "sdp":s })
+                if t == "offer": _sig_send(ws_id, { "type":"offer", "id":peer_id, "sdp":s, "version_hash":server_version_hash, "version_count":server_version_count })
             )
             pc.ice_candidate_created.connect(func(mid: String, i: int, c: String):
                 _sig_send(ws_id, { "type":"ice", "id":peer_id, "mid":mid, "index":i, "cand":c })
@@ -142,6 +146,8 @@ func _client_handle_signal(msg: Dictionary) -> void:
             multiplayer.multiplayer_peer = rtc
 
         "offer":
+            Yeet.set_server_version(msg.version_hash, msg.version_count)
+    
             client_pc = WebRTCPeerConnection.new()
             client_pc.initialize({ "iceServers": ICE })
 
@@ -159,7 +165,7 @@ func _client_handle_signal(msg: Dictionary) -> void:
 
         "ice":
             client_pc.add_ice_candidate(String(msg["mid"]), int(msg["index"]), String(msg["cand"]))
-
+    
 func _send_server_health_data() -> void:
     if not multiplayer.is_server():
         return

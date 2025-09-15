@@ -29,3 +29,21 @@ func billboard_me(n: Node3D) -> void:
 
 func get_local_player() -> Player3D:
     return PlayerManager.players[multiplayer.get_unique_id()].player
+
+# Server version info received during handshake
+var server_version_hash: String = ""
+var server_version_count: int = 0
+
+func set_server_version(version_hash: String, version_count: int) -> void:
+    server_version_hash = version_hash
+    server_version_count = version_count
+
+func _detect_server_version() -> void:
+    var output: Array = []    
+    # Get commit hash
+    OS.execute("git", ["rev-parse", "--short", "HEAD"], output)
+    server_version_hash = output[0].strip_edges()
+    output.clear()
+    # Get commit count
+    OS.execute("git", ["rev-list", "--count", "HEAD"], output)
+    server_version_count = int(output[0].strip_edges())
