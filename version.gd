@@ -1,5 +1,5 @@
 extends Resource
 class_name GameVersion
 
-const HASH = "a540b13"
-const COUNT = 243
+const HASH = "912b8dc"
+const COUNT = 244
