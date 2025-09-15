@@ -2,3 +2,7 @@
 .godot/
 /android/
 build.zip
+# This shit gets changed each build so it's getting the ignore hole.
+build/index.apple-touch-icon.png.import
+build/index.icon.png.import
+build/index.png.import
