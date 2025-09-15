@@ -23,3 +23,4 @@ Style guidelines:
 * Prefer one-liners, but keep if statements multi-line
 * *Never* use ? : syntax for ternary operators. They are not supported in GDScript.
 * If I give you code with comments, keep or improve those comments in  the output.
+* Signals add layers of indirection. Where reasonable, call into things directly rather than create signals.

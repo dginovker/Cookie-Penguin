@@ -55,7 +55,8 @@ func _update_backpressure_display():
             {"id": Net.SNAPSHOT_CHANNEL, "name": "Snapshot"},
             {"id": Net.SPAWN_CHANNEL, "name": "Spawn"}, 
             {"id": Net.LOOTBAG_CHANNEL, "name": "Lootbag"},
-            {"id": Net.MOB_HEALTH_UPDATES, "name": "Mob Health"}
+            {"id": Net.MOB_HEALTH_UPDATES, "name": "Mob Health"},
+            {"id": Net.DEBUG_HEALTH_CHANNEL, "name": "Debug Health"}
         ]
         
         for channel in channels:

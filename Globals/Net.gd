@@ -5,8 +5,8 @@ var rtc: WebRTCMultiplayerPeer
 var signal_mp: WebSocketMultiplayerPeer
 var next_id: int = 2
 const PORT: int = 10000
-#const URL: String = "ws://127.0.0.1:%d" % PORT
-const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
+const URL: String = "ws://127.0.0.1:%d" % PORT
+#const URL: String = "wss://duck.openredsoftware.com/pinkdragon"
 const ICE: Array[Dictionary] = [{ "urls": "stun:stun.l.google.com:19302" }]
 
 var ws_hello_sent: bool = false
@@ -18,11 +18,13 @@ const SNAPSHOT_CHANNEL = 1 # Channel id 3
 const SPAWN_CHANNEL = 2 # Channel id 4
 const LOOTBAG_CHANNEL = 3 # Channel id 5, mostly for debugging to see if all channels are blocked
 const MOB_HEALTH_UPDATES = 4 # Channel id 6
+const DEBUG_HEALTH_CHANNEL = 5 # Channel id 7
 const ADDITIONAL_CHANNELS = [
     MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE,
     MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
     MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
-    MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE,
+    MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE
 ]
 
 func start_server() -> void:
@@ -39,6 +41,8 @@ func start_client() -> void:
     #print("Done signalining start")
 
 var _time = 0
+var _health_timer = 0.0
+
 func _process(_dt: float) -> void:
     if signal_mp:
         signal_mp.poll()
@@ -57,6 +61,12 @@ func _process(_dt: float) -> void:
         if _time < 0:
             _time = 1
             print_buffers()
+        
+        # Send health data every second
+        _health_timer += _dt
+        if _health_timer >= 1.0:
+            _health_timer = 0.0
+            _send_server_health_data()
 
 func print_buffers():
     if true:
@@ -150,3 +160,28 @@ func _client_handle_signal(msg: Dictionary) -> void:
 
         "ice":
             client_pc.add_ice_candidate(String(msg["mid"]), int(msg["index"]), String(msg["cand"]))
+
+func _send_server_health_data() -> void:
+    if not multiplayer.is_server():
+        return
+    
+    var delta = get_process_delta_time()
+    var process_fps: float = 0.0
+    if delta > 0.0:
+        process_fps = 1.0 / delta
+    
+    var health_data = {
+        "physics_fps": Engine.get_frames_per_second(),
+        "process_fps": process_fps,
+        "timestamp": Time.get_ticks_msec()
+    }
+    
+    # Broadcast to all peers
+    _send_health_data_to_client.rpc(health_data)
+
+@rpc("any_peer", "call_local", "reliable", DEBUG_HEALTH_CHANNEL)
+func _send_health_data_to_client(health_data: Dictionary) -> void:
+    # Update client UI directly
+    var client_network_control = get_tree().get_first_node_in_group("client_network_control")
+    if client_network_control:
+        client_network_control._receive_server_health_data(health_data)
