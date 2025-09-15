@@ -170,14 +170,22 @@ func _send_server_health_data() -> void:
     if delta > 0.0:
         process_fps = 1.0 / delta
     
-    var health_data = {
-        "physics_fps": Engine.get_frames_per_second(),
-        "process_fps": process_fps,
-        "timestamp": Time.get_ticks_msec()
-    }
-    
-    # Broadcast to all peers
-    _send_health_data_to_client.rpc(health_data)
+    # Send individual health data to each connected client
+    for pid: int in PlayerManager.players.keys():
+        # Calculate total backpressure for this client across all channels
+        var total_backpressure: int = 0
+        for channel_id in range(len(ADDITIONAL_CHANNELS) + 3):  # +3 for default channels
+            total_backpressure += get_backpressure(pid, channel_id)
+        
+        var health_data = {
+            "physics_fps": Engine.get_frames_per_second(),
+            "process_fps": process_fps,
+            "timestamp": Time.get_ticks_msec(),
+            "backpressure": total_backpressure
+        }
+        
+        # Send to specific client
+        _send_health_data_to_client.rpc_id(pid, health_data)
 
 @rpc("any_peer", "call_local", "reliable", DEBUG_HEALTH_CHANNEL)
 func _send_health_data_to_client(health_data: Dictionary) -> void:

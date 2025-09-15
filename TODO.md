@@ -20,7 +20,6 @@ a) I suspect this is reliable UDP packet issue. Settings debug panel will help c
 > ok but I wanna fix it <
 1. Settings panel
 a) Debug tab
-i) For client, time since last debug packet processed
 ii) Using the server health debug channel, tell clients the sum of their backpressure in the same RPC that tells them the FPS/physics fps. You'll have to modify the broadcast to all to be broadcasting per client, but that's fine.
 
 > Networking improvements <

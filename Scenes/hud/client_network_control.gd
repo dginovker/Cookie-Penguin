@@ -4,6 +4,7 @@ extends VBoxContainer
 @onready var server_physics_fps_label: Label
 @onready var server_process_fps_label: Label
 @onready var server_last_health_label: Label
+@onready var client_backpressure_label: Label
 
 var server_health_data: Dictionary = {}
 var last_server_health_time: float = 0.0
@@ -24,6 +25,10 @@ func _ready():
     server_last_health_label = Label.new()
     server_last_health_label.text = "Last Health Data: --"
     add_child(server_last_health_label)
+    
+    client_backpressure_label = Label.new()
+    client_backpressure_label.text = "Client Backpressure: --"
+    add_child(client_backpressure_label)
 
 func _process(_delta: float) -> void:
     ping_label.text = "ping: %d ms" % [
@@ -36,6 +41,9 @@ func _process(_delta: float) -> void:
     
     if server_health_data.has("process_fps"):
         server_process_fps_label.text = "Server Process FPS: %d" % int(server_health_data["process_fps"])
+    
+    if server_health_data.has("backpressure"):
+        client_backpressure_label.text = "Client Backpressure: %d bytes" % server_health_data["backpressure"]
     
     # Update time since last server health data
     if last_server_health_time > 0.0:
