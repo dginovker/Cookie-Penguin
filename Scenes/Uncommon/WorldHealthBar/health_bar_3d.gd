@@ -23,7 +23,7 @@ func set_health01(x: float) -> void:
 func _process(_dt: float) -> void:
     assert(target != null)
     var cam: Camera3D = get_viewport().get_camera_3d()
-    assert(cam != null)
+    assert(cam != null, "I have no camera!")
 
     set_health01(float(max(target.health, 0)) / float(target.max_health))
 

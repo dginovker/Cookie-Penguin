@@ -6,6 +6,8 @@ class PlayerState:
     var in_map: bool = false # Whether the player is in the Map yet
     var spawned_players: Dictionary[int, bool] = {} # The other players we already told this client to spawn
     var spawned_mobs: Dictionary[int, bool] = {} # The mobs we told this client to spawn
+    var client_version: int # Version number from version.gd
+    var client_version_hash: String # Hash from version.gd
     
 var players: Dictionary[int, PlayerState] = {}
 const player_scene = preload("res://Scenes/Player/Player3D.tscn")
@@ -54,7 +56,10 @@ func client_loaded_scene():
 func _spawn_player_for_real(id: int):
     # Runs on both server and client
     assert(get_tree().get_first_node_in_group("player_holder") != null)
-    players[id] = PlayerState.new()
+    if not players.has(id):
+        # Server will have it pre-set since it tracks version numbers
+        # but clients won't
+        players[id] = PlayerState.new()
     players[id].player = player_scene.instantiate()
     players[id].player.name = "Player_%d" % id
     players[id].player.peer_id = id

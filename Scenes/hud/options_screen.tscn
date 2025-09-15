@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://jjhotsry0lgs"]
+[gd_scene load_steps=7 format=3 uid="uid://jjhotsry0lgs"]
 
 [ext_resource type="Script" uid="uid://cb2jbn2mlt7jf" path="res://Scenes/hud/Options.gd" id="1_0h4mb"]
 [ext_resource type="Texture2D" uid="uid://bwvbagaoxdsqo" path="res://Scenes/hud/button_icons/close.png" id="2_y4e53"]
 [ext_resource type="Script" uid="uid://dgn5evp2qtnjn" path="res://Scenes/hud/fps.gd" id="3_vwaup"]
 [ext_resource type="Script" uid="uid://brgosfyth4e5c" path="res://Scenes/hud/nerdstats.gd" id="4_g8n31"]
 [ext_resource type="Script" uid="uid://b8i5tg25bferi" path="res://Scenes/hud/client_network_control.gd" id="5_g8n31"]
+[ext_resource type="Script" uid="uid://bcpfxfq2mdvg0" path="res://Scenes/hud/host_network_control.gd" id="6_qyc2m"]
 
 [node name="OptionsMenu" type="PanelContainer"]
 anchors_preset = 15
@@ -130,6 +131,7 @@ script = ExtResource("4_g8n31")
 
 [node name="ClientNetworkControl" type="VBoxContainer" parent="vbox/Panel" groups=["client_network_control"]]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -160,17 +162,21 @@ text = "Client Backpressure: --"
 
 [node name="ServerVersion" type="Label" parent="vbox/Panel/ClientNetworkControl"]
 layout_mode = 2
-text = "Server Versiona"
+text = "Server Version: 20 abc"
+
+[node name="ClientVersion" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Client Version: 20 abc"
 
 [node name="HostNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("6_qyc2m")
 
 [node name="BackpressureScroll" type="ScrollContainer" parent="vbox/Panel/HostNetworkControl"]
 layout_mode = 2

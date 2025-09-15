@@ -1,6 +1,22 @@
 #!/bin/bash
 set -e  # Exit immediately if any command fails
 
+echo "Generating version info..."
+# Get git version info
+VERSION_HASH=$(git rev-parse --short HEAD)
+VERSION_COUNT=$(git rev-list --count HEAD)
+
+# Generate version.gd file
+cat > version.gd << EOF
+extends Resource
+class_name GameVersion
+
+const HASH = "$VERSION_HASH"
+const COUNT = $VERSION_COUNT
+EOF
+
+echo "Game version: $VERSION_HASH (#$VERSION_COUNT)"
+
 echo "Cleaning old build..."
 
 # Clean it up
