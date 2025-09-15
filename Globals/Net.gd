@@ -13,12 +13,11 @@ var ws_hello_sent: bool = false
 var client_pc: WebRTCPeerConnection
 var is_client: bool = false
 
-# called with create_client and create_server
 const SNAPSHOT_CHANNEL = 1 # Channel id 3
 const SPAWN_CHANNEL = 2 # Channel id 4
 const LOOTBAG_CHANNEL = 3 # Channel id 5, mostly for debugging to see if all channels are blocked
 const MOB_HEALTH_UPDATES = 4 # Channel id 6
-const DEBUG_HEALTH_CHANNEL = 5 # Channel id 7
+const SERVER_HEALTH_DEBUG_CHANNEL = 5 # Channel id 7
 const ADDITIONAL_CHANNELS = [
     MultiplayerPeer.TransferMode.TRANSFER_MODE_UNRELIABLE,
     MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE,
@@ -184,12 +183,13 @@ func _send_server_health_data() -> void:
             "backpressure": total_backpressure
         }
         
-        # Send to specific client
         _send_health_data_to_client.rpc_id(pid, health_data)
 
-@rpc("any_peer", "call_local", "reliable", DEBUG_HEALTH_CHANNEL)
+@rpc("any_peer", "call_local", "reliable", SERVER_HEALTH_DEBUG_CHANNEL)
 func _send_health_data_to_client(health_data: Dictionary) -> void:
-    # Update client UI directly
-    var client_network_control = get_tree().get_first_node_in_group("client_network_control")
-    if client_network_control:
-        client_network_control._receive_server_health_data(health_data)
+    var typed_health_data: Dictionary[String, Variant] = {}
+    typed_health_data.merge(health_data)
+    var hud_network_panel: HudClientNetworkPanel = get_tree().get_first_node_in_group("client_network_control")
+    if not hud_network_panel:
+        return # UI setting up..
+    hud_network_panel.receive_server_health_data(typed_health_data)

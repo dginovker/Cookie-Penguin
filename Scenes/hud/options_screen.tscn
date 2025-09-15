@@ -128,7 +128,7 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 script = ExtResource("4_g8n31")
 
-[node name="ClientNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
+[node name="ClientNetworkControl" type="VBoxContainer" parent="vbox/Panel" groups=["client_network_control"]]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -141,6 +141,22 @@ script = ExtResource("5_g8n31")
 [node name="Ping" type="Label" parent="vbox/Panel/ClientNetworkControl"]
 layout_mode = 2
 text = "Ping"
+
+[node name="ServerPhysicsFps" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Server Physics FPS: --"
+
+[node name="ServerProcessFps" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Server Process FPS: --"
+
+[node name="LastHealthData" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Last Health Data: --"
+
+[node name="ClientBackpressure" type="Label" parent="vbox/Panel/ClientNetworkControl"]
+layout_mode = 2
+text = "Client Backpressure: --"
 
 [node name="HostNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
