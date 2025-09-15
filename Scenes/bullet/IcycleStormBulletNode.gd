@@ -6,6 +6,7 @@ const SPEED := 12
 const BULLET_NAME := "icycle_storm_bullet.png"
 const ROTATION_RADIUS := 1.0
 const DELAY_TIME := 1.0
+const FIRING_DELAY := 0.1
 const ROTATION_SPEED := -2 # Counter-clockwise
 
 @onready var sprite := $Sprite
@@ -52,8 +53,10 @@ func _physics_process(delta):
         return
 
     rotation_timer += delta
+    
+    var bullet_delay_time: float = DELAY_TIME + (storm_data.bullet_index * FIRING_DELAY)
 
-    if rotation_timer < DELAY_TIME:
+    if rotation_timer < bullet_delay_time:
         _handle_rotation_phase(delta)
     else:
         if not is_targeting:
@@ -88,21 +91,17 @@ func _handle_targeting_phase(delta: float):
         queue_free()
 
 func _find_nearest_enemy() -> Node3D:
-    var player: Player3D = PlayerManager.players[storm_data.player_id].player
-    
-    # Use the player's existing mobs_in_range detection
-    if player.mobs_in_range.is_empty():
-        return null
+    var all_mobs: Array[Node] = get_tree().get_nodes_in_group("mobs")
     
     var nearest: Node3D = null
     var nearest_distance := INF
 
-    for enemy in player.mobs_in_range:
-        if not is_instance_valid(enemy) or not enemy.is_visible:
+    for mob in all_mobs:
+        if not is_instance_valid(mob) or not mob.is_visible:
             continue
-        var distance := global_position.distance_squared_to(enemy.global_position)
+        var distance := global_position.distance_squared_to(mob.global_position)
         if distance < nearest_distance:
-            nearest = enemy
+            nearest = mob as Node3D
             nearest_distance = distance
 
     return nearest

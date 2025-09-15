@@ -1,11 +1,12 @@
 > First 5 seconds improvements <
 2. Figure out why FPS so bad on mobile
-b) Try to make hidpi dynamically turn on
+b) Pretty sure it maps to the number of mobs in the world. Visibility filter updates should fix it.
 3. Make text font bigger on mobile
 a) This is actually an issue of text size on large resolutions
 2. Get Chongho's kids to playtest again
 
 > First 60 seconds improvements <
+0. Figure out how to make drinking healthpotions and stuff better. Maybe if on mobile, you get an option menu of things to do (buttons for take and drink, with info on the bottom) everytime you click on an item?
 1. Record hit sounds
 2. Improve item stats UI panel
 3. Add mana bar for special attacks
