@@ -37,3 +37,10 @@ var server_version_count: int = 0
 func set_server_version(version_hash: String, version_count: int) -> void:
     server_version_hash = version_hash
     server_version_count = version_count
+    
+func get_targets_near_source(target_node_group: String, source: Node3D, distance: float) -> Array[Node3D]:
+    var targets: Array[Node3D] = []
+    for target: Node3D in get_tree().get_nodes_in_group(target_node_group):
+        if target.global_position.distance_to(source.global_position) <= distance:
+            targets.append(target)
+    return targets

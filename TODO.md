@@ -7,7 +7,7 @@ a) This is actually an issue of text size on large resolutions
 
 > First 60 seconds improvements <
 0. Figure out how to make drinking healthpotions and stuff better. Maybe if on mobile, you get an option menu of things to do (buttons for take and drink, with info on the bottom) everytime you click on an item?
-1. Record hit sounds
+1. Come up with a way to make lootbag loot appear faster1. Record hit sounds
 2. Improve item stats UI panel
 3. Add mana bar for special attacks
 4. Make monsters drop a tier 1 sword

@@ -156,7 +156,7 @@ func take_damage(amount):
 
     health -= amount
 
-    for player: Player3D in players_in_range:
+    for player: Player3D in Yeet.get_targets_near_source("players", self, 20):
         LazyRPCs.pop_damage.rpc_id(player.peer_id, get_path(), amount, float(max(health, 0)) / float(max_health)) # show on all peers
         LazyRPCs.update_health.rpc_id(player.peer_id, get_path(), health)
 
