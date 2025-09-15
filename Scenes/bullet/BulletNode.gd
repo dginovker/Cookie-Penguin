@@ -27,7 +27,7 @@ func _enter_tree():
     
 func _ready():
     sprite.texture = load("res://Scenes/bullet/" + bullet_data.bullet_name)
-    sprite.rotate_x(PI / 2) # Brings back "billboard" style
+    sprite.rotate_x(PI / 2) # Brings back "billboard" style since bullets look the way they're going
     sprite.rotate_y(-PI / 2) # Fixes the fact I drew sprites sideways
     look_at(global_position + bullet_data.direction)
 

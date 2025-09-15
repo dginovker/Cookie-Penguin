@@ -8,7 +8,7 @@ a) This is actually an issue of text size on large resolutions
 > First 60 seconds improvements <
 1. Record hit sounds
 2. Improve item stats UI panel
-3. Add special attacks
+3. Add mana bar for special attacks
 4. Make monsters drop a tier 1 sword
 5. Make it so you see other players' movement animation
 

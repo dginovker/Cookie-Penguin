@@ -56,19 +56,15 @@ func activate_special():
     assert(multiplayer.is_server())
     # Todo - check they have enough Mana
     # LOOK AT MY MANA, WHAT DO YOU WANT ME TO DO?
-    var player: Player3D = PlayerManager.players[multiplayer.get_remote_sender_id()].player
+    var player_id := multiplayer.get_remote_sender_id()
+    #var player: Player3D = PlayerManager.players[player_id].player
     var spawner: BulletSpawner = get_tree().get_first_node_in_group("bullet_spawner")
-    for mob: MobNode in player.mobs_in_range:
-        # Shoot at all of them mwaha
-        var dir: Vector3 = (mob.global_position - player.global_position).normalized()
-        dir.y = 0
+    
+    # Spawn icicle storm bullets in a circle around the player
+    for i in range(8):
         spawner.spawn_bullet(
-            BulletData.new(
-                5, # damage
-                10, # speed
-                "tier_3_bullet.png",
-                player.global_position,
-                dir,
-                Yeet.MOB_LAYER
+            IcycleStormSpecAttackBulletData.new(
+                player_id,
+                i
             )
         )

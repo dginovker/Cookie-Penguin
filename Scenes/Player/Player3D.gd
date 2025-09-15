@@ -38,11 +38,12 @@ func _ready():
     
     (get_tree().get_first_node_in_group("health_bar_manager") as HealthBarManager).spawn_healthbar(self)
     
+    autofire_area.body_entered.connect(_autofire_area_entered)
+    autofire_area.body_exited.connect(_autofire_area_exited)
+
     if multiplayer.is_server():
         var sword := ItemInstance.new("tier_0_sword", ItemLocation.new(ItemLocation.Type.PLAYER_GEAR, peer_id, 0))
         ItemManager.spawn_item(sword)
-        autofire_area.body_entered.connect(_autofire_area_entered)
-        autofire_area.body_exited.connect(_autofire_area_exited)
 
     if peer_id == multiplayer.get_unique_id():
         _setup_camera()
