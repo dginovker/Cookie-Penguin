@@ -20,8 +20,9 @@ a) I suspect this is reliable UDP packet issue. Settings debug panel will help c
 > ok but I wanna fix it <
 1. Settings panel
 a) Debug tab
-i) For host, backpressure of each client for each channel
-ii) For client, last packet received for each channel (this will help debug things like bullets stop spawning all of a sudden)
+i) For client, last packet received for each channel (this will help debug things like bullets stop spawning all of a sudden)
+ii) For client, server FPS and physics FPS (Will require server sending this data every second)
+iii) For client, the backpressure the server thinks the client has (Requires server sending this data every second)
 
 > Networking improvements <
 1. Move away from all the multiplayer synchronizers and stuff so it stops spamming errors

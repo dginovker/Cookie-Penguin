@@ -5,6 +5,8 @@ extends PanelContainer
 @onready var general_control: Control = %GeneralControl
 @onready var debug_button: Button = %DebugButton
 @onready var debug_control: Control = %DebugControl
+@onready var client_network_button: Button = %ClientNetworkButton
+@onready var client_network_control: VBoxContainer = %ClientNetworkControl
 @onready var host_network_button: Button = %HostNetworkButton
 @onready var host_network_control: VBoxContainer = %HostNetworkControl
 @onready var backpressure_container: VBoxContainer
@@ -14,6 +16,7 @@ func _ready() -> void:
     general_button.connect("pressed", func(): _turn_off_controls(); general_control.visible = true)
     debug_button.connect("pressed", func(): _turn_off_controls(); debug_control.visible = true)
     host_network_button.connect("pressed", func(): _turn_off_controls(); host_network_control.visible = true)
+    client_network_button.connect("pressed", func(): _turn_off_controls(); client_network_control.visible = true)
     
     # Set up backpressure monitoring
     backpressure_container = host_network_control.get_node("BackpressureScroll/BackpressureContainer")
@@ -22,6 +25,7 @@ func _turn_off_controls():
     general_control.visible = false
     debug_control.visible = false
     host_network_control.visible = false
+    client_network_control.visible = false
 
 func _process(_delta: float) -> void:
     %DebugControl/Position.text = "Position: " + str(Vector3i(Yeet.get_local_player().global_position))
