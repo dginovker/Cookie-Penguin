@@ -73,7 +73,6 @@ size_flags_stretch_ratio = 6.0
 
 [node name="GeneralControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,9 +80,34 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="label" type="Label" parent="vbox/Panel/GeneralControl"]
+[node name="RenderingLabel" type="Label" parent="vbox/Panel/GeneralControl"]
 layout_mode = 2
-text = "Yay!"
+text = "Rendering Settings"
+
+[node name="ScalingContainer" type="HBoxContainer" parent="vbox/Panel/GeneralControl"]
+layout_mode = 2
+
+[node name="ScalingLabel" type="Label" parent="vbox/Panel/GeneralControl/ScalingContainer"]
+layout_mode = 2
+text = "3D Scaling:"
+
+[node name="ScalingSlider" type="HSlider" parent="vbox/Panel/GeneralControl/ScalingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1.0
+max_value = 2.0
+step = 0.05
+value = 1.0
+
+[node name="ScalingValue" type="Label" parent="vbox/Panel/GeneralControl/ScalingContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="Buffer" type="Control" parent="vbox/Panel/GeneralControl/ScalingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 
 [node name="DebugControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
@@ -170,6 +194,7 @@ text = "Client Version: 20 abc"
 
 [node name="HostNetworkControl" type="VBoxContainer" parent="vbox/Panel"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
