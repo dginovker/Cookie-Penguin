@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://btu3cda3if881"
-path.s3tc="res://.godot/imported/lolipop.png-0f51e50a54f0e14bb845153605632021.s3tc.ctex"
+path="res://.godot/imported/lolipop.png-0f51e50a54f0e14bb845153605632021.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Scenes/mobs/lolipop/lolipop.png"
-dest_files=["res://.godot/imported/lolipop.png-0f51e50a54f0e14bb845153605632021.s3tc.ctex"]
+dest_files=["res://.godot/imported/lolipop.png-0f51e50a54f0e14bb845153605632021.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
