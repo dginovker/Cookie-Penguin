@@ -32,3 +32,6 @@ Claude notes:
 * Modify the scene directly where it makes sense, rather than creating them by code.
 * You do not need to preload scripts to reference their functions, as long as they have a class_name set 
 * Don't overengineer things for "flexibility". Hardcode things. We can refactor them if need be.
+
+Networking notes:
+* Mob data is sent to the server in RealmSnapshot.gd. Can be made more efficient by only sending players mob updates that happen within 40m of the player each Network tick, with updating all mob locations every 10 ticks

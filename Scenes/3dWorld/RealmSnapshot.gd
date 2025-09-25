@@ -21,6 +21,8 @@ extends Node
 # ------------------------------ Settings ------------------------------------
 
 var resendIntervalTicks: int = 6          # ~100 ms @60Hz
+var fullSyncIntervalTicks: int = 10       # Full mob sync every 10 ticks
+var proximityRange: float = 40.0          # Only send mob updates within 40m of players
 var tickHz: int = 60
 var interpDelayMs: float = 120.0
 var visLerp: float = 0.25                  # small display low-pass; set 0.0 to disable
@@ -157,11 +159,30 @@ static func u8ToDir(u: int) -> Vector3:
 func send_snapshot(tick: int) -> void:
     assert(multiplayer.is_server())
 
+    var forceKeyframe: bool = (tick % resendIntervalTicks) == 0
+    var fullSync: bool = (tick % fullSyncIntervalTicks) == 0
+
+    # Send per-player proximity-filtered snapshots
+    for peerId: int in PlayerManager.players.keys():
+        if not PlayerManager.players[peerId].in_map:
+            continue
+        if Net.get_backpressure(peerId, Net.SNAPSHOT_CHANNEL) > 1000:
+            continue
+            
+        var playerPos: Vector3 = PlayerManager.players[peerId].player.global_position
+        _send_snapshot_for_player(tick, peerId, playerPos, forceKeyframe, fullSync)
+
+func _send_snapshot_for_player(tick: int, peerId: int, playerPos: Vector3, forceKeyframe: bool, fullSync: bool) -> void:
     var body: PackedByteArray = PackedByteArray(); body.resize(4)
     var count: int = 0
-    var forceKeyframe: bool = (tick % resendIntervalTicks) == 0
 
     for mob: MobNode in get_tree().get_nodes_in_group("mobs"):
+        var distanceSq: float = mob.global_position.distance_squared_to(playerPos)
+        var withinRange: bool = fullSync or distanceSq <= (proximityRange * proximityRange)
+        
+        if not withinRange:
+            continue
+
         var q: Vector2i = quantizePosToU12Pair(mob.global_position)
         var moving: bool = mob.velocity.length_squared() > 0.0001
         var changed: bool = forceKeyframe or (not lastQPos.has(mob.mob_id)) or (lastQPos[mob.mob_id] != q) or moving
@@ -196,11 +217,7 @@ func send_snapshot(tick: int) -> void:
     body[0] = count & 0xFF;          body[1] = (count >> 8) & 0xFF
     body[2] = tick & 0xFF;           body[3] = (tick >> 8) & 0xFF
 
-    for peerId: int in PlayerManager.players.keys():
-        if PlayerManager.players[peerId].in_map:
-            if Net.get_backpressure(peerId, Net.SNAPSHOT_CHANNEL) > 1000:
-                continue
-            _apply_snapshot.rpc_id(peerId, body)
+    _apply_snapshot.rpc_id(peerId, body)
 
 # --------------------- Client: apply snapshot → buffers ----------------------
 
