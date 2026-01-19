@@ -4,6 +4,8 @@ extends Control
 class_name HealthBar
 
 @export var offset_m: float = 0.45          # how far *below* the target in meters (screen-space mapped)
+@export var bar_width_m: float = 0.5        # width in meters
+@export var bar_height_m: float = 0.1       # height in meters
 @export var center_x: bool = true
 
 @onready var bar: TextureProgressBar = $"." # root is the bar
@@ -33,6 +35,9 @@ func _process(_dt: float) -> void:
     # measure pixels-per-meter *at the target* along the camera's up axis
     var sp1: Vector2 = cam.unproject_position(target.global_position + cam.global_basis.y)
     var ppm: float = (sp1 - sp0).length()     # pixels per +1m along cam-up
+
+    # Update size based on pixels-per-meter
+    size = Vector2(bar_width_m * ppm, bar_height_m * ppm)
 
     # apply the offset purely in screen-Y to avoid sideways drift
     var sp: Vector2 = sp0 + Vector2(0.0, ppm * offset_m)
