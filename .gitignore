@@ -6,3 +6,6 @@ build.zip
 build/index.apple-touch-icon.png.import
 build/index.icon.png.import
 build/index.png.import
+# Ziva
+addons/ziva_agent/
+.ziva
