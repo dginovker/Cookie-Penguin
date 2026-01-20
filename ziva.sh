@@ -27,6 +27,15 @@ echo "Installing dependencies..."
 pnpm install
 (cd gdext && ./dev.sh)
 
+# Symlink the dev addon to the project (so we use latest dev build)
+ADDON_SRC="$ZIVA_REPO/godot-project/addons/ziva_agent"
+ADDON_DST="$PROJECT_PATH/addons/ziva_agent"
+echo "Linking ziva_agent addon from dev build..."
+rm -rf "$ADDON_DST" 2>/dev/null || true
+mkdir -p "$PROJECT_PATH/addons"
+ln -sf "$ADDON_SRC" "$ADDON_DST"
+rm -rf "$PROJECT_PATH/.godot/extension_list.cfg" 2>/dev/null || true
+
 # Start servers
 echo "Starting web server on port 3000..."
 pnpm --filter @repo/web dev > "$LOG_DIR/web.log" 2>&1 &
