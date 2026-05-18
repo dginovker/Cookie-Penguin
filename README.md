@@ -1,3 +1,7 @@
+# Work Paused!
+
+I didn't have enough time to work on this game, so I started making an AI agent that helps with Godot instead. Now that takes up all my time, but you can use it to finish your game faster :P - https://ziva.sh/
+
 ### How long does your Penguin last before the Cookies kill you?
 
 Cookie Penguin is a real-time multiplayer browser-based bullet hell MMO with permadeath mechanics.

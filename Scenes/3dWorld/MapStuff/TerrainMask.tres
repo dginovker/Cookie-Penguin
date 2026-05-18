@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TerrainMask" load_steps=8 format=3 uid="uid://3cqk2c2utyuw"]
+[gd_resource type="Resource" script_class="TerrainMask" format=3 uid="uid://3cqk2c2utyuw"]
 
 [ext_resource type="Script" uid="uid://c0xss3uon18qu" path="res://Scenes/3dWorld/MapStuff/TerrainMask.gd" id="1_j6h3s"]
 

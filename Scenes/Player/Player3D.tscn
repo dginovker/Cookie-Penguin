@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://e4wv43pmsssg"]
+[gd_scene format=3 uid="uid://e4wv43pmsssg"]
 
 [ext_resource type="Script" uid="uid://cibingwj1aaa2" path="res://Scenes/Player/Player3D.gd" id="1_awgpe"]
 [ext_resource type="Texture2D" uid="uid://du7ando0a4vb1" path="res://Scenes/Player/standing.png" id="2_ggayc"]
@@ -49,13 +49,13 @@ outer_radius = 0.041
 rings = 12
 ring_segments = 3
 
-[node name="Player_N" type="CharacterBody3D" groups=["players"]]
+[node name="Player_N" type="CharacterBody3D" unique_id=760258824 groups=["players"]]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 collision_layer = 4
 script = ExtResource("1_awgpe")
 terrain = ExtResource("2_gqm3a")
 
-[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." node_paths=PackedStringArray("sprite")]
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." unique_id=809003779 node_paths=PackedStringArray("sprite")]
 transform = Transform3D(1.2, 0, 0, 0, -5.24537e-08, 1.2, 0, -1.2, -5.24537e-08, 0, 0, 0)
 billboard = 1
 texture_filter = 4
@@ -64,33 +64,33 @@ animation = &"stand"
 script = ExtResource("8_0ny3v")
 sprite = NodePath(".")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1522361409]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_aeyrk")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1268674513]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
 size = 10.0
 near = 1.0
 script = ExtResource("7_jxwbu")
 
-[node name="AutofireArea3D" type="Area3D" parent="."]
+[node name="AutofireArea3D" type="Area3D" parent="." unique_id=1100300146]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AutofireArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AutofireArea3D" unique_id=1038458703]
 shape = SubResource("SphereShape3D_brba3")
 debug_color = Color(0.620153, 0.472236, 0.668747, 0.42)
 
-[node name="GlobalPositionHelper" type="MeshInstance3D" parent="."]
+[node name="GlobalPositionHelper" type="MeshInstance3D" parent="." unique_id=256722134]
 visible = false
 material_override = SubResource("StandardMaterial3D_gqm3a")
 mesh = SubResource("TorusMesh_gqm3a")
 
-[node name="Input" type="Node" parent="."]
+[node name="Input" type="Node" parent="." unique_id=962480939]
 script = ExtResource("8_254wg")
 
-[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+[node name="RollbackSynchronizer" type="Node" parent="." unique_id=1643734837 node_paths=PackedStringArray("root")]
 script = ExtResource("9_q1k55")
 root = NodePath("..")
 state_properties = Array[String]([":global_transform"])
@@ -98,7 +98,7 @@ input_properties = Array[String](["Input:movement"])
 enable_input_broadcast = false
 metadata/_custom_type_script = "uid://d350u8evihs1u"
 
-[node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
+[node name="TickInterpolator" type="Node" parent="." unique_id=766439044 node_paths=PackedStringArray("root")]
 script = ExtResource("10_ye1a3")
 root = NodePath("..")
 properties = Array[String]([":global_transform"])
